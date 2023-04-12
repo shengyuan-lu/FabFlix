@@ -115,11 +115,11 @@ public class MovieListServlet extends HttpServlet {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_id", movie_id);
                 jsonObject.addProperty("movie_title", movie_title);
-                jsonObject.addProperty("movie_year", movie_year);
+                jsonObject.addProperty("movie_year", Integer.parseInt(movie_year));
                 jsonObject.addProperty("movie_director", movie_director);
                 jsonObject.add("movie_genres", movie_generes);
                 jsonObject.add("movie_stars", movie_stars);
-                jsonObject.addProperty("movie_rating", movie_rating);
+                jsonObject.addProperty("movie_rating", Double.parseDouble(movie_rating));
 
                 jsonArray.add(jsonObject);
             }
