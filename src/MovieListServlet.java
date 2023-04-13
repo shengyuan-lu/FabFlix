@@ -34,16 +34,17 @@ public class MovieListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     // Create a dataSource which registered in web.
+
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
 
-        // Initialize the DataSource
         try {
             dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
         } catch (NamingException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -51,25 +52,21 @@ public class MovieListServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json"); // Response mime type
+        DatabaseHandler dbHandler = new DatabaseHandler(dataSource);
+
+        response.setContentType("application/json"); // Response type
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
-        // Get a connection from dataSource and let resource manager close the connection after usage.
-        try (Connection conn = dataSource.getConnection()) {
-
-            // Declare our statement
-            Statement statement = conn.createStatement();
-            Statement statement_genre = conn.createStatement();
-            Statement statement_star = conn.createStatement();
+        try {
 
             String movieQuery = "SELECT * FROM movies JOIN ratings r ON movies.id = r.movieId\n" +
                     "ORDER BY r.rating DESC\n" +
                     "LIMIT 20";
 
             // Perform the movieQuery
-            ResultSet topTwentyMovies = statement.executeQuery(movieQuery);
+            ResultSet topTwentyMovies = dbHandler.executeQuery(movieQuery);
 
             JsonArray jsonArray = new JsonArray();
 
@@ -86,8 +83,7 @@ public class MovieListServlet extends HttpServlet {
                         "WHERE gim.movieId = '" + movie_id +"'\n" +
                         "LIMIT 3";
 
-
-                ResultSet genres = statement_genre.executeQuery(movieGenreQuery);
+                ResultSet genres = dbHandler.executeQuery(movieGenreQuery);
 
                 JsonArray movie_generes = new JsonArray();
 
@@ -101,7 +97,7 @@ public class MovieListServlet extends HttpServlet {
                         "WHERE sim.movieId = '" + movie_id +"'\n" +
                         "LIMIT 3";
 
-                ResultSet stars = statement_star.executeQuery(movieStarQuery);
+                ResultSet stars = dbHandler.executeQuery(movieStarQuery);
 
                 JsonArray movie_stars = new JsonArray();
 
@@ -125,15 +121,18 @@ public class MovieListServlet extends HttpServlet {
             }
 
             topTwentyMovies.close();
-            statement.close();
+
+            dbHandler.closeResources();
 
             // Log to localhost log
             request.getServletContext().log("getting " + jsonArray.size() + " results");
 
             // Write JSON string to output
             out.write(jsonArray.toString());
+
             // Set response status to 200 (OK)
             response.setStatus(200);
+
 
         } catch (Exception e) {
 
