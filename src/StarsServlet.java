@@ -11,9 +11,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.HashMap;
+import java.util.List;
 
 
 // Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
@@ -37,31 +37,29 @@ public class StarsServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        DatabaseHandler dbHandler = new DatabaseHandler(dataSource);
+
         response.setContentType("application/json"); // Response mime type
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
-        try (Connection conn = dataSource.getConnection()) {
+        try {
 
-            // Declare our statement
-            Statement statement = conn.createStatement();
+            String query = "SELECT * FROM stars\n" + "LIMIT 20";
 
-            String query = "SELECT * from stars";
-
-            // Perform the query
-            ResultSet rs = statement.executeQuery(query);
+            List<HashMap<String, String>> stars = dbHandler.executeQuery(query);
 
             JsonArray jsonArray = new JsonArray();
 
-            // Iterate through each row of rs
-            while (rs.next()) {
-                String star_id = rs.getString("id");
-                String star_name = rs.getString("name");
-                String star_dob = rs.getString("birthYear");
+            // Iterate through each row of starsResultSet
+            for (HashMap<String, String> star : stars) {
+                String star_id = star.get("id");
+                String star_name = star.get("name");
+                String star_dob = star.get("birthYear");
 
-                // Create a JsonObject based on the data we retrieve from rs
+                // Create a JsonObject based on the data we retrieve from starsResultSet
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("star_id", star_id);
                 jsonObject.addProperty("star_name", star_name);
@@ -69,8 +67,6 @@ public class StarsServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
-            rs.close();
-            statement.close();
 
             // Log to localhost log
             request.getServletContext().log("getting " + jsonArray.size() + " results");
@@ -79,6 +75,8 @@ public class StarsServlet extends HttpServlet {
             out.write(jsonArray.toString());
             // Set response status to 200 (OK)
             response.setStatus(200);
+
+            dbHandler.close();
 
         } catch (Exception e) {
 
@@ -92,8 +90,5 @@ public class StarsServlet extends HttpServlet {
         } finally {
             out.close();
         }
-
-        // Always remember to close db connection after usage. Here it's done by try-with-resources
-
     }
 }

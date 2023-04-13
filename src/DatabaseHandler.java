@@ -1,42 +1,59 @@
-import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class DatabaseHandler {
 
-    private DataSource dataSource;
     private Connection connection;
 
-    private Statement statement;
-
-    public DatabaseHandler(DataSource ds) {
+    public DatabaseHandler(DataSource dataSource) {
 
         try {
-            dataSource = ds;
-            connection = ds.getConnection();
-            statement = connection.createStatement();
-
+            connection = dataSource.getConnection();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public ResultSet executeQuery(String query) throws Exception {
+    public List<HashMap<String, String>> executeQuery(String query, String... queryStrings) throws Exception {
 
-        statement.close();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-        Statement statement = connection.createStatement();
+        int index = 1;
 
-        ResultSet resultSet = statement.executeQuery(query);
+        for (int i = 1; i<=queryStrings.length; ++i) {
+            preparedStatement.setString(index, queryStrings[i-1]);
+            index += 1;
+        }
 
-        return resultSet;
+        ResultSet rs = preparedStatement.executeQuery();
+
+        ResultSetMetaData md = rs.getMetaData();
+
+        int columns = md.getColumnCount();
+
+        List<HashMap<String,String>> list = new ArrayList<HashMap<String,String>>();
+
+        while (rs.next()) {
+            HashMap<String,String> row = new HashMap<String, String>(columns);
+
+            for(int i=1; i<=columns; ++i) {
+                row.put(md.getColumnName(i), rs.getString(i));
+            }
+
+            list.add(row);
+        }
+
+        rs.close();
+        preparedStatement.close();
+
+        return list;
     }
 
-    public void closeResources() throws Exception {
-        statement.close();
+    protected void close() throws Exception {
         connection.close();
     }
 }
