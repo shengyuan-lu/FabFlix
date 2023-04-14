@@ -64,7 +64,7 @@ public class SingleStarServlet extends HttpServlet {
 
             List<HashMap<String, String>> singleStar = starDBH.executeQuery(starQuery, id);
 
-            JsonArray jsonArray = new JsonArray();
+            JsonObject singleStarObj = new JsonObject();
 
             // Iterate through each row of singleStar
             for (HashMap<String, String> ss : singleStar) {
@@ -98,17 +98,14 @@ public class SingleStarServlet extends HttpServlet {
                     moviesArray.add(movieObj);
                 }
 
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("star_id", starId);
-                jsonObject.addProperty("star_name", starName);
-                jsonObject.addProperty("star_dob", starDob);
-                jsonObject.add("movies", moviesArray);
-
-                jsonArray.add(jsonObject);
+                singleStarObj.addProperty("star_id", starId);
+                singleStarObj.addProperty("star_name", starName);
+                singleStarObj.addProperty("star_dob", Integer.parseInt(starDob));
+                singleStarObj.add("movies", moviesArray);
             }
 
             // Write JSON string to output
-            out.write(jsonArray.toString());
+            out.write(singleStarObj.toString());
 
             // Set response status to 200 (OK)
             response.setStatus(200);
