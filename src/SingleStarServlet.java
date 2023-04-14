@@ -1,4 +1,5 @@
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import javax.naming.InitialContext;
@@ -100,7 +101,13 @@ public class SingleStarServlet extends HttpServlet {
 
                 singleStarObj.addProperty("star_id", starId);
                 singleStarObj.addProperty("star_name", starName);
-                singleStarObj.addProperty("star_dob", Integer.parseInt(starDob));
+
+                if((starDob != null && !starDob.trim().isEmpty())) {
+                    singleStarObj.addProperty("star_dob", Integer.parseInt(starDob));
+                } else {
+                    singleStarObj.add("star_dob", JsonNull.INSTANCE);
+                }
+
                 singleStarObj.add("movies", moviesArray);
             }
 
