@@ -47,8 +47,7 @@ public class StarsServlet extends HttpServlet {
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try {
 
-            String query = "SELECT * FROM stars\n" +
-                    "LIMIT 20";
+            String query = "SELECT * FROM stars";
 
             List<HashMap<String, String>> stars = dbHandler.executeQuery(query);
 

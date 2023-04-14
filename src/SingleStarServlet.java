@@ -37,7 +37,7 @@ public class SingleStarServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        DatabaseHandler dbHandler = new DatabaseHandler(dataSource);
+        DatabaseHandler starDBH = new DatabaseHandler(dataSource);
 
         response.setContentType("application/json"); // Response mime type
 
@@ -52,11 +52,17 @@ public class SingleStarServlet extends HttpServlet {
 
         try {
 
+            /*
+            name;
+            year of birth (N/A if not available);
+            all movies (hyperlinked) in which the star acted.
+             */
+
             // Construct a query with parameter represented by "?"
-            String query = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
+            String starQuery = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
                     "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
 
-            List<HashMap<String, String>> singleStar = dbHandler.executeQuery(query, id);
+            List<HashMap<String, String>> singleStar = starDBH.executeQuery(starQuery, id);
 
             JsonArray jsonArray = new JsonArray();
 
@@ -67,21 +73,36 @@ public class SingleStarServlet extends HttpServlet {
                 String starName = ss.get("name");
                 String starDob = ss.get("birthYear");
 
-                String movieId = ss.get("movieId");
-                String movieTitle = ss.get("title");
-                String movieYear = ss.get("year");
-                String movieDirector = ss.get("director");
+                String movieForStarQuery = "SELECT m.id, m.title FROM stars_in_movies\n" +
+                        "    JOIN stars s ON stars_in_movies.starId = s.id\n" +
+                        "    JOIN movies m ON stars_in_movies.movieId = m.id\n" +
+                        "WHERE s.id = ?";
 
-                // Create a JsonObject based on the data we retrieve from singleStar
+                DatabaseHandler moviesForStarDBH = new DatabaseHandler(dataSource);
+
+                List<HashMap<String, String>> movies = moviesForStarDBH.executeQuery(movieForStarQuery, starId);
+
+                moviesForStarDBH.close();
+
+                JsonArray moviesArray = new JsonArray();
+
+                for (HashMap<String, String> movie : movies) {
+
+                    String movieId = movie.get("id");
+                    String movieTitle = movie.get("title");
+
+                    JsonObject movieObj = new JsonObject();
+                    movieObj.addProperty("movie_id", movieId);
+                    movieObj.addProperty("movie_title", movieTitle);
+
+                    moviesArray.add(movieObj);
+                }
 
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("star_id", starId);
                 jsonObject.addProperty("star_name", starName);
                 jsonObject.addProperty("star_dob", starDob);
-                jsonObject.addProperty("movie_id", movieId);
-                jsonObject.addProperty("movie_title", movieTitle);
-                jsonObject.addProperty("movie_year", movieYear);
-                jsonObject.addProperty("movie_director", movieDirector);
+                jsonObject.add("movies", moviesArray);
 
                 jsonArray.add(jsonObject);
             }
@@ -93,7 +114,7 @@ public class SingleStarServlet extends HttpServlet {
             response.setStatus(200);
 
             // Close resources
-            dbHandler.close();
+            starDBH.close();
 
         } catch (Exception e) {
             // Write error message JSON object to output
