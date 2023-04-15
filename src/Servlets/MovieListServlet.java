@@ -78,19 +78,25 @@ public class MovieListServlet extends HttpServlet {
                 String movie_director = movie.get("director");
                 String movie_rating = movie.get("rating");
 
-                String movieGenreQuery = "SELECT genres.name FROM genres JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
+                String movieGenreQuery = "SELECT genres.id, genres.name FROM genres JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
                         "WHERE gim.movieId = '" + movie_id + "'\n" +
                         "LIMIT 3";
 
                 List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery);
 
-                JsonArray movie_generes = new JsonArray();
+                JsonArray movie_genres = new JsonArray();
 
                 for (HashMap<String, String> genre : genres) {
-                    movie_generes.add(genre.get("name"));
+                    JsonObject gr = new JsonObject();
+
+                    gr.addProperty("id", genre.get("id"));
+                    gr.addProperty("name", genre.get("name"));
+
+                    movie_genres.add(gr);
+
                 }
 
-                String movieStarQuery = "SELECT stars.name FROM stars JOIN stars_in_movies sim ON stars.id = sim.starId\n" +
+                String movieStarQuery = "SELECT stars.id, stars.name FROM stars JOIN stars_in_movies sim ON stars.id = sim.starId\n" +
                         "WHERE sim.movieId = '" + movie_id + "'\n" +
                         "LIMIT 3";
 
@@ -99,7 +105,12 @@ public class MovieListServlet extends HttpServlet {
                 JsonArray movie_stars = new JsonArray();
 
                 for (HashMap<String, String> star : stars) {
-                    movie_stars.add(star.get("name"));
+                    JsonObject st = new JsonObject();
+
+                    st.addProperty("id", star.get("id"));
+                    st.addProperty("name", star.get("name"));
+
+                    movie_stars.add(st);
                 }
 
                 // Create a JsonObject based on the data we retrieve from topTwentyMovies
@@ -108,7 +119,7 @@ public class MovieListServlet extends HttpServlet {
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", Integer.parseInt(movie_year));
                 jsonObject.addProperty("movie_director", movie_director);
-                jsonObject.add("movie_genres", movie_generes);
+                jsonObject.add("movie_genres", movie_genres);
                 jsonObject.add("movie_stars", movie_stars);
                 jsonObject.addProperty("movie_rating", Double.parseDouble(movie_rating));
 
