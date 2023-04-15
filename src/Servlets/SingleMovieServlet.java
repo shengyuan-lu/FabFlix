@@ -1,3 +1,5 @@
+package Servlets;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
@@ -13,9 +15,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
+import Helpers.DatabaseHandler;
 
-// Declaring a WebServlet called SingleMovieServlet, which maps to url "/api/single-movie"
-@WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
+// Declaring a WebServlet called Servlets.SingleMovieServlet, which maps to url "/api/single-movie"
+@WebServlet(name = "Servlets.SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
     private static final long serialVersionUID = 2L;
 

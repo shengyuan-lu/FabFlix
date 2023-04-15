@@ -1,3 +1,5 @@
+package Servlets;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -14,9 +16,11 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
+import Helpers.DatabaseHandler;
 
-// Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
-@WebServlet(name = "StarsServlet", urlPatterns = "/api/stars")
+
+// Declaring a WebServlet called Servlets.StarsServlet, which maps to url "/api/stars"
+@WebServlet(name = "Servlets.StarsServlet", urlPatterns = "/api/stars")
 public class StarsServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 

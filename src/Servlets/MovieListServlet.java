@@ -1,3 +1,5 @@
+package Servlets;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -13,8 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
+import Helpers.DatabaseHandler;
 
-// Declaring a WebServlet called MovieListServlet, which maps to url "/api/movies"
+// Declaring a WebServlet called Servlets.MovieListServlet, which maps to url "/api/movies"
 
 /*
 In Project 1, the Movie list Page shows the top 20 rated movies, sorted by the rating. You don't need to show all the movies. Each movie needs to contain the following information:
@@ -28,7 +31,7 @@ rating.
 
  */
 
-@WebServlet(name = "MovieListServlet", urlPatterns = "/api/movies")
+@WebServlet(name = "Servlets.MovieListServlet", urlPatterns = "/api/movies")
 
 public class MovieListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
