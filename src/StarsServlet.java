@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class StarsServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        DatabaseHandler dbHandler = new DatabaseHandler(dataSource);
+        DatabaseHandler starsDBHander = new DatabaseHandler(dataSource);
 
         response.setContentType("application/json"); // Response mime type
 
@@ -49,7 +48,7 @@ public class StarsServlet extends HttpServlet {
 
             String query = "SELECT * FROM stars";
 
-            List<HashMap<String, String>> stars = dbHandler.executeQuery(query);
+            List<HashMap<String, String>> stars = starsDBHander.executeQuery(query);
 
             JsonArray jsonArray = new JsonArray();
 

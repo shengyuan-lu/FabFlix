@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class MovieListServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        DatabaseHandler movieDBH = new DatabaseHandler(dataSource);
+        DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);
 
         response.setContentType("application/json"); // Response type
 
@@ -63,7 +62,7 @@ public class MovieListServlet extends HttpServlet {
                     "LIMIT 20";
 
             // Perform the movieQuery
-            List<HashMap<String, String>> topTwentyMovies = movieDBH.executeQuery(movieQuery);
+            List<HashMap<String, String>> topTwentyMovies = movieListDBHandler.executeQuery(movieQuery);
 
             JsonArray jsonArray = new JsonArray();
 
@@ -80,8 +79,7 @@ public class MovieListServlet extends HttpServlet {
                         "WHERE gim.movieId = '" + movie_id + "'\n" +
                         "LIMIT 3";
 
-                DatabaseHandler genreDBH = new DatabaseHandler(dataSource);
-                List<HashMap<String, String>> genres = genreDBH.executeQuery(movieGenreQuery);
+                List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery);
 
                 JsonArray movie_generes = new JsonArray();
 
@@ -93,8 +91,7 @@ public class MovieListServlet extends HttpServlet {
                         "WHERE sim.movieId = '" + movie_id + "'\n" +
                         "LIMIT 3";
 
-                DatabaseHandler starsDBH = new DatabaseHandler(dataSource);
-                List<HashMap<String, String>> stars = starsDBH.executeQuery(movieStarQuery);
+                List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery);
 
                 JsonArray movie_stars = new JsonArray();
 

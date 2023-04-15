@@ -11,9 +11,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,16 +50,7 @@ public class SingleMovieServlet extends HttpServlet {
 
         try {
             DatabaseHandler singleMovieDBHandler = new DatabaseHandler(dataSource);
-            // Construct a query with parameter represented by "?"
-//            String query = "select m.title as 'movieTitle', m.year as 'movieYear', m.director as 'movieDirector', g.name as 'movieGenreName', s.id as 'movieStarId', s.name as 'movieStarName', r.rating as 'movieRating' " +
-//                    "from movies as m " +
-//                    "join stars_in_movies as sim on m.id=sim.movieId " +
-//                    "join stars as s on sim.starId=s.id " +
-//                    "join genres_in_movies as gim on m.id=gim.movieId " +
-//                    "join genres as g on gim.genreId=g.id " +
-//                    "join ratings as r on m.id=r.movieId " +
-//                    "where m.id = ?";
-            // Construct a query for getting all info about a single movie: title, year, director, rating
+
             String singleMovieInfoQuery = "select * from movies as m " +
                     "join ratings as r on r.movieId = m.id " +
                     "where m.id = ?";
@@ -126,8 +114,6 @@ public class SingleMovieServlet extends HttpServlet {
         } finally {
             out.close();
         }
-
-        // Always remember to close db connection after usage. Here it's done by try-with-resources
 
     }
 

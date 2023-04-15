@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class SingleStarServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        DatabaseHandler starDBH = new DatabaseHandler(dataSource);
+        DatabaseHandler singleStarDBH = new DatabaseHandler(dataSource);
 
         response.setContentType("application/json"); // Response mime type
 
@@ -63,7 +62,7 @@ public class SingleStarServlet extends HttpServlet {
             String starQuery = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
                     "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
 
-            List<HashMap<String, String>> singleStar = starDBH.executeQuery(starQuery, id);
+            List<HashMap<String, String>> singleStar = singleStarDBH.executeQuery(starQuery, id);
 
             JsonObject singleStarObj = new JsonObject();
 
@@ -79,9 +78,7 @@ public class SingleStarServlet extends HttpServlet {
                         "    JOIN movies m ON stars_in_movies.movieId = m.id\n" +
                         "WHERE s.id = ?";
 
-                DatabaseHandler moviesForStarDBH = new DatabaseHandler(dataSource);
-
-                List<HashMap<String, String>> movies = moviesForStarDBH.executeQuery(movieForStarQuery, starId);
+                List<HashMap<String, String>> movies = singleStarDBH.executeQuery(movieForStarQuery, starId);
 
                 JsonArray moviesArray = new JsonArray();
 
