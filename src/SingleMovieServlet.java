@@ -14,6 +14,8 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.List;
 
 // Declaring a WebServlet called SingleMovieServlet, which maps to url "/api/single-movie"
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
@@ -39,65 +41,75 @@ public class SingleMovieServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response mime type
 
-        // Retrieve parameter id from url request.
-        String id = request.getParameter("id");
+        // Retrieve movie id from url request.
+        String movieId = request.getParameter("id");
 
         // The log message can be found in localhost log
-        request.getServletContext().log("getting id: " + id);
+        request.getServletContext().log("getting movie id: " + movieId);
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
-        // Get a connection from dataSource and let resource manager close the connection after usage.
-        try (Connection conn = dataSource.getConnection()) {
-            // Get a connection from dataSource
 
+        try {
+            DatabaseHandler singleMovieDBHandler = new DatabaseHandler(dataSource);
             // Construct a query with parameter represented by "?"
-            String query = "select * from stars as s, stars_in_movies as sim, movies as m, genres_in_movies as gim, genres as g, ratings as r " +
-                    "where m.id = ? and m.id = sim.movieId and m.id = gim.movieId and m.id = r.movieId and sim.starId = s.id and gim.genreId = g.id;";
+//            String query = "select m.title as 'movieTitle', m.year as 'movieYear', m.director as 'movieDirector', g.name as 'movieGenreName', s.id as 'movieStarId', s.name as 'movieStarName', r.rating as 'movieRating' " +
+//                    "from movies as m " +
+//                    "join stars_in_movies as sim on m.id=sim.movieId " +
+//                    "join stars as s on sim.starId=s.id " +
+//                    "join genres_in_movies as gim on m.id=gim.movieId " +
+//                    "join genres as g on gim.genreId=g.id " +
+//                    "join ratings as r on m.id=r.movieId " +
+//                    "where m.id = ?";
+            // Construct a query for getting all info about a single movie: title, year, director, rating
+            String singleMovieInfoQuery = "select * from movies as m " +
+                    "join ratings as r on r.movieId = m.id " +
+                    "where m.id = ?";
+            List<HashMap<String, String>> singleMovieInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, movieId);
 
-            // Declare our statement
-            PreparedStatement statement = conn.prepareStatement(query);
+            JsonObject singleMovieObj = new JsonObject();
 
-            // Set the parameter represented by "?" in the query to the id we get from url,
-            // num 1 indicates the first "?" in the query
-            statement.setString(1, id);
+            for (HashMap<String, String> movieInfo : singleMovieInfo) {
+                singleMovieObj.addProperty("movieTitle", movieInfo.get("title"));
+                singleMovieObj.addProperty("movieYear", movieInfo.get("year"));
+                singleMovieObj.addProperty("movieDirector", movieInfo.get("director"));
 
-            // Perform the query
-            ResultSet rs = statement.executeQuery();
+                String singleMovieGenresQuery = "select g.name as 'genreName' from movies as m " +
+                        "join genres_in_movies as gim on gim.movieId = m.id " +
+                        "join genres as g on g.id = gim.genreId " +
+                        "where m.id = ?";
+                List<HashMap<String, String>> singleMovieGenres = singleMovieDBHandler.executeQuery(singleMovieGenresQuery, movieId);
 
-            JsonArray jsonArray = new JsonArray();
+                JsonArray singleMovieGenresArr = new JsonArray();
+                for (HashMap<String, String> genre : singleMovieGenres) {
+                    singleMovieGenresArr.add(genre.get("genreName"));
+                }
 
-            // Iterate through each row of rs
-            while (rs.next()) {
+                singleMovieObj.add("genres", singleMovieGenresArr);
 
-                String movieTitle = rs.getString("title");
-                // Log to localhost log
-                request.getServletContext().log("title:"+movieTitle);
-                String movieYear = rs.getString("year");
-                String movieDirector = rs.getString("director");
-                String movieGenre = rs.getString("genre");
-                String movieStarId = rs.getString("star_id");
-                String movieStarName = rs.getString("star_name");
-                String movieRating = rs.getString("rating");
 
-                // Create a JsonObject based on the data we retrieve from rs
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_title", movieTitle);
-                jsonObject.addProperty("movie_year", movieYear);
-                jsonObject.addProperty("movie_director", movieDirector);
-                jsonObject.addProperty("movie_genre", movieGenre);
-                jsonObject.addProperty("movie_star_id", movieStarId);
-                jsonObject.addProperty("movie_star_name", movieStarName);
-                jsonObject.addProperty("movie_rating", movieRating);
+                String singleMovieStarsQuery = "select s.id as 'starId', s.name as 'starName' from movies as m " +
+                        "join stars_in_movies as sim on sim.movieId = m.id " +
+                        "join stars as s on s.id = sim.starId " +
+                        "where m.id = ?";
+                List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery, movieId);
 
-                jsonArray.add(jsonObject);
+                JsonArray singleMovieStarsArr = new JsonArray();
+
+                for (HashMap<String, String> star : singleMovieStars) {
+                    JsonObject starObj = new JsonObject();
+                    starObj.addProperty("star_id", star.get("starId"));
+                    starObj.addProperty("star_name", star.get("starName"));
+
+                    singleMovieStarsArr.add(starObj);
+                }
+
+                singleMovieObj.add("stars", singleMovieStarsArr);
             }
-            rs.close();
-            statement.close();
 
             // Write JSON string to output
-            out.write(jsonArray.toString());
+            out.write(singleMovieObj.toString());
             // Set response status to 200 (OK)
             response.setStatus(200);
 

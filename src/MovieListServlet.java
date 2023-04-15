@@ -65,8 +65,6 @@ public class MovieListServlet extends HttpServlet {
             // Perform the movieQuery
             List<HashMap<String, String>> topTwentyMovies = movieDBH.executeQuery(movieQuery);
 
-            movieDBH.close();
-
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of topTwentyMovies
@@ -84,7 +82,6 @@ public class MovieListServlet extends HttpServlet {
 
                 DatabaseHandler genreDBH = new DatabaseHandler(dataSource);
                 List<HashMap<String, String>> genres = genreDBH.executeQuery(movieGenreQuery);
-                genreDBH.close();
 
                 JsonArray movie_generes = new JsonArray();
 
@@ -98,7 +95,6 @@ public class MovieListServlet extends HttpServlet {
 
                 DatabaseHandler starsDBH = new DatabaseHandler(dataSource);
                 List<HashMap<String, String>> stars = starsDBH.executeQuery(movieStarQuery);
-                starsDBH.close();
 
                 JsonArray movie_stars = new JsonArray();
 

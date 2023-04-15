@@ -76,8 +76,6 @@ public class StarsServlet extends HttpServlet {
             // Set response status to 200 (OK)
             response.setStatus(200);
 
-            dbHandler.close();
-
         } catch (Exception e) {
 
             // Write error message JSON object to output

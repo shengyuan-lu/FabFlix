@@ -83,8 +83,6 @@ public class SingleStarServlet extends HttpServlet {
 
                 List<HashMap<String, String>> movies = moviesForStarDBH.executeQuery(movieForStarQuery, starId);
 
-                moviesForStarDBH.close();
-
                 JsonArray moviesArray = new JsonArray();
 
                 for (HashMap<String, String> movie : movies) {
@@ -116,9 +114,6 @@ public class SingleStarServlet extends HttpServlet {
 
             // Set response status to 200 (OK)
             response.setStatus(200);
-
-            // Close resources
-            starDBH.close();
 
         } catch (Exception e) {
             // Write error message JSON object to output
