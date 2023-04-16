@@ -69,6 +69,10 @@ function handleMovieResult(resultData) {
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 
+$(function(){
+    $("#navbar").load("components/navbar.html");
+});
+
 // Makes the HTTP GET request and registers on success callback function handlemovieResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
