@@ -4,8 +4,9 @@
 ***Team member 1: Tony Liu 34195333***  
 ***Team member 2:***  
 
-**Contributions**  
-Tony Liu:  
-Shengyuan Lu:  
+| Member | Contributions |  
+| ----------- | ----------- |  
+| Tony Liu |  |  
+| Shengyuan Lu | ... |
 
-Demo video URL:
+Demo video URL: https://youtu.be/wpwvzY8Ld2Q
