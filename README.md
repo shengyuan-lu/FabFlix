@@ -4,7 +4,13 @@
 ***Team member 1: Tony Liu 34195333***  
 ***Team member 2: Shengyuan Lu 93188958*** 
 
-### Contributors
+### Contributions
+
+Tony Liu
+- implemented single movie page, including HTML, JavaScript, and Servlet codes
+- Updated the database handler written by my teammate
+- Helped designed the UIs
+- Helped with video demo and AWS setup
 
 **Shengyuan Lu**
 - DatabaseHandler
@@ -12,6 +18,5 @@
 - Single Star Page, Single Star API
 - Video Demo
 
-
 ### Demo
-Demo video URL: https://youtu.be/wpwvzY8Ld2Q
+[Click here for the demo video](https://youtu.be/wpwvzY8Ld2Q)
