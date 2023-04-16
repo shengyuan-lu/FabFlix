@@ -4,7 +4,7 @@
  *      2. Populate the data to correct html elements.
  */
 
-import {starIcon} from "./components/icons.js";
+import { starIcon } from "./components/icons.js";
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -24,9 +24,8 @@ function getGenresHtml(genresList) {
     let genresHTML = "<ul>";
     for (let i = 0; i < genresList.length; i++) {
         genresHTML += `<li>${genresList[i]["name"]}</li>`;
-
     }
-    genresHTML += "</ul>"
+    genresHTML += "</ul>";
     return genresHTML;
 }
 
@@ -45,11 +44,17 @@ function handleMovieResult(resultData) {
             <a href="single-movie.html?id=${resultData[i]["movie_id"]}"><h3>${resultData[i]["movie_title"]}</h3>
             </a> 
            </th>`;
-        rowHTML += `<th class="fs-4">${resultData[i]["movie_year"]}</th>`
-        rowHTML += `<th class="fs-4">${resultData[i]["movie_director"]}</th>`
-        rowHTML += `<th class="fs-4">${getGenresHtml(resultData[i]["movie_genres"])}</th>`
-        rowHTML += `<th class="fs-4">${getStarsHtml(resultData[i]["movie_stars"])}</th>`
-        rowHTML += `<th class="fs-3"><div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${resultData[i]["movie_rating"]}</div></th>`;
+        rowHTML += `<th class="fs-4">${resultData[i]["movie_year"]}</th>`;
+        rowHTML += `<th class="fs-4">${resultData[i]["movie_director"]}</th>`;
+        rowHTML += `<th class="fs-4">${getGenresHtml(
+            resultData[i]["movie_genres"]
+        )}</th>`;
+        rowHTML += `<th class="fs-4">${getStarsHtml(
+            resultData[i]["movie_stars"]
+        )}</th>`;
+        rowHTML += `<th class="fs-3"><div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${
+            resultData[i]["movie_rating"]
+        }</div></th>`;
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
@@ -66,5 +71,5 @@ jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
     url: "api/movies", // Setting request url, which is mapped by moviesServlet in Stars.java
-    success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    success: (resultData) => handleMovieResult(resultData), // Setting callback function to handle data returned successfully by the StarsServlet
 });
