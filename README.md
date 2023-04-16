@@ -7,9 +7,9 @@
 ### Contributions
 
 Tony Liu
-- implemented single movie page, including HTML, JavaScript, and Servlet codes
+- Implemented single movie page, including HTML, JavaScript, and Servlet codes
 - Updated the database handler written by my teammate
-- Helped designed the UIs
+- Helped design the UIs
 - Helped with video demo and AWS setup
 
 **Shengyuan Lu**
