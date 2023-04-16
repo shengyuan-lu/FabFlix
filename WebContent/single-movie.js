@@ -13,7 +13,7 @@ function getParameterByName(target) {
     let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
     if (!results) return null;
-    if (!results[2]) return '';
+    if (!results[2]) return "";
 
     // Return the decoded parameter value
     return decodeURIComponent(results[2].replace(/\+/g, " "));
@@ -25,7 +25,6 @@ function getParameterByName(target) {
  */
 
 function handleResult(resultData) {
-
     console.log("handleResult: populating movie info from resultData");
 
     // populate the star info h3
@@ -33,8 +32,14 @@ function handleResult(resultData) {
     let starInfoElement = jQuery("#movie_info");
 
     // append two html <p> created to the h3 body, which will refresh the page
-    starInfoElement.append("<p>Star Name: " + resultData[0]["star_name"] + "</p>" +
-        "<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
+    starInfoElement.append(
+        "<p>Star Name: " +
+            resultData[0]["star_name"] +
+            "</p>" +
+            "<p>Date Of Birth: " +
+            resultData[0]["star_dob"] +
+            "</p>"
+    );
 
     console.log("handleResult: populating movie table from resultData");
 
@@ -61,12 +66,12 @@ function handleResult(resultData) {
  */
 
 // Get id from URL
-let starId = getParameterByName('id');
+let starId = getParameterByName("id");
 
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
-    dataType: "json",  // Setting return data type
-    method: "GET",// Setting request method
+    dataType: "json", // Setting return data type
+    method: "GET", // Setting request method
     url: "api/single-movie?id=" + starId, // Setting request url, which is mapped by StarsServlet in Stars.java
-    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
+    success: (resultData) => handleResult(resultData), // Setting callback function to handle data returned successfully by the SingleStarServlet
 });
