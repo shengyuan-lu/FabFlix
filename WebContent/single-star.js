@@ -38,34 +38,34 @@ function getParameterByName(target) {
 
 function handleResult(resultData) {
 
-    console.log("handleResult: populating star info from resultData");
+    let starName = jQuery(".star-name");
+    let starDOB = jQuery(".star-dob");
+    let starMovies = jQuery(".star-movies")
+    starName.html(resultData["star_name"])
+
+    if (resultData["star_dob"] != null) {
+        starDOB.html(resultData["star_dob"])
+    } else {
+        starDOB.html("N/A")
+    }
+
+
+    console.log(`handleResult: populating star with id ${starId} info from resultData`);
 
     // populate the star info h3
     // find the empty h3 body by id "star_info"
-    let starInfoElement = jQuery("#star_info");
-
-    // append two html <p> created to the h3 body, which will refresh the page
-    starInfoElement.append("<p>Star Name: " + resultData[0]["star_name"] + "</p>" +
-        "<p>Date Of Birth: " + resultData[0]["star_dob"] + "</p>");
-
-    console.log("handleResult: populating movie table from resultData");
-
-    // Populate the star table
-    // Find the empty table body by id "movie_table_body"
-    let movieTableBodyElement = jQuery("#single_star_table_body");
+    let movieListHTML = "<ul>"
 
     // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th>" + resultData[i]["movie_title"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "</tr>";
+    for (let i = 0; i < Math.min(10, resultData["movies"].length); i++) {
+        let movies = resultData["movies"][i]
+        let liHTML = `<li><a href="single-movie.html?id=${movies["movie_id"]}">${movies["movie_title"]}</a></li>`;
 
         // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
+        movieListHTML+=liHTML
     }
+    movieListHTML += "</ul>"
+    starMovies.html(movieListHTML)
 }
 
 /**

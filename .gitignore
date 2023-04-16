@@ -171,5 +171,3 @@ buildNumber.properties
 # some additional files not meant to be added to git
 .DS_Store
 .idea/
-
-sql/
