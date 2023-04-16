@@ -52,11 +52,11 @@ function handleMovieResult(resultData) {
             <a href="single-movie.html?id=${resultData[i]['movie_id']}"><h3>${resultData[i]["movie_title"]}</h3>
             </a> 
            </th>`;
-        rowHTML += `<th>${resultData[i]["movie_year"]}</th>`
-        rowHTML += `<th>${resultData[i]["movie_director"]}</th>`
-        rowHTML += `<th>${getGenresHtml(resultData[i]["movie_genres"])}</th>`
-        rowHTML += `<th>${getStarsHtml(resultData[i]["movie_stars"])}</th>`
-        rowHTML += `<th><div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${resultData[i]["movie_rating"]}</div></th>`;
+        rowHTML += `<th class="fs-4">${resultData[i]["movie_year"]}</th>`
+        rowHTML += `<th class="fs-4">${resultData[i]["movie_director"]}</th>`
+        rowHTML += `<th class="fs-4">${getGenresHtml(resultData[i]["movie_genres"])}</th>`
+        rowHTML += `<th class="fs-4">${getStarsHtml(resultData[i]["movie_stars"])}</th>`
+        rowHTML += `<th class="fs-3"><div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${resultData[i]["movie_rating"]}</div></th>`;
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
