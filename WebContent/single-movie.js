@@ -1,3 +1,5 @@
+import {starIcon} from "./components/icons.js";
+
 /**
  * Retrieve parameter from request URL, matching by parameter name
  * @param target String
@@ -19,6 +21,26 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+function getGenresHtml(genresList) {
+    let genresHTML = "<ul>";
+    for (let i = 0; i < genresList.length; ++i) {
+        genresHTML += `<li>${genresList[i]}</li>`;
+
+    }
+    genresHTML += "</ul>"
+    return genresHTML;
+}
+
+function getStarsHtml(starsList) {
+    console.log(starsList)
+    let starsHTML = "<ul>";
+    for (let i = 0; i < starsList.length; ++i) {
+        starsHTML += `<li><a href="single-star.html?id=${starsList[i]["starId"]}">${starsList[i]["starName"]}</a></li>`;
+    }
+    starsHTML += "</ul>"
+    return starsHTML;
+}
+
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
@@ -27,38 +49,24 @@ function getParameterByName(target) {
 function handleResult(resultData) {
     console.log("handleResult: populating movie info from resultData");
 
-    // populate the star info h3
-    // find the empty h3 body by id "movie_info"
-    let starInfoElement = jQuery("#movie_info");
-
-    // append two html <p> created to the h3 body, which will refresh the page
-    starInfoElement.append(
-        "<p>Star Name: " +
-            resultData[0]["star_name"] +
-            "</p>" +
-            "<p>Date Of Birth: " +
-            resultData[0]["star_dob"] +
-            "</p>"
-    );
-
-    console.log("handleResult: populating movie table from resultData");
-
-    // Populate the star table
+    // Populate the single movie table
     // Find the empty table body by id "movie_table_body"
-    let movieTableBodyElement = jQuery("#single_movie_table_body");
+    let movieNameElem = jQuery(".movie-title");
+    let movieReleaseYearElem = jQuery(".movie-release-year");
+    let movieDirectorElem = jQuery(".movie-director");
+    let movieGenresElem = jQuery(".movie-genres");
+    let movieStarsElem = jQuery(".movie-stars");
+    let movieRatingElem = jQuery(".movie-rating");
 
-    // Concatenate the html tags with resultData jsonObject to create table rows
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th>" + resultData[i]["movie_title"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "</tr>";
+    movieNameElem.html(resultData["movieTitle"]);
+    movieReleaseYearElem.html(resultData["movieYear"]);
+    movieDirectorElem.html(resultData["movieDirector"]);
+    movieGenresElem.html(getGenresHtml(resultData["movieGenres"]));
+    movieStarsElem.html(getStarsHtml(resultData["movieStars"]));
+    movieRatingElem.html(`<div className="d-flex flex-row align-items-center"><span className="me-2">${starIcon()}</span>${resultData["movieRating"]}</div>`);
 
-        // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
-    }
+    // Append the row created to the table body, which will refresh the page
+    // movieTableBodyElement.append(rowHTML);
 }
 
 /**
@@ -66,12 +74,12 @@ function handleResult(resultData) {
  */
 
 // Get id from URL
-let starId = getParameterByName("id");
+let movieId = getParameterByName('id');
 
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    url: "api/single-movie?id=" + starId, // Setting request url, which is mapped by StarsServlet in Stars.java
-    success: (resultData) => handleResult(resultData), // Setting callback function to handle data returned successfully by the SingleStarServlet
+    dataType: "json",  // Setting return data type
+    method: "GET",// Setting request method
+    url: "api/single-movie?id=" + movieId, // Setting request url, which is mapped by StarsServlet in Stars.java
+    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
 });

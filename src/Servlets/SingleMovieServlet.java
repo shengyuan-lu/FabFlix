@@ -78,7 +78,7 @@ public class SingleMovieServlet extends HttpServlet {
                 singleMovieGenresArr.add(genre.get("genreName"));
             }
 
-            singleMovieObj.add("genres", singleMovieGenresArr);
+            singleMovieObj.add("movieGenres", singleMovieGenresArr);
 
 
             String singleMovieStarsQuery = "select s.id as 'starId', s.name as 'starName' from movies as m " +
@@ -91,13 +91,13 @@ public class SingleMovieServlet extends HttpServlet {
 
             for (HashMap<String, String> star : singleMovieStars) {
                 JsonObject starObj = new JsonObject();
-                starObj.addProperty("star_id", star.get("starId"));
-                starObj.addProperty("star_name", star.get("starName"));
+                starObj.addProperty("starId", star.get("starId"));
+                starObj.addProperty("starName", star.get("starName"));
 
                 singleMovieStarsArr.add(starObj);
             }
 
-            singleMovieObj.add("stars", singleMovieStarsArr);
+            singleMovieObj.add("movieStars", singleMovieStarsArr);
 
             // Write JSON string to output
             out.write(singleMovieObj.toString());

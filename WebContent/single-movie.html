@@ -19,27 +19,42 @@
         <title>Single Movie</title>
     </head>
     <body>
-        <h1>Single Movie Page</h1>
+        <p id="navbar"></p>
 
-        <!-- H3 body is left empty here, will be populated with the data retrieved with single-movie.js -->
-        <!-- single-movie.js will find this html element by it's id "star_info" -->
-        <h3 id="movie_info"></h3>
-        <table id="single_movie_table" class="table table-striped">
-            <thead>
+        <div class="container">
+            <p class="fs-2 text-secondary mt-4 fw-bold">Single Movie - <span class="movie-title"></span></p>
+        </div>
+        <div class="container">
+            <table class="table mt-4 fs-3">
                 <tr>
                     <th>Movie Title</th>
-                    <th>Release Year</th>
-                    <th>Director</th>
-                    <th>Genres</th>
-                    <th>Stars</th>
-                    <th>Rating</th>
+                    <td class="movie-title"></td>
                 </tr>
-            </thead>
+                <tr>
+                    <th>Release Year</th>
+                    <td class="movie-release-year"></td>
+                </tr>
+                <tr>
+                    <th>Director</th>
+                    <td class="movie-director"></td>
+                </tr>
+                <tr>
+                    <th>Genres</th>
+                    <td class="movie-genres"></td>
+                </tr>
+                <tr>
+                    <th>Stars</th>
+                    <td class="movie-stars"></td>
+                </tr>
+                <tr>
+                    <th>Rating</th>
+                    <td class="movie-rating"></td>
+                </tr>
 
-            <!-- Table body is left empty here, will be populated with the data retrieved with single-movie.js -->
-            <!-- single-movie.js will find this html element by it's id "movie_table_body" -->
-            <tbody id="single_movie_table_body"></tbody>
-        </table>
+                <!-- Table body is left empty here, will be populated with the data retrieved with single-star.js -->
+                <!-- single-star.js will find this html element by it's id "movie_table_body" -->
+            </table>
+        </div>
 
         <!-- Load jQuery and Bootstrap JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -55,6 +70,6 @@
         <!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
      otherwise the url is relative to the root path-->
         <script src="add-nav.js"></script>
-        <script src="single-movie.js"></script>
+        <script type="module" src="single-movie.js"></script>
     </body>
 </html>
