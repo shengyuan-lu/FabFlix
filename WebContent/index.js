@@ -12,22 +12,28 @@
 
 function getStarsHtml(starsList) {
     let starsHTML = "<ul>";
-    for (let i =0;i<starsList.length;i++){
+    for (let i = 0; i < starsList.length; i++) {
         starsHTML += `<li><a href="single-star.html?id=${starsList[i]["id"]}">${starsList[i]["name"]}</a></li>`;
 
     }
-    starsHTML+="</ul>"
+    starsHTML += "</ul>"
     return starsHTML;
 }
 
 function getGenresHtml(genresList) {
     let starsHTML = "<ul>";
-    for (let i =0;i<genresList.length;i++){
+    for (let i = 0; i < genresList.length; i++) {
         starsHTML += `<li>${genresList[i]["name"]}</li>`;
 
     }
-    starsHTML+="</ul>"
+    starsHTML += "</ul>"
     return starsHTML;
+}
+
+function starIcon(fill = "#facc69") {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="${fill}" class="bi bi-star-fill" viewBox="0 0 16 16">
+  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+</svg>`
 }
 function handleMovieResult(resultData) {
     console.log("handleStarResult: populating star table from resultData");
@@ -42,18 +48,15 @@ function handleMovieResult(resultData) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
-        rowHTML +=
-            "<th>" +
-            // Add a link to single-star.html with id passed with GET url parameter
-            '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">'
-            + resultData[i]["movie_title"] +     // display movie_name for the link text
-            '</a>' +
-            "</th>";
+        rowHTML += `<th>
+            <a href="single-movie.html?id=${resultData[i]['movie_id']}"><h3>${resultData[i]["movie_title"]}</h3>
+            </a> 
+           </th>`;
         rowHTML += `<th>${resultData[i]["movie_year"]}</th>`
         rowHTML += `<th>${resultData[i]["movie_director"]}</th>`
         rowHTML += `<th>${getGenresHtml(resultData[i]["movie_genres"])}</th>`
         rowHTML += `<th>${getStarsHtml(resultData[i]["movie_stars"])}</th>`
-        rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+        rowHTML += `<th><div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${resultData[i]["movie_rating"]}</div></th>`;
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
