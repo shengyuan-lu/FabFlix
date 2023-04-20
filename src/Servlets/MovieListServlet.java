@@ -17,22 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import Helpers.DatabaseHandler;
 
-// Declaring a WebServlet called Servlets.MovieListServlet, which maps to url "/api/movies"
-
-/*
-In Project 1, the Movie list Page shows the top 20 rated movies, sorted by the rating. You don't need to show all the movies. Each movie needs to contain the following information:
-
-title;
-year;
-director;
-first three genres (order does not matter) ;
-first three stars (order does not matter);
-rating.
-
- */
 
 @WebServlet(name = "Servlets.MovieListServlet", urlPatterns = "/api/movies")
-
 public class MovieListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -46,9 +32,6 @@ public class MovieListServlet extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);

@@ -35,9 +35,6 @@ public class StarsServlet extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         DatabaseHandler starsDBHander = new DatabaseHandler(dataSource);
