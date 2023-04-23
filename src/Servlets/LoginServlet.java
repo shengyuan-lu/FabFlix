@@ -11,6 +11,7 @@ import Models.User;
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
 
+    // You must use HTTP POST instead of HTTP GET so that the username and password will not be displayed on the address bar.
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // TODO: make the login talk to the database instead of hardcoding username and password
