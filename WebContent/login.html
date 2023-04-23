@@ -12,6 +12,7 @@
         <!-- Set the method to POST to avoid showing the username/password in the URL
        The default action is disabled to allow your own implementation. -->
         <div class="container">
+            <div id="login_error_message"></div>
             <form id="login_form" method="post" action="#">
                 <label><b>Username</b></label>
                 <label>
@@ -33,8 +34,6 @@
                 <br />
                 <input type="submit" value="Login" />
             </form>
-
-            <div id="login_error_message"></div>
         </div>
         <!-- Load jQuery and Bootstrap JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
