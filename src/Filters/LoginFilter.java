@@ -14,11 +14,11 @@ public class LoginFilter implements Filter {
     public void init(FilterConfig fConfig) {
         // Website URIs
         allowedURIs.add("login.html");
-        allowedURIs.add("login.js");
+
         allowedURIs.add("api/login");
-        allowedURIs.add("add-nav.js");
         allowedURIs.add("icon.js");
-        allowedURIs.add("components/navbar.html");
+        allowedURIs.add("login.js");
+
         allowedURIs.add("css/custom-style.css");
 
         // Third party URIs
@@ -39,21 +39,21 @@ public class LoginFilter implements Filter {
             // Keep default action: pass along the filter chain
             chain.doFilter(request, response);
 
-            System.out.println("LoginFilter Allowed - No Login Required: " + httpRequest.getRequestURI());
+            System.out.println("LoginFilter: Allowed - No Login Required: " + httpRequest.getRequestURI());
             return;
         }
 
         // Redirect to login page if the "user" attribute doesn't exist in session
         if (httpRequest.getSession().getAttribute("user") == null) {
 
-            System.out.println("LoginFilter Not Allowed - User Not Loggedin: " + httpRequest.getRequestURI());
+            System.out.println("LoginFilter: Not Allowed - User Not Loggedin: " + httpRequest.getRequestURI());
+            System.out.println("LoginFilter: Redirect to: login.html");
 
-            System.out.println("Redirect to: login.html");
             httpResponse.sendRedirect("./login.html");
 
         } else {
 
-            System.out.println("LoginFilter Allowed - User Loggedin: " + httpRequest.getRequestURI());
+            System.out.println("LoginFilter: Allowed - User Loggedin: " + httpRequest.getRequestURI());
 
             chain.doFilter(request, response);
         }
