@@ -30,7 +30,7 @@ function getGenresHtml(genresList) {
 }
 
 function handleMovieResult(resultData) {
-  console.log("handleStarResult: populating star table from resultData");
+  console.log("handleStarResult: populating movie list table from resultData");
 
   // Populate the movie table
   // Find the empty table body by id "movie_table_body"
