@@ -23,7 +23,7 @@ import java.util.List;
 public class SingleStarServlet extends HttpServlet {
     private static final long serialVersionUID = 2L;
 
-    // Create a dataSource which registered in web.xml
+    // Create a dataSource
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
