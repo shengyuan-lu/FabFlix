@@ -2,7 +2,7 @@ function handleGenreResult(resultData) {
     let genreList = jQuery("#genre_list");
     let listHTML = "";
     for (let i = 0; i < resultData.length; i++) {
-        listHTML += `<li class="list-group-item col-2 pt-2 pb-2"><a class="text-decoration-none" href="movie-list.html?genre_id=${resultData[i]["genre_id"]}">
+        listHTML += `<li class="list-group-item col-4 col-sm-2 pt-2 pb-2"><a class="text-decoration-none" href="movie-list.html?genre_id=${resultData[i]["genre_id"]}">
 ${resultData[i]["genre_name"]}
 </a></li>`;
     }
