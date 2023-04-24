@@ -36,14 +36,15 @@ public class AlphabetServlet extends HttpServlet {
 
             JsonArray alphabetArray = new JsonArray();
 
+            for (int i = 0; i < 10; i ++) {
+                alphabetArray.add(Integer.toString(i));
+            }
+
             for (char alphabet = 'A'; alphabet <='Z'; alphabet++ )
             {
                 alphabetArray.add(alphabet);
             }
 
-            for (int i = 0; i < 10; i ++) {
-                alphabetArray.add(Integer.toString(i));
-            }
 
             alphabetArray.add("*");
 
