@@ -17,25 +17,16 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
-@WebServlet(name = "GenreServlet", urlPatterns = "/api/genre")
-public class GenreServlet extends HttpServlet {
+@WebServlet(name = "AlphabetServlet", urlPatterns = "/api/alphabet")
+public class AlphabetServlet extends HttpServlet {
 
     private static final long serialVersionUID = 2L;
 
-    // Create a dataSource
-    private DataSource dataSource;
-
-    public void init(ServletConfig config) {
-        try {
-            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
-    }
+    public void init(ServletConfig config) {}
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        DatabaseHandler genreDBH = new DatabaseHandler(dataSource);
+        // 0,1,2,3..A,B,C...X,Y,Z
 
         response.setContentType("application/json");
 
@@ -43,28 +34,20 @@ public class GenreServlet extends HttpServlet {
 
         try {
 
-            String genreQuery = "SELECT id, name FROM genres";
+            JsonArray alphabetArray = new JsonArray();
 
-            List<HashMap<String, String>> genreResult = genreDBH.executeQuery(genreQuery);
-
-            JsonArray genreArray = new JsonArray();
-
-            // Iterate through each row of singleStar
-            for (HashMap<String, String> g : genreResult) {
-
-                JsonObject singleGenre = new JsonObject();
-
-                singleGenre.addProperty("genre_id", g.get("id"));
-                singleGenre.addProperty("genre_name", g.get("name"));
-
-                genreArray.add(singleGenre);
+            for (char alphabet = 'A'; alphabet <='Z'; alphabet++ )
+            {
+                alphabetArray.add(alphabet);
             }
 
-            // Write JSON string to output
-            out.write(genreArray.toString());
+            for (int i = 0; i < 10; i ++) {
+                alphabetArray.add(Integer.toString(i));
+            }
 
-            // Set response status to 200 (OK)
-            response.setStatus(200);
+            alphabetArray.add("*");
+
+            out.write(alphabetArray.toString());
 
         } catch (Exception e) {
             // Write error message JSON object to output
