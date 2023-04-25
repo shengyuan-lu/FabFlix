@@ -21,7 +21,6 @@ import java.util.List;
 // Declaring a WebServlet called Servlets.SingleStarServlet, which maps to url "/api/single-star"
 @WebServlet(name = "Servlets.SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
-    private static final long serialVersionUID = 2L;
 
     // Create a dataSource
     private DataSource dataSource;

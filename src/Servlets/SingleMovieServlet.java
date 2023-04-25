@@ -20,8 +20,6 @@ import Helpers.DatabaseHandler;
 // Declaring a WebServlet called Servlets.SingleMovieServlet, which maps to url "/api/single-movie"
 @WebServlet(name = "Servlets.SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
-    private static final long serialVersionUID = 2L;
-
     // Create a dataSource which registered in web.xml
     private DataSource dataSource;
 

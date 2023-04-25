@@ -13,8 +13,6 @@ import java.io.PrintWriter;
 @WebServlet(name = "AlphabetServlet", urlPatterns = "/api/alphabet")
 public class AlphabetServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 2L;
-
     public void init(ServletConfig config) {}
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

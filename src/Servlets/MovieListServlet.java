@@ -20,8 +20,6 @@ import Helpers.DatabaseHandler;
 
 @WebServlet(name = "Servlets.MovieListServlet", urlPatterns = "/api/movies")
 public class MovieListServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
     private DataSource dataSource;
 
     public void init(ServletConfig config) {

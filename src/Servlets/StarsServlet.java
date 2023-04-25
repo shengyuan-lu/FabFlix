@@ -22,7 +22,6 @@ import Helpers.DatabaseHandler;
 // Declaring a WebServlet called Servlets.StarsServlet, which maps to url "/api/stars"
 @WebServlet(name = "Servlets.StarsServlet", urlPatterns = "/api/stars")
 public class StarsServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
     // Create a dataSource which registered in web.
     private DataSource dataSource;

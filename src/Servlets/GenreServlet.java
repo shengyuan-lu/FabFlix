@@ -20,8 +20,6 @@ import java.util.List;
 @WebServlet(name = "GenreServlet", urlPatterns = "/api/genre")
 public class GenreServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 2L;
-
     // Create a dataSource
     private DataSource dataSource;
 
