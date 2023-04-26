@@ -116,7 +116,7 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         "WHERE gim.genreId LIKE ?\n" +
-                        "LIMIT 10";
+                        "LIMIT 100";
 
                 topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, genre_id);
 
@@ -127,14 +127,14 @@ public class MovieListServlet extends HttpServlet {
                 if (alphabet.equals("^[^A-Za-z0-9]")) {
                     whereClause = "WHERE title regexp ? \n";
                 } else {
-                    whereClause = "WHERE title LIKE ? \n";
+                    whereClause = "WHERE LOWER(title) LIKE LOWER(?) \n";
                 }
 
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         whereClause +
-                        "LIMIT 10";
+                        "LIMIT 100";
 
                 topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, alphabet);
 
@@ -152,7 +152,7 @@ public class MovieListServlet extends HttpServlet {
                         "AND year LIKE ?\n" +
                         "AND stars.name LIKE ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
-                        "LIMIT 10";
+                        "LIMIT 100";
 
                 topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, title, director_name, year, star_name);
             }
