@@ -36,17 +36,126 @@ public class MovieListServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response type
 
-        // Output stream to STDOUT
+        // Output stream
         PrintWriter out = response.getWriter();
+
+        // 5 possible query strings
+        // title (string like pattern needed)
+        // genre_id
+        // star_name (string like pattern needed)
+        // director_name (string like pattern needed)
+        // year
+
+        //
+        // Require movie table only
+        //
+
+        // title is only search
+        String title = "%";
+
+        if (!(request.getParameter("title") == null)) {
+            title = "%" + request.getParameter("title") + "%";
+        }
+
+        // alphabet is only browse
+        String alphabet = null;
+
+        if (!(request.getParameter("alphabet") == null)) {
+            alphabet = request.getParameter("alphabet") + "%";
+
+            if (alphabet.equals("*%")) {
+                alphabet = "^[^A-Za-z0-9]";
+            }
+        }
+
+
+        // director_name is only search
+        String director_name = "%";
+
+        if (!(request.getParameter("director_name") == null)) {
+            director_name = "%" + request.getParameter("director_name") + "%";
+        }
+
+        // year is only search
+        String year = "%";
+
+        if (!(request.getParameter("year") == null)) {
+            year = "%" + request.getParameter("year") + "%";
+        }
+
+        //
+        // Require JOIN another table
+        //
+
+        // genre_id is only browse
+        String genre_id = null;
+
+        if (!(request.getParameter("genre_id") == null)) {
+            genre_id = "%" + request.getParameter("genre_id") + "%";
+        }
+
+        // star_name is only search
+        String star_name = "%";
+
+        if (!(request.getParameter("star_name") == null)) {
+            star_name = "%" + request.getParameter("star_name") + "%";
+        }
 
         try {
 
-            String movieQuery = "SELECT * FROM movies JOIN ratings r ON movies.id = r.movieId\n" +
-                    "ORDER BY r.rating DESC\n" +
-                    "LIMIT 20";
+            String movieQuery;
 
-            // Perform the movieQuery
-            List<HashMap<String, String>> topTwentyMovies = movieListDBHandler.executeQuery(movieQuery);
+            List<HashMap<String, String>> topTwentyMovies;
+
+            if (genre_id != null && alphabet == null) {
+
+                // Handle genre_id and alphabet
+                // The only query string that will appear alone
+
+                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
+                        "JOIN ratings r ON movies.id = r.movieId\n" +
+                        "WHERE gim.genreId LIKE ?\n" +
+                        "LIMIT 10";
+
+                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, genre_id);
+
+            } else if (alphabet != null && genre_id == null) {
+
+                String whereClause;
+
+                if (alphabet.equals("^[^A-Za-z0-9]")) {
+                    whereClause = "WHERE title regexp ? \n";
+                } else {
+                    whereClause = "WHERE title LIKE ? \n";
+                }
+
+                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
+                        "JOIN ratings r ON movies.id = r.movieId\n" +
+                        whereClause +
+                        "LIMIT 10";
+
+                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, alphabet);
+
+            } else {
+
+                // Handle title, director_name, year, star_name
+
+                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                        "JOIN ratings r ON movies.id = r.movieId\n" +
+                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
+                        "JOIN stars_in_movies sim ON movies.id = sim.movieId\n" +
+                        "JOIN stars ON stars.id = sim.starId\n" +
+                        "WHERE title LIKE ?\n" +
+                        "AND director LIKE ?\n" +
+                        "AND year LIKE ?\n" +
+                        "AND stars.name LIKE ?\n" +
+                        "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        "LIMIT 10";
+
+                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, title, director_name, year, star_name);
+            }
 
             JsonArray jsonArray = new JsonArray();
 
@@ -59,11 +168,12 @@ public class MovieListServlet extends HttpServlet {
                 String movie_director = movie.get("director");
                 String movie_rating = movie.get("rating");
 
-                String movieGenreQuery = "SELECT genres.id, genres.name FROM genres JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
-                        "WHERE gim.movieId = '" + movie_id + "'\n" +
+                String movieGenreQuery = "SELECT genres.id, genres.name FROM genres \n" +
+                        "JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
+                        "WHERE gim.movieId = ?\n" +
                         "LIMIT 3";
 
-                List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery);
+                List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
 
                 JsonArray movie_genres = new JsonArray();
 
@@ -74,14 +184,14 @@ public class MovieListServlet extends HttpServlet {
                     gr.addProperty("name", genre.get("name"));
 
                     movie_genres.add(gr);
-
                 }
 
-                String movieStarQuery = "SELECT stars.id, stars.name FROM stars JOIN stars_in_movies sim ON stars.id = sim.starId\n" +
-                        "WHERE sim.movieId = '" + movie_id + "'\n" +
+                String movieStarQuery = "SELECT stars.id, stars.name FROM stars\n" +
+                        "JOIN stars_in_movies sim ON stars.id = sim.starId\n" +
+                        "WHERE sim.movieId = ?\n" +
                         "LIMIT 3";
 
-                List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery);
+                List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);
 
                 JsonArray movie_stars = new JsonArray();
 

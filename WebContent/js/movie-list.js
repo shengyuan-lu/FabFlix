@@ -29,6 +29,28 @@ function getGenresHtml(genresList) {
   return genresHTML;
 }
 
+/**
+ * Retrieve parameter from request URL, matching by parameter name
+ * @param target String
+ * @returns {*}
+ */
+function getParameterByName(target) {
+  // Get request URL
+  let url = window.location.href;
+
+  // Encode target parameter name to url encoding
+  target = target.replace(/[\[\]]/g, "\\$&");
+
+  // Ues regular expression to find matched parameter value
+  let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
+
+  // Return the decoded parameter value
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 function handleMovieResult(resultData) {
   console.log("handleStarResult: populating movie list table from resultData");
 
@@ -66,10 +88,59 @@ function handleMovieResult(resultData) {
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 
+function assembleRequestURL() {
+
+  let requestUrl = "api/movies"
+
+  let title = getParameterByName("title");
+  let alphabet = getParameterByName("alphabet");
+  let director_name = getParameterByName("director_name");
+  let year = getParameterByName("year");
+  let genre_id = getParameterByName("genre_id");
+  let star_name = getParameterByName("star_name");
+
+  // Add ? to signal the beginning of query string
+  if (alphabet != null || title != null || director_name != null || year != null || genre_id != null || star_name != null) {
+    requestUrl += "?";
+  }
+
+  // Append the query parameters
+  if (alphabet != null) {
+    requestUrl += `alphabet=${alphabet}&`;
+  }
+
+  if (title != null) {
+    requestUrl += `title=${title}&`;
+  }
+
+  if (director_name != null) {
+    requestUrl += `director_name=${director_name}&`;
+  }
+
+  if (year != null) {
+    requestUrl += `year=${year}&`;
+  }
+
+  if (genre_id != null) {
+    requestUrl += `genre_id=${genre_id}&`;
+  }
+
+  if (star_name != null) {
+    requestUrl += `star_name=${star_name}&`;
+  }
+
+  // Trim the last &
+  if (requestUrl.endsWith("&")) {
+    requestUrl = requestUrl.substring(0, requestUrl.length-1);
+  }
+
+  return requestUrl
+}
+
 // Makes the HTTP GET request and registers on success callback function handlemovieResult
 jQuery.ajax({
   dataType: "json", // Setting return data type
   method: "GET", // Setting request method
-  url: "api/movies", // Setting request url, which is mapped by moviesServlet in Stars.java
+  url: assembleRequestURL(), // Setting request url, which is mapped by moviesServlet in Stars.java
   success: (resultData) => handleMovieResult(resultData), // Setting callback function to handle data returned successfully by the StarsServlet
 });

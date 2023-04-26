@@ -2,7 +2,7 @@ function handleAlphabetResult(resultData) {
     let alphabetList = jQuery("#alphabet_list");
     let listHTML = "";
     for (let i = 0; i < resultData.length; i++) {
-        listHTML += `<li class="list-group-item col-1 pt-1 pb-1"><a class="text-decoration-none" href="movie-list.html?title_like=${resultData[i]}">
+        listHTML += `<li class="list-group-item col-1 pt-1 pb-1"><a class="text-decoration-none" href="movie-list.html?alphabet=${resultData[i]}">
 ${resultData[i]}
 </a></li>`;
     }

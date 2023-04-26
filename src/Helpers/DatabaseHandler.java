@@ -26,6 +26,8 @@ public class DatabaseHandler {
                 index += 1;
             }
 
+            System.out.println("Executed Query: \n" + preparedStatement.toString().substring( preparedStatement.toString().indexOf( ": " ) + 2 ));
+
             ResultSet rs = preparedStatement.executeQuery();
 
             ResultSetMetaData md = rs.getMetaData();

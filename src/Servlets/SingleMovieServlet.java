@@ -44,7 +44,6 @@ public class SingleMovieServlet extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
-
         try {
             DatabaseHandler singleMovieDBHandler = new DatabaseHandler(dataSource);
 
