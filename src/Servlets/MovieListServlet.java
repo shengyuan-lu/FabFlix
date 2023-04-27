@@ -77,11 +77,7 @@ public class MovieListServlet extends HttpServlet {
         }
 
         // year is only search
-        String year = "%";
-
-        if (!(request.getParameter("year") == null)) {
-            year = "%" + request.getParameter("year") + "%";
-        }
+        String year = request.getParameter("year");
 
         //
         // Require JOIN another table
@@ -141,6 +137,13 @@ public class MovieListServlet extends HttpServlet {
             } else {
 
                 // Handle title, director_name, year, star_name
+                String yearClause;
+
+                if (year != null) {
+                    yearClause = "AND year = " + year + "\n";
+                } else {
+                    yearClause = "";
+                }
 
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
@@ -149,12 +152,12 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN stars ON stars.id = sim.starId\n" +
                         "WHERE title LIKE ?\n" +
                         "AND director LIKE ?\n" +
-                        "AND year LIKE ?\n" +
+                        yearClause +
                         "AND stars.name LIKE ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
                         "LIMIT 100";
 
-                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, title, director_name, year, star_name);
+                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
             }
 
             JsonArray jsonArray = new JsonArray();

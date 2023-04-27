@@ -22,11 +22,57 @@
         <div class="container">
             <!-- Search Here -->
             <h2 class="fs-2 text-primary mt-4 fw-bold">Search</h2>
-            <form ACTION="movie-list.html" METHOD="GET">
-                Star name: <input TYPE="TEXT" name="name"><br>
-                <input TYPE="SUBMIT" VALUE="Search Star">
+            <h2 class="fs-4 text-secondary mt-4">By Conditions</h2>
+            <form
+                id="search-form"
+                class="mt-4"
+                action="movie-list.html"
+                method="GET"
+            >
+                <div class="mb-3 input-group input-group-lg">
+                    <span class="input-group-text">Movie:</span>
+                    <input
+                        name="title"
+                        class="form-control"
+                        placeholder="Enter Movie Title"
+                        type="text"
+                    />
+                </div>
+                <div class="mb-3 input-group input-group-lg">
+                    <span class="input-group-text">Director:</span>
+                    <input
+                        name="director_name"
+                        class="form-control"
+                        placeholder="Enter Director Name"
+                        type="text"
+                    />
+                </div>
+                <div class="mb-3 input-group input-group-lg">
+                    <span class="input-group-text">Year:</span>
+                    <input
+                        name="year"
+                        class="form-control"
+                        placeholder="Enter Year"
+                        type="number"
+                    />
+                </div>
+                <div class="mb-3 input-group input-group-lg">
+                    <span class="input-group-text">Star:</span>
+                    <input
+                        name="star_name"
+                        class="form-control"
+                        placeholder="Enter Star Name"
+                        type="text"
+                    />
+                </div>
+                <input
+                    class="btn mt-2 btn-primary btn-lg"
+                    type="SUBMIT"
+                    value="Find Movies"
+                />
             </form>
 
+            <br />
             <!-- Browse Here -->
             <h2 class="fs-2 text-primary mt-4 fw-bold">Browse</h2>
             <div class="row">

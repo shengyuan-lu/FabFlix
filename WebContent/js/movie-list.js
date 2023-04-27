@@ -93,39 +93,42 @@ function assembleRequestURL() {
   let requestUrl = "api/movies"
 
   let title = getParameterByName("title");
-  let alphabet = getParameterByName("alphabet");
   let director_name = getParameterByName("director_name");
   let year = getParameterByName("year");
-  let genre_id = getParameterByName("genre_id");
   let star_name = getParameterByName("star_name");
 
+  let alphabet = getParameterByName("alphabet");
+  let genre_id = getParameterByName("genre_id");
+
+  // !!string tests if the string is null or empty
+
   // Add ? to signal the beginning of query string
-  if (alphabet != null || title != null || director_name != null || year != null || genre_id != null || star_name != null) {
+  if (!!alphabet || !!title || !!director_name || !!year || !!genre_id || !!star_name) {
     requestUrl += "?";
   }
 
   // Append the query parameters
-  if (alphabet != null) {
+  if (!!alphabet) {
     requestUrl += `alphabet=${alphabet}&`;
   }
 
-  if (title != null) {
+  if (!!title) {
     requestUrl += `title=${title}&`;
   }
 
-  if (director_name != null) {
+  if (!!director_name) {
     requestUrl += `director_name=${director_name}&`;
   }
 
-  if (year != null) {
+  if (!!year) {
     requestUrl += `year=${year}&`;
   }
 
-  if (genre_id != null) {
+  if (!!genre_id) {
     requestUrl += `genre_id=${genre_id}&`;
   }
 
-  if (star_name != null) {
+  if (!!star_name) {
     requestUrl += `star_name=${star_name}&`;
   }
 
