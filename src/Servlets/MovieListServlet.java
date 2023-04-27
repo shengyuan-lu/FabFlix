@@ -53,14 +53,14 @@ public class MovieListServlet extends HttpServlet {
         // title is only search
         String title = "%";
 
-        if (!(request.getParameter("title") == null)) {
+        if (request.getParameter("title") != null) {
             title = "%" + request.getParameter("title") + "%";
         }
 
         // alphabet is only browse
         String alphabet = null;
 
-        if (!(request.getParameter("alphabet") == null)) {
+        if (request.getParameter("alphabet") != null) {
             alphabet = request.getParameter("alphabet") + "%";
 
             if (alphabet.equals("*%")) {
@@ -72,7 +72,7 @@ public class MovieListServlet extends HttpServlet {
         // director_name is only search
         String director_name = "%";
 
-        if (!(request.getParameter("director_name") == null)) {
+        if (request.getParameter("director_name") != null) {
             director_name = "%" + request.getParameter("director_name") + "%";
         }
 
@@ -84,16 +84,12 @@ public class MovieListServlet extends HttpServlet {
         //
 
         // genre_id is only browse
-        String genre_id = null;
-
-        if (!(request.getParameter("genre_id") == null)) {
-            genre_id = "%" + request.getParameter("genre_id") + "%";
-        }
+        String genre_id = request.getParameter("genre_id");
 
         // star_name is only search
         String star_name = "%";
 
-        if (!(request.getParameter("star_name") == null)) {
+        if (request.getParameter("star_name") != null) {
             star_name = "%" + request.getParameter("star_name") + "%";
         }
 
@@ -111,7 +107,7 @@ public class MovieListServlet extends HttpServlet {
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
-                        "WHERE gim.genreId LIKE ?\n" +
+                        "WHERE gim.genreId = ?\n" +
                         "LIMIT 100";
 
                 topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, genre_id);
