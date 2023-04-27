@@ -174,6 +174,7 @@ public class MovieListServlet extends HttpServlet {
                 String movieGenreQuery = "SELECT genres.id, genres.name FROM genres \n" +
                         "JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
                         "WHERE gim.movieId = ?\n" +
+                        "ORDER BY genres.name\n" +
                         "LIMIT 3";
 
                 List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);

@@ -47,9 +47,9 @@ public class SingleMovieServlet extends HttpServlet {
         try {
             DatabaseHandler singleMovieDBHandler = new DatabaseHandler(dataSource);
 
-            String singleMovieInfoQuery = "select * from movies as m " +
-                    "join ratings as r on r.movieId = m.id " +
-                    "where m.id = ?";
+            String singleMovieInfoQuery = "SELECT * FROM movies AS m \n" +
+                    "JOIN ratings AS r ON r.movieId = m.id \n" +
+                    "WHERE m.id = ?";
             // There is going to be only one row in the query result
             HashMap<String, String> singleMovieInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, movieId).get(0);
 
@@ -60,10 +60,12 @@ public class SingleMovieServlet extends HttpServlet {
             singleMovieObj.addProperty("movieDirector", singleMovieInfo.get("director"));
             singleMovieObj.addProperty("movieRating", singleMovieInfo.get("rating"));
 
-            String singleMovieGenresQuery = "select g.name as 'genreName' from movies as m " +
-                    "join genres_in_movies as gim on gim.movieId = m.id " +
-                    "join genres as g on g.id = gim.genreId " +
-                    "where m.id = ?";
+            String singleMovieGenresQuery = "SELECT g.name AS 'genreName' FROM movies AS m \n" +
+                    "JOIN genres_in_movies AS gim ON gim.movieId = m.id \n" +
+                    "JOIN genres as g ON g.id = gim.genreId \n" +
+                    "WHERE m.id = ?\n" +
+                    "ORDER BY genreName\n";
+
             List<HashMap<String, String>> singleMovieGenres = singleMovieDBHandler.executeQuery(singleMovieGenresQuery, movieId);
 
             JsonArray singleMovieGenresArr = new JsonArray();
@@ -74,10 +76,11 @@ public class SingleMovieServlet extends HttpServlet {
             singleMovieObj.add("movieGenres", singleMovieGenresArr);
 
 
-            String singleMovieStarsQuery = "select s.id as 'starId', s.name as 'starName' from movies as m " +
-                    "join stars_in_movies as sim on sim.movieId = m.id " +
-                    "join stars as s on s.id = sim.starId " +
-                    "where m.id = ?";
+            String singleMovieStarsQuery = "SELECT s.id AS 'starId', s.name AS 'starName' FROM movies AS m \n" +
+                    "JOIN stars_in_movies AS sim ON sim.movieId = m.id \n" +
+                    "JOIN stars AS s ON s.id = sim.starId \n" +
+                    "WHERE m.id = ?";
+
             List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery, movieId);
 
             JsonArray singleMovieStarsArr = new JsonArray();
