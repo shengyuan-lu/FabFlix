@@ -93,26 +93,43 @@ public class MovieListServlet extends HttpServlet {
             star_name = "%" + request.getParameter("star_name") + "%";
         }
 
+        // paganization is both search and browse
+        int offset = 0;
+
+        if (request.getParameter("offset") != null) {
+            offset = Integer.parseInt(request.getParameter("offset"));
+        }
+
+        int limit = 10;
+
+        if (request.getParameter("limit") != null) {
+            limit = Integer.parseInt(request.getParameter("limit"));
+        }
+
         try {
 
             String movieQuery;
 
             List<HashMap<String, String>> topTwentyMovies;
 
+            String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
+
             if (genre_id != null && alphabet == null) {
 
-                // Handle genre_id and alphabet
-                // The only query string that will appear alone
+                // Handle browse by genre
 
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         "WHERE gim.genreId = ?\n" +
-                        "LIMIT 100";
+                        "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        paginationClause;
 
                 topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, genre_id);
 
             } else if (alphabet != null && genre_id == null) {
+
+                // Handle alphabet
 
                 String whereClause;
 
@@ -126,7 +143,8 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         whereClause +
-                        "LIMIT 100";
+                        "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        paginationClause;
 
                 topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, alphabet);
 
@@ -151,7 +169,7 @@ public class MovieListServlet extends HttpServlet {
                         yearClause +
                         "AND stars.name LIKE ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
-                        "LIMIT 100";
+                        paginationClause;
 
                 topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
             }
