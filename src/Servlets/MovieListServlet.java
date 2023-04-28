@@ -110,7 +110,7 @@ public class MovieListServlet extends HttpServlet {
 
             String movieQuery;
 
-            List<HashMap<String, String>> topTwentyMovies;
+            List<HashMap<String, String>> movieList;
 
             String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
 
@@ -125,7 +125,7 @@ public class MovieListServlet extends HttpServlet {
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
                         paginationClause;
 
-                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, genre_id);
+                movieList = movieListDBHandler.executeQuery(movieQuery, genre_id);
 
             } else if (alphabet != null && genre_id == null) {
 
@@ -146,7 +146,7 @@ public class MovieListServlet extends HttpServlet {
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
                         paginationClause;
 
-                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, alphabet);
+                movieList = movieListDBHandler.executeQuery(movieQuery, alphabet);
 
             } else {
 
@@ -171,13 +171,13 @@ public class MovieListServlet extends HttpServlet {
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
                         paginationClause;
 
-                topTwentyMovies = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
+                movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
             }
 
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of topTwentyMovies
-            for (HashMap<String, String> movie : topTwentyMovies) {
+            for (HashMap<String, String> movie : movieList) {
 
                 String movie_id = movie.get("id");
                 String movie_title = movie.get("title");

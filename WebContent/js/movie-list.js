@@ -94,7 +94,7 @@ function handleMovieResult(resultData, limit) {
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 
-function assembleRequestURL(baseUrl = "api/movies") {
+function assembleRequestURL(baseUrl = "api/movies", isNext) {
     let requestUrl = baseUrl;
 
     let title = getParameterByName("title");
@@ -105,6 +105,9 @@ function assembleRequestURL(baseUrl = "api/movies") {
     let alphabet = getParameterByName("alphabet");
     let genre_id = getParameterByName("genre_id");
 
+    let offset = parseInt(getParameterByName("offset")) || 0
+    let limit = parseInt(getParameterByName("limit")) || 10
+
     // !!string tests if the string is null or empty
 
     // Add ? to signal the beginning of query string
@@ -114,7 +117,9 @@ function assembleRequestURL(baseUrl = "api/movies") {
         !!director_name ||
         !!year ||
         !!genre_id ||
-        !!star_name
+        !!star_name ||
+        !!offset ||
+        !!limit
     ) {
         requestUrl += "?";
     }
@@ -144,6 +149,21 @@ function assembleRequestURL(baseUrl = "api/movies") {
         requestUrl += `star_name=${star_name}&`;
     }
 
+    // config offset and limit
+    if (baseUrl === "movie-list.html" ) {
+
+        if (isNext) {
+            requestUrl += `offset=${offset + limit}&`;
+        } else {
+            requestUrl += `offset=${offset - limit}&`;
+        }
+
+    } else {
+        requestUrl += `offset=${offset}&`;
+    }
+
+    requestUrl += `limit=${limit}&`;
+
     // Trim the last &
     if (requestUrl.endsWith("&")) {
         requestUrl = requestUrl.substring(0, requestUrl.length - 1);
@@ -152,24 +172,25 @@ function assembleRequestURL(baseUrl = "api/movies") {
     return requestUrl;
 }
 
-let offset = parseInt(getParameterByName("offset")) || 0;
-let limit = parseInt(getParameterByName("limit")) || 10;
-
 let prevBtn = jQuery("#prev-btn");
 let nextBtn = jQuery("#next-btn");
+
+// current offset and limit
+let offset = parseInt(getParameterByName("offset")) || 0
+let limit = parseInt(getParameterByName("limit")) || 10
 
 if (offset === 0) {
     prevBtn.remove();
 } else {
     prevBtn.attr(
         "href",
-        assembleRequestURL("movie-list.html") + `&offset=${offset - limit}`
+        assembleRequestURL("movie-list.html", false)
     );
 }
 
 nextBtn.attr(
     "href",
-    assembleRequestURL("movie-list.html") + `&offset=${offset + limit}`
+    assembleRequestURL("movie-list.html", true)
 );
 
 // Makes the HTTP GET request and registers on success callback function handlemovieResult
