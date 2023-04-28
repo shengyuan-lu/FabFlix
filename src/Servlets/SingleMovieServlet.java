@@ -78,8 +78,7 @@ public class SingleMovieServlet extends HttpServlet {
 
             String singleMovieStarsQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n" +
                     "WHERE s.id = sm.starId AND sm.movieId=?\n" +
-                    "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n" +
-                    "LIMIT 3";
+                    "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n";
 
             List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery, movieId);
 
