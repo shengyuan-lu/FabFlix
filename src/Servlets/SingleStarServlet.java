@@ -72,9 +72,10 @@ public class SingleStarServlet extends HttpServlet {
                 String starDob = ss.get("birthYear");
 
                 String movieForStarQuery = "SELECT m.id, m.title FROM stars_in_movies\n" +
-                        "    JOIN stars s ON stars_in_movies.starId = s.id\n" +
-                        "    JOIN movies m ON stars_in_movies.movieId = m.id\n" +
-                        "WHERE s.id = ?";
+                        "JOIN stars s ON stars_in_movies.starId = s.id\n" +
+                        "JOIN movies m ON stars_in_movies.movieId = m.id\n" +
+                        "WHERE s.id = ?\n" +
+                        "ORDER BY m.year DESC, m.title";
 
                 List<HashMap<String, String>> movies = singleStarDBH.executeQuery(movieForStarQuery, starId);
 
