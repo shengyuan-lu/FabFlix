@@ -57,8 +57,8 @@ public class SingleStarServlet extends HttpServlet {
              */
 
             // Construct a query with parameter represented by "?"
-            String starQuery = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
-                    "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
+            String starQuery = "SELECT * FROM stars AS s, stars_in_movies AS sim, movies AS m\n" +
+                    "WHERE m.id = sim.movieId AND sim.starId = s.id AND s.id = ?\n";
 
             List<HashMap<String, String>> singleStar = singleStarDBH.executeQuery(starQuery, id);
 
@@ -75,7 +75,7 @@ public class SingleStarServlet extends HttpServlet {
                         "JOIN stars s ON stars_in_movies.starId = s.id\n" +
                         "JOIN movies m ON stars_in_movies.movieId = m.id\n" +
                         "WHERE s.id = ?\n" +
-                        "ORDER BY m.year DESC, m.title";
+                        "ORDER BY m.year DESC, m.title \n";
 
                 List<HashMap<String, String>> movies = singleStarDBH.executeQuery(movieForStarQuery, starId);
 

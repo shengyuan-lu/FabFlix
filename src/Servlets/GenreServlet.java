@@ -42,7 +42,7 @@ public class GenreServlet extends HttpServlet {
         try {
 
             String genreQuery = "SELECT id, name FROM genres\n" +
-                    "ORDER BY name ASC"; // Customers should have a list of all hyperlinked genres sorted alphabetically.
+                    "ORDER BY name ASC\n"; // Customers should have a list of all hyperlinked genres sorted alphabetically.
 
             List<HashMap<String, String>> genreResult = genreDBH.executeQuery(genreQuery);
 

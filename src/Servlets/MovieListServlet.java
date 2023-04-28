@@ -189,7 +189,7 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
                         "WHERE gim.movieId = ?\n" +
                         "ORDER BY genres.name\n" +
-                        "LIMIT 3";
+                        "LIMIT 3\n";
 
                 List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
 
@@ -207,7 +207,7 @@ public class MovieListServlet extends HttpServlet {
                 String movieStarQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n" +
                         "WHERE s.id = sm.starId AND sm.movieId=?\n" +
                         "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n" +
-                        "LIMIT 3";
+                        "LIMIT 3\n";
 
                 List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);
 

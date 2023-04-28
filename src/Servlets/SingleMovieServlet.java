@@ -49,7 +49,7 @@ public class SingleMovieServlet extends HttpServlet {
 
             String singleMovieInfoQuery = "SELECT * FROM movies AS m \n" +
                     "JOIN ratings AS r ON r.movieId = m.id \n" +
-                    "WHERE m.id = ?";
+                    "WHERE m.id = ?\n";
             // There is going to be only one row in the query result
             HashMap<String, String> singleMovieInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, movieId).get(0);
 
