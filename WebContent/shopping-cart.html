@@ -1,23 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head />
-    <body>
-        <h1>Session Content and Shopping Cart Page</h1>
-
-        <p>
-            Check the <b>session content</b> page:
-            <a href="session?myname=Michael">session?myname=Michael</a>
-        </p>
-
-        <br />
-
-        <p>
-            Check the <b>shopping cart example</b> page:
-            <a href="items?newItem=DVD">items?newItem=DVD</a>
-            <br />
-            You can change the newItem parameter in the URL to add a different
-            item into the cart. For example,
-            <a href="items?newItem=PC">items?newItem=PC</a>
-        </p>
-    </body>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+            http-equiv="Cache-Control"
+            content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- Bootstrap CSS -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+            crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/custom-style.css" />
+    <title>FabFlix</title>
+</head>
+<body>
+<div id="navbar"></div>
+<div class="container">
+    <p class="fs-2 text-secondary mt-4 fw-bold">Movie List</p>
+</div>
+<div class="container">
+    <!-- Id "movie_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
+    <table id="shopping-cart-table" class="table table-striped mt-4 border">
+        <!-- Create a table header -->
+        <thead class="table-dark fs-3">
+        <tr>
+            <!-- Titles of each column-->
+            <th>Title</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+        </thead>
+        <!-- Table body is left empty here, will be populated with the data retrieved with movies.js -->
+        <!-- Again, id "movie_table_body" is useful for jQuery to find this html element -->
+        <tbody id="shopping-cart-body"></tbody>
+    </table>
+</div>
+<!-- Load jQuery and Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"
+></script>
+<!-- Load our own JS file -->
+<script type="module" src="js/add-nav.js"></script>
+<script type="module" src="js/shopping-cart.js"></script>
+</body>
 </html>
