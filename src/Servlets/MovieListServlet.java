@@ -186,9 +186,9 @@ public class MovieListServlet extends HttpServlet {
                     movie_genres.add(gr);
                 }
 
-                String movieStarQuery = "SELECT stars.id, stars.name FROM stars\n" +
-                        "JOIN stars_in_movies sim ON stars.id = sim.starId\n" +
-                        "WHERE sim.movieId = ?\n" +
+                String movieStarQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n" +
+                        "WHERE s.id = sm.starId AND sm.movieId=?\n" +
+                        "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n" +
                         "LIMIT 3";
 
                 List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);

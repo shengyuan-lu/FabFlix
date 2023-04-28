@@ -76,10 +76,10 @@ public class SingleMovieServlet extends HttpServlet {
             singleMovieObj.add("movieGenres", singleMovieGenresArr);
 
 
-            String singleMovieStarsQuery = "SELECT s.id AS 'starId', s.name AS 'starName' FROM movies AS m \n" +
-                    "JOIN stars_in_movies AS sim ON sim.movieId = m.id \n" +
-                    "JOIN stars AS s ON s.id = sim.starId \n" +
-                    "WHERE m.id = ?";
+            String singleMovieStarsQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n" +
+                    "WHERE s.id = sm.starId AND sm.movieId=?\n" +
+                    "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n" +
+                    "LIMIT 3";
 
             List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery, movieId);
 
@@ -87,8 +87,8 @@ public class SingleMovieServlet extends HttpServlet {
 
             for (HashMap<String, String> star : singleMovieStars) {
                 JsonObject starObj = new JsonObject();
-                starObj.addProperty("starId", star.get("starId"));
-                starObj.addProperty("starName", star.get("starName"));
+                starObj.addProperty("starId", star.get("id"));
+                starObj.addProperty("starName", star.get("name"));
 
                 singleMovieStarsArr.add(starObj);
             }
