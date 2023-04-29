@@ -1,15 +1,4 @@
-/**
- * This .js performs two steps:
- *      1. Use jQuery to talk to backend API to get the json data.
- *      2. Populate the data to correct html elements.
- */
-
 import { starIcon } from "./icons.js";
-
-/**
- * Handles the data returned by the API, read the jsonObject and populate data into html elements
- * @param resultData jsonObject
- */
 
 function getStarsHtml(starsList) {
     let starsHTML = "<ul>";
@@ -29,11 +18,7 @@ function getGenresHtml(genresList) {
     return genresHTML;
 }
 
-/**
- * Retrieve parameter from request URL, matching by parameter name
- * @param target String
- * @returns {*}
- */
+
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -64,7 +49,7 @@ function handleMovieResult(resultData, limit) {
     // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
 
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
+    for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
@@ -193,7 +178,7 @@ nextBtn.attr(
     assembleRequestURL("movie-list.html", true)
 );
 
-// Makes the HTTP GET request and registers on success callback function handlemovieResult
+// Makes the HTTP GET request and registers on success callback function handleMovieResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method

@@ -23,9 +23,20 @@
     <body>
         <div id="navbar"></div>
         <div class="container">
-            <p class="fs-2 text-secondary mt-4 fw-bold">Movie List</p>
+            <p class="fs-2 text-primary mt-4 fw-bold">Movies</p>
         </div>
         <div class="container">
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="limit-selector"
+                    >Results Per Page:</label
+                >
+                <select class="form-select" id="limit-selector">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
             <!-- Id "movie_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
             <table id="movie_table" class="table table-striped mt-4 border">
                 <!-- Create a table header -->
@@ -41,7 +52,6 @@
                     </tr>
                 </thead>
                 <!-- Table body is left empty here, will be populated with the data retrieved with movies.js -->
-                <!-- Again, id "movie_table_body" is useful for jQuery to find this html element -->
                 <tbody id="movie_table_body"></tbody>
             </table>
             <nav
@@ -50,10 +60,20 @@
             >
                 <ul class="pagination pagination-lg">
                     <li class="page-item">
-                        <a id="prev-btn" class="page-link rounded-0 border border-primary" href="#">Previous</a>
+                        <a
+                            id="prev-btn"
+                            class="page-link rounded-0 border border-primary"
+                            href="#"
+                            >Previous</a
+                        >
                     </li>
                     <li class="page-item">
-                        <a id="next-btn" class="page-link rounded-0 border border-primary" href="#">Next</a>
+                        <a
+                            id="next-btn"
+                            class="page-link rounded-0 border border-primary"
+                            href="#"
+                            >Next</a
+                        >
                     </li>
                 </ul>
             </nav>
