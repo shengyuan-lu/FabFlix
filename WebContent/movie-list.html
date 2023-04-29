@@ -51,6 +51,7 @@
                         <th>Genres</th>
                         <th>Stars</th>
                         <th>Rating</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <!-- Table body is left empty here, will be populated with the data retrieved with movies.js -->
@@ -91,5 +92,15 @@
         <!-- Load our own JS file -->
         <script type="module" src="js/add-nav.js"></script>
         <script type="module" src="js/movie-list.js"></script>
+        <script>
+            // for some reason the function in onclick has to be placed in the html file
+            function addMovieToCart(movieID) {
+              alert("Movie added to shopping cart!");
+              jQuery.ajax({
+                method: "GET", // Setting request method
+                url: `api/shopping-cart?added_item_id=${movieID}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+              })
+            }
+        </script>
     </body>
 </html>

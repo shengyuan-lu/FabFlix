@@ -43,16 +43,14 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
-function handleMovieResult(resultData) {
-    console.log(
-        "handleStarResult: populating movie list table from resultData"
-    );
+function handleShoppingCartResult(resultData) {
+    console.log(`handleStarResult: ${resultData}`);
 
     // Populate the movie table
     // Find the empty table body by id "movie_table_body"
-    let movieTableBodyElement = jQuery("#movie_table_body");
+    let shoppingCartTableElement = jQuery("#shopping-cart-table");
 
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
+    for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
@@ -60,22 +58,14 @@ function handleMovieResult(resultData) {
             <a href="single-movie.html?id=${resultData[i]["movie_id"]}"><h3>${resultData[i]["movie_title"]}</h3>
             </a> 
            </th>`;
-        rowHTML += `<th class="fs-4">${resultData[i]["movie_year"]}</th>`;
-        rowHTML += `<th class="fs-4">${resultData[i]["movie_director"]}</th>`;
-        rowHTML += `<th class="fs-4">${getGenresHtml(
-            resultData[i]["movie_genres"]
-        )}</th>`;
-        rowHTML += `<th class="fs-4">${getStarsHtml(
-            resultData[i]["movie_stars"]
-        )}</th>`;
-        rowHTML += `<th class="fs-3"><div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${
-            resultData[i]["movie_rating"]
-        }</div></th>`;
-        rowHTML += `<th class="fs-4"><a class="btn btn-outline-primary" href="shopping-cart?movie_id=${resultData[i]["movie_id"]}" role="button">Add to Cart</a></th>`;
+        rowHTML += `<th class="fs-4">${resultData[i]["movie_quantity"]}</th>`;
+        rowHTML += `<th class="fs-4">${resultData[i]["movie_price"]}</th>`;
+        rowHTML += `<th class="fs-4">${resultData[i]["movie_total"]}</th>`;
+        rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" id="${resultData[i]['movie_id']}" onclick="removeMovieFromCart(this.id)">Remove from Cart</button></th>`
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
-        movieTableBodyElement.append(rowHTML);
+        shoppingCartTableElement.append(rowHTML);
     }
 }
 
@@ -87,6 +77,6 @@ function handleMovieResult(resultData) {
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "shopping-cart", // Setting request url, which is mapped by moviesServlet in Stars.java
-    success: (resultData) => handleMovieResult(resultData), // Setting callback function to handle data returned successfully by the StarsServlet
+    url: "api/shopping-cart", // Setting request url
+    success: (resultData) => handleShoppingCartResult(resultData), // Setting callback function to handle data returned successfully by the StarsServlet
 });
