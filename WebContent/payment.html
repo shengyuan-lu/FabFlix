@@ -23,32 +23,32 @@ The default action is disabled to allow your own implementation. -->
                         <h3>Payment Information</h3>
                     </div>
 
-                    <div id="payment_error_message"></div>
+                    <div class="alert alert-danger d-none" id="payment-error-message"></div>
+
                     <!-- payment form template: https://mdbootstrap.com/docs/standard/extended/payment-forms/ -->
-                    <form>
-                        <div class="form-outline mb-1">
-                            <label for="cardNumber"></label>
-                            <input type="text" id="cardNumber" class="form-control form-control-lg" placeholder="Card Number" />
+                    <form id="payment-form">
+                        <div class="form-outline mb-2">
+                            <input type="text" name="cardNumber" class="form-control form-control-lg" placeholder="Card Number" />
                         </div>
 
-                        <div class="form-outline mb-1">
-                            <label for="cardholderFirstName"></label>
-                            <input type="text" id="cardholderFirstName" class="form-control form-control-lg" placeholder="First Name" />
+                        <div class="form-outline mb-2">
+                            <input type="text" name="cardHolderFirstName" class="form-control form-control-lg" placeholder="First Name" />
                         </div>
 
-                        <div class="form-outline mb-1">
-                            <label for="cardholderLastName"></label>
-                            <input type="text" id="cardholderLastName" class="form-control form-control-lg" placeholder="Last Name" />
+                        <div class="form-outline mb-2">
+                            <input type="text" name="cardHolderLastName" class="form-control form-control-lg" placeholder="Last Name" />
                         </div>
 
-                        <div class="form-outline mb-5">
-                            <label for="cardExpiryDate"></label>
-                            <input type="date" id="cardExpiryDate" class="form-control form-control-lg" placeholder="MM/DD/YYYY" />
-                        </div>
-                        <div class="d-grid">
-                            <button class="btn btn-success">Pay</button>
+                        <div class="form-outline mb-4">
+                            <input type="date" name="cardExpiryDate" class="form-control form-control-lg" placeholder="MM/DD/YYYY" />
                         </div>
                     </form>
+                    <h4 class="mb-5">
+                        Total:
+                    </h4>
+                    <div class="d-grid">
+                        <button class="btn btn-success" id="place-order-btn">Place Order</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,6 +64,6 @@ The default action is disabled to allow your own implementation. -->
         crossorigin="anonymous"
 ></script>
 <!-- include our own JS file -->
-<script type="module" src="js/login.js"></script>
+<script type="module" src="js/payment.js"></script>
 </body>
 </html>
