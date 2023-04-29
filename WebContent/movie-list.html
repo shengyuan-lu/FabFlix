@@ -26,17 +26,19 @@
             <p class="fs-2 text-primary mt-4 fw-bold">Movies</p>
         </div>
         <div class="container">
+            <div class="d-flex" id="toolbar">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="limit-selector"
                     >Results Per Page:</label
                 >
-                <select class="form-select" id="limit-selector">
+                <select id="limit-selector" class="form-select">
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
                 </select>
             </div>
+        </div>
             <!-- Id "movie_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
             <table id="movie_table" class="table table-striped mt-4 border">
                 <!-- Create a table header -->

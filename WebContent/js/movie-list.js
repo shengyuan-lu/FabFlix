@@ -18,7 +18,6 @@ function getGenresHtml(genresList) {
     return genresHTML;
 }
 
-
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -79,7 +78,7 @@ function handleMovieResult(resultData, limit) {
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 
-function assembleRequestURL(baseUrl = "api/movies", isNext) {
+function assembleRequestURL(baseUrl = "api/movies", offsetVal = offset) {
     let requestUrl = baseUrl;
 
     let title = getParameterByName("title");
@@ -90,8 +89,7 @@ function assembleRequestURL(baseUrl = "api/movies", isNext) {
     let alphabet = getParameterByName("alphabet");
     let genre_id = getParameterByName("genre_id");
 
-    let offset = parseInt(getParameterByName("offset")) || 0
-    let limit = parseInt(getParameterByName("limit")) || 10
+    let total_results = parseInt(getParameterByName("total_results"));
 
     // !!string tests if the string is null or empty
 
@@ -135,17 +133,8 @@ function assembleRequestURL(baseUrl = "api/movies", isNext) {
     }
 
     // config offset and limit
-    if (baseUrl === "movie-list.html" ) {
 
-        if (isNext) {
-            requestUrl += `offset=${offset + limit}&`;
-        } else {
-            requestUrl += `offset=${offset - limit}&`;
-        }
-
-    } else {
-        requestUrl += `offset=${offset}&`;
-    }
+    requestUrl += `offset=${offsetVal}&`;
 
     requestUrl += `limit=${limit}&`;
 
@@ -159,24 +148,45 @@ function assembleRequestURL(baseUrl = "api/movies", isNext) {
 
 let prevBtn = jQuery("#prev-btn");
 let nextBtn = jQuery("#next-btn");
+let limitSelector = jQuery("#limit-selector");
 
 // current offset and limit
-let offset = parseInt(getParameterByName("offset")) || 0
-let limit = parseInt(getParameterByName("limit")) || 10
+let offset = parseInt(getParameterByName("offset")) || 0;
+let limit = parseInt(getParameterByName("limit")) || 10;
+
+switch (limit) {
+    case 10:
+        limitSelector.val("10");
+        break;
+    case 25:
+        limitSelector.val("25");
+        break;
+    case 50:
+        limitSelector.val("50");
+        break;
+    case 100:
+        limitSelector.val("100");
+        break;
+    default:
+        limitSelector.val("10");
+        break;
+}
 
 if (offset === 0) {
     prevBtn.remove();
 } else {
     prevBtn.attr(
         "href",
-        assembleRequestURL("movie-list.html", false)
+        assembleRequestURL("movie-list.html", Math.max(offset - limit, 0))
     );
 }
 
-nextBtn.attr(
-    "href",
-    assembleRequestURL("movie-list.html", true)
-);
+nextBtn.attr("href", assembleRequestURL("movie-list.html", offset + limit));
+limitSelector.on("change", (e) => {
+    limit = e.target.value;
+    console.log(limit);
+    window.location.href = assembleRequestURL("movie-list.html");
+});
 
 // Makes the HTTP GET request and registers on success callback function handleMovieResult
 jQuery.ajax({
