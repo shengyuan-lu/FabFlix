@@ -51,7 +51,8 @@ public class SingleMovieServlet extends HttpServlet {
                     "JOIN ratings AS r ON r.movieId = m.id \n" +
                     "WHERE m.id = ?\n";
             // There is going to be only one row in the query result
-            HashMap<String, String> singleMovieInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, movieId).get(0);
+            HashMap<String, String> singleMovieInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, movieId)
+                    .get(0);
 
             JsonObject singleMovieObj = new JsonObject();
 
@@ -66,7 +67,8 @@ public class SingleMovieServlet extends HttpServlet {
                     "WHERE m.id = ?\n" +
                     "ORDER BY genreName\n";
 
-            List<HashMap<String, String>> singleMovieGenres = singleMovieDBHandler.executeQuery(singleMovieGenresQuery, movieId);
+            List<HashMap<String, String>> singleMovieGenres = singleMovieDBHandler.executeQuery(singleMovieGenresQuery,
+                    movieId);
 
             JsonArray singleMovieGenresArr = new JsonArray();
             for (HashMap<String, String> genre : singleMovieGenres) {
@@ -75,12 +77,13 @@ public class SingleMovieServlet extends HttpServlet {
 
             singleMovieObj.add("movieGenres", singleMovieGenresArr);
 
-
-            String singleMovieStarsQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n" +
+            String singleMovieStarsQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n"
+                    +
                     "WHERE s.id = sm.starId AND sm.movieId=?\n" +
                     "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n";
 
-            List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery, movieId);
+            List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery,
+                    movieId);
 
             JsonArray singleMovieStarsArr = new JsonArray();
 

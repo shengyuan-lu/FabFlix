@@ -188,6 +188,8 @@ limitSelector.on("change", (e) => {
     window.location.href = assembleRequestURL("movie-list.html");
 });
 
+sessionStorage.setItem("prevUrl", `movie-list.html${window.location.search}`);
+
 // Makes the HTTP GET request and registers on success callback function handleMovieResult
 jQuery.ajax({
     dataType: "json", // Setting return data type

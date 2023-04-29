@@ -74,6 +74,8 @@ function handleResult(resultData) {
 // Get id from URL
 let starId = getParameterByName("id");
 
+jQuery("#back-link").attr("href", sessionStorage.getItem("prevUrl"));
+
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
