@@ -44,7 +44,7 @@ public class LoginFilter implements Filter {
         }
 
         // Redirect to login page if the "user" attribute doesn't exist in session
-        if (httpRequest.getSession().getAttribute("user") == null) {
+        if (httpRequest.getSession().getAttribute("customer") == null) {
 
             System.out.println("LoginFilter: Not Allowed - User Not Logged In: " + httpRequest.getRequestURI());
             System.out.println("LoginFilter: Redirect to: login.html");
