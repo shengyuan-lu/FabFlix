@@ -92,7 +92,7 @@ public class PaymentServlet extends HttpServlet {
             } else {
                 // Credit card info is incorrect
                 responseJsonObj.addProperty("status", "fail");
-                responseJsonObj.addProperty("message", "Credit Card Information Is Incorrect!");
+                responseJsonObj.addProperty("message", "Credit card information is incorrect!");
                 request.getServletContext().log("Credit Card Information Is Incorrect!");
             }
 
@@ -106,7 +106,7 @@ public class PaymentServlet extends HttpServlet {
             JsonObject responseJsonObj = new JsonObject();
             // Credit card info is incorrect
             responseJsonObj.addProperty("status", "fail");
-            responseJsonObj.addProperty("message", "Credit Card Information Is Incorrect!");
+            responseJsonObj.addProperty("message", "Credit card information is incorrect!");
             out.write(responseJsonObj.toString());
 
             // Log error to localhost log
