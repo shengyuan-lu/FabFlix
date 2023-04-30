@@ -1,4 +1,4 @@
-## CS 122B Project 1: Setup AWS, MySQL, JDBC, Tomcat, Start FabFlix
+## CS 122B Project 1: Developing FabFlix Website
 
 ***Team #: stanford_rejects***  
 ***Team member 1: Tony Liu 34195333***  
@@ -6,7 +6,7 @@
 
 ### Contributions
 
-Tony Liu
+**Tony Liu**
 - Implemented shopping cart page, which displays information about movies in the shopping cart and allows for quantity modification for each item as well as deletion of items in the shopping cart 
 - Constructed payment page, including card information collection and verification
 - Built Confirmation page, displaying information about the movies ordered
@@ -15,10 +15,27 @@ Tony Liu
 - Helped with video demo and AWS setup
 
 **Shengyuan Lu**
-- DatabaseHandler
-- Movie List Page, Movie List API
-- Single Star Page, Single Star API
-- Video Demo
+- Built login functionalities
+- Built search and browse functionalities
+- Designed substring match patterns
+- Built sorting, display # of results functionalities
+- Maintained the status of the Movie List Page
+- Helped with video demo and AWS setup
 
-### Demo
-[Click here for the demo video](https://youtu.be/wpwvzY8Ld2Q)
+### Substring Matching Design
+
+Search
+
+- Title: `LIKE %ABC%`
+- Director: `LIKE %ABC%`
+- Year: Exact match only
+- Star: `LIKE %ABC%`
+
+Browse
+
+- Alphabet (NOT *): `WHERE LOWER(title) LIKE LOWER(A%)` 
+- Alphabet (* Only): `WHERE title regexp ^[^A-Za-z0-9]`
+- Genre: Exact match by genre id only
+
+### Demo Video
+[Click here for the demo video]()
