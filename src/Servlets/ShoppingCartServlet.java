@@ -39,14 +39,14 @@ public class ShoppingCartServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         // Retrieve data named "itemsInShoppingCart" from session
-        HashMap<String, Integer> itemIDsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemIDsInShoppingCart");
+        HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemsInShoppingCart");
 
         // If "itemsInShoppingCart" is not found on session, means this is a new user, thus we create a new itemsInShoppingCart
         // JsonArray for the user
-        if (itemIDsInShoppingCart == null) {
+        if (itemsInShoppingCart == null) {
             // Add the newly created ArrayList to session, so that it could be retrieved next time
-            session.setAttribute("itemIDsInShoppingCart", new HashMap<>());
-            itemIDsInShoppingCart = new HashMap<>();
+            session.setAttribute("itemsInShoppingCart", new HashMap<>());
+            itemsInShoppingCart = new HashMap<>();
             // request.getServletContext().log("getting " + itemsInShoppingCart.size() + " items"); // Log to localhost log
         }
 
@@ -55,30 +55,29 @@ public class ShoppingCartServlet extends HttpServlet {
         if (addedItemID != null) {
             // In order to prevent multiple requests from altering itemsInShoppingCart ArrayList at the same time, we
             // lock the ArrayList while updating
-            synchronized (itemIDsInShoppingCart) {
-                if (!itemIDsInShoppingCart.containsKey(addedItemID)) {
+            synchronized (itemsInShoppingCart) {
+                if (!itemsInShoppingCart.containsKey(addedItemID)) {
                     // First time the movie is added
-                    itemIDsInShoppingCart.put(addedItemID, 1);
+                    itemsInShoppingCart.put(addedItemID, 1);
                 } else {
                     // When the movie is added afterward, increment the count
-                    itemIDsInShoppingCart.put(addedItemID, itemIDsInShoppingCart.get(addedItemID) + 1);
+                    itemsInShoppingCart.put(addedItemID, itemsInShoppingCart.get(addedItemID) + 1);
                 }
-                 // Add the new item ID to the itemIDsInShoppingCart ArrayList
-                request.getServletContext().log(itemIDsInShoppingCart.toString()); // Log to localhost log
+                 // Add the new item ID to the itemsInShoppingCart ArrayList
+                request.getServletContext().log(itemsInShoppingCart.toString()); // Log to localhost log
             }
         } else if (removedItemID != null) {
-            synchronized (itemIDsInShoppingCart) {
+            synchronized (itemsInShoppingCart) {
                 // When the movie is deleted, decrement the count
-                itemIDsInShoppingCart.put(removedItemID, itemIDsInShoppingCart.get(removedItemID) - 1);
-                if (itemIDsInShoppingCart.get(removedItemID) == 0) {
+                itemsInShoppingCart.put(removedItemID, itemsInShoppingCart.get(removedItemID) - 1);
+                if (itemsInShoppingCart.get(removedItemID) == 0) {
                     // If the number of an item is reduced to zero, remove it from backend
-                    itemIDsInShoppingCart.remove(removedItemID);
+                    itemsInShoppingCart.remove(removedItemID);
                 }
-                // Add the new item ID to the itemIDsInShoppingCart ArrayList
-                request.getServletContext().log(itemIDsInShoppingCart.toString()); // Log to localhost log
+                // Add the new item ID to the itemsInShoppingCart ArrayList
+                request.getServletContext().log(itemsInShoppingCart.toString()); // Log to localhost log
             }
-        }
-        else {
+        } else {
             // Show shopping cart page if there's no get parameters
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
@@ -87,18 +86,18 @@ public class ShoppingCartServlet extends HttpServlet {
                 DatabaseHandler singleMovieDBHandler = new DatabaseHandler(dataSource);
 
                 JsonArray shoppingCartArr = new JsonArray();
-                for (String itemID : itemIDsInShoppingCart.keySet()) {
+                for (String itemId : itemsInShoppingCart.keySet()) {
                     String singleMovieInfoQuery = "SELECT m.title, m.price FROM movies AS m \n" +
                             "WHERE m.id = ?";
                     // There is going to be only one row in the query result
-                    HashMap<String, String> movieInCartInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, itemID).get(0);
+                    HashMap<String, String> movieInCartInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, itemId).get(0);
                     JsonObject movieInCartObj = new JsonObject();
 
-                    movieInCartObj.addProperty("movie_id", itemID);
+                    movieInCartObj.addProperty("movie_id", itemId);
                     movieInCartObj.addProperty("movie_title", movieInCartInfo.get("title"));
                     movieInCartObj.addProperty("movie_price", movieInCartInfo.get("price"));
-                    movieInCartObj.addProperty("movie_quantity", itemIDsInShoppingCart.get(itemID));
-                    movieInCartObj.addProperty("movie_total", itemIDsInShoppingCart.get(itemID) * Float.parseFloat(movieInCartInfo.get("price")));
+                    movieInCartObj.addProperty("movie_quantity", itemsInShoppingCart.get(itemId));
+                    movieInCartObj.addProperty("movie_total", itemsInShoppingCart.get(itemId) * Float.parseFloat(movieInCartInfo.get("price")));
                     shoppingCartArr.add(movieInCartObj);
                 }
 

@@ -1,6 +1,7 @@
 package Servlets;
 
 import Helpers.DatabaseHandler;
+import Models.Customer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
@@ -40,17 +41,20 @@ public class PaymentServlet extends HttpServlet {
         String cardHolderFirstName = request.getParameter("cardHolderFirstName");
         String cardHolderLastName = request.getParameter("cardHolderLastName");
         String cardExpiryDate = (Objects.equals(request.getParameter("cardExpiryDate"), "")) ? "00-00-0000" : request.getParameter("cardExpiryDate");
-        request.getServletContext().log("Expiry data is " + cardExpiryDate);
+
+        HttpSession session = request.getSession();
+        int customerId = ((Customer) session.getAttribute("customer")).getId();
+        HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemsInShoppingCart");
 
         PrintWriter out = response.getWriter();
 
         try {
-            DatabaseHandler singleMovieDBHandler = new DatabaseHandler(dataSource);
+            DatabaseHandler paymentDBHandler = new DatabaseHandler(dataSource);
 
             String creditCardInfoQuery = "SELECT * FROM creditcards as cc\n" +
                     "WHERE cc.id = ? and cc.firstName = ? and cc.lastName = ? and cc.expiration = ?;";
             // There is going to be only one row in the query result
-            List<HashMap<String, String>> creditCardInfo = singleMovieDBHandler.executeQuery(creditCardInfoQuery, cardNumber, cardHolderFirstName, cardHolderLastName, cardExpiryDate);
+            List<HashMap<String, String>> creditCardInfo = paymentDBHandler.executeQuery(creditCardInfoQuery, cardNumber, cardHolderFirstName, cardHolderLastName, cardExpiryDate);
             JsonObject responseJsonObj = new JsonObject();
 
             if (creditCardInfo.size() > 0) {
@@ -58,6 +62,14 @@ public class PaymentServlet extends HttpServlet {
                 responseJsonObj.addProperty("status", "success");
                 responseJsonObj.addProperty("message", "success");
                 request.getServletContext().log("Credit card info is correct.");
+
+                for (String itemId : itemsInShoppingCart.keySet()) {
+                    // Add each item in shopping cart to the sales table
+                    String salesUpdateQuery = "INSERT INTO sales (customerId, movieId, salesDate, quantity)\n" +
+                            "VALUES (?, ?, CURDATE(), ?);";
+                    paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId, itemsInShoppingCart.get(itemId).toString());
+                }
+
             } else {
                 // Credit card info is incorrect
                 responseJsonObj.addProperty("status", "fail");
