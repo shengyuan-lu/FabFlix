@@ -16,6 +16,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,17 +100,28 @@ public class PaymentServlet extends HttpServlet {
             // Set response status to 200 (OK)
             response.setStatus(200);
 
+        } catch (SQLException e) {
+            // Write error message JSON object to output
+            JsonObject responseJsonObj = new JsonObject();
+            // Credit card info is incorrect
+            responseJsonObj.addProperty("status", "fail");
+            responseJsonObj.addProperty("message", "Credit card information entered in incorrect.");
+            out.write(responseJsonObj.toString());
+
+            // Log error to localhost log
+            request.getServletContext().log("Error:", e);
+            // Set response status to 500 (Internal Server Error)
+            response.setStatus(200);
         } catch (Exception e) {
             // Write error message JSON object to output
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
             out.write(jsonObject.toString());
 
-            // Log error to localhost log
-            request.getServletContext().log("Error:", e);
             // Set response status to 500 (Internal Server Error)
             response.setStatus(500);
-        } finally {
+        }
+        finally {
             out.close();
         }
     }
