@@ -96,7 +96,7 @@ public class ShoppingCartServlet extends HttpServlet {
                     movieInCartObj.addProperty("movie_title", movieInCartInfo.get("title"));
                     movieInCartObj.addProperty("movie_price", movieInCartInfo.get("price"));
                     movieInCartObj.addProperty("movie_quantity", itemsInShoppingCart.get(itemId));
-                    movieInCartObj.addProperty("movie_total", itemsInShoppingCart.get(itemId) * Float.parseFloat(movieInCartInfo.get("price")));
+                    // movieInCartObj.addProperty("movie_total", itemsInShoppingCart.get(itemId) * Float.parseFloat(movieInCartInfo.get("price")));
                     shoppingCartArr.add(movieInCartObj);
                 }
 

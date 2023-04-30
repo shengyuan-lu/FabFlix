@@ -10,6 +10,10 @@ function handleShoppingCartResult(resultData) {
     let totalPrice = 0.0;
 
     for (let i = 0; i < resultData.length; i++) {
+        let movieQuantity = parseInt(resultData[i]["movie_quantity"]);
+        let moviePrice = parseFloat(resultData[i]["movie_price"]);
+        let movieTotalPrice = movieQuantity * moviePrice;
+
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += `<tr id="cart-row-${resultData[i]['movie_id']}">`;
@@ -19,14 +23,14 @@ function handleShoppingCartResult(resultData) {
            </th>`;
         rowHTML += `<th class="fs-4">` +
             `<button class="btn" name="${resultData[i]['movie_id']}" onclick="addOneMovieToCart(this.name)">${plusIcon()}</button>` +
-            `<span id="movie-quantity-${resultData[i]['movie_id']}">${resultData[i]["movie_quantity"]}</span>` +
+            `<span id="movie-quantity-${resultData[i]['movie_id']}">${movieQuantity}</span>` +
             `<button class="btn" name="${resultData[i]['movie_id']}" onclick="removeOneMovieFromCart(this.name)">${minusIcon()}</button></th>`;
-        rowHTML += `<th class="fs-4" id="movie-price-${resultData[i]['movie_id']}">${resultData[i]["movie_price"]}</th>`;
-        rowHTML += `<th class="fs-4"><i class="bi bi-file-plus"></i><span id="movie-total-${resultData[i]['movie_id']}">${resultData[i]["movie_total"]}</span></th>`;
+        rowHTML += `<th class="fs-4" id="movie-price-${resultData[i]['movie_id']}">${moviePrice.toFixed(2)}</th>`;
+        rowHTML += `<th class="fs-4"><i class="bi bi-file-plus"></i><span id="movie-total-${resultData[i]['movie_id']}">${movieTotalPrice.toFixed(2)}</span></th>`;
         rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" name="${resultData[i]['movie_id']}" onclick="removeMovieFromCart(this.name)">Remove from Cart</button></th>`
         rowHTML += "</tr>";
 
-        totalPrice += parseFloat(resultData[i]["movie_total"]);
+        totalPrice = (totalPrice + movieTotalPrice).toFixed(2); // Ensure 2 decimal places
 
         // Append the row created to the table body, which will refresh the page
         shoppingCartTableElement.append(rowHTML);
