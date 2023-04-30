@@ -1,4 +1,4 @@
-## CS 122B Project 1: Developing FabFlix Website
+## CS 122B Project 2: Developing FabFlix Website
 
 ***Team #: stanford_rejects***  
 ***Team member 1: Tony Liu 34195333***  
