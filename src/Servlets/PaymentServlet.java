@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 
 // Declaring a WebServlet called ShoppingCartServlet, which maps to url "/api/shopping-cart"
-@WebServlet(name = "ShoppingCartServlet", urlPatterns = "/api/payment")
+@WebServlet(name = "PaymentServlet", urlPatterns = "/api/payment")
 public class PaymentServlet extends HttpServlet {
     private DataSource dataSource;
 
