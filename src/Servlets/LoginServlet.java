@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import Models.Customer;
+import jakarta.servlet.http.HttpSession;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -43,6 +44,9 @@ public class LoginServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
+        // Get a instance of current session on the request
+        HttpSession session = request.getSession();
+
         try {
 
             String loginQuery = "SELECT * FROM customers\n"
@@ -61,15 +65,17 @@ public class LoginServlet extends HttpServlet {
                 if (userpassword.equals(password)) {
 
                     // Login success
-
-                    // set this user into the session
-                    request.getSession().setAttribute("customer", new Customer(Integer.parseInt(user.get("id")), user.get("firstName"), user.get("lastName"), user.get("ccid"), user.get("address"), user.get("username")));
+                    session.setAttribute("customer", new Customer(Integer.parseInt(user.get("id")), user.get("firstName"), user.get("lastName"), user.get("ccid"), user.get("address"), user.get("username"))); // set this user into the session
+                    session.setAttribute("itemsInShoppingCart", new HashMap<String, Integer>()); // Set associated shopping cart
 
                     loginStatusObject.addProperty("status", "success");
                     loginStatusObject.addProperty("message", "success");
 
                     // Log to localhost log
                     request.getServletContext().log("Login successful");
+
+
+
 
                 } else {
 

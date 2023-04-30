@@ -78,7 +78,7 @@ public class ConfirmationServlet extends HttpServlet {
                     request.getServletContext().log("No order placed.");
                 }
             }
-
+            session.setAttribute("itemsInShoppingCart", new HashMap<>());
             // Write JSON string to output
             out.write(responseJsonArr.toString());
             // Set response status to 200 (OK)

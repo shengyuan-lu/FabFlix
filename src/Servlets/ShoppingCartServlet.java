@@ -41,15 +41,6 @@ public class ShoppingCartServlet extends HttpServlet {
         // Retrieve data named "itemsInShoppingCart" from session
         HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemsInShoppingCart");
 
-        // If "itemsInShoppingCart" is not found on session, means this is a new user, thus we create a new itemsInShoppingCart
-        // JsonArray for the user
-        if (itemsInShoppingCart == null) {
-            // Add the newly created ArrayList to session, so that it could be retrieved next time
-            session.setAttribute("itemsInShoppingCart", new HashMap<>());
-            itemsInShoppingCart = new HashMap<>();
-            // request.getServletContext().log("getting " + itemsInShoppingCart.size() + " items"); // Log to localhost log
-        }
-
         String addedItemID = request.getParameter("added_item_id");
         String removedItemID = request.getParameter("removed_item_id");
         if (addedItemID != null) {
