@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import java.time.LocalDateTime;
+
 // Declaring a WebServlet called ShoppingCartServlet, which maps to url "/api/shopping-cart"
 @WebServlet(name = "PaymentServlet", urlPatterns = "/api/payment")
 public class PaymentServlet extends HttpServlet {
@@ -45,7 +47,6 @@ public class PaymentServlet extends HttpServlet {
         HttpSession session = request.getSession();
         int customerId = ((Customer) session.getAttribute("customer")).getId();
         HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemsInShoppingCart");
-
         PrintWriter out = response.getWriter();
 
         try {
@@ -63,12 +64,24 @@ public class PaymentServlet extends HttpServlet {
                 responseJsonObj.addProperty("message", "success");
                 request.getServletContext().log("Credit card info is correct.");
 
+                List<HashMap<String, String>> mostRecentOrders = new ArrayList<>();
+
                 for (String itemId : itemsInShoppingCart.keySet()) {
                     // Add each item in shopping cart to the sales table
-                    String salesUpdateQuery = "INSERT INTO sales (customerId, movieId, salesDate, quantity)\n" +
+                    String salesUpdateQuery = "INSERT INTO sales (customerId, movieId, saleDate, quantity)\n" +
                             "VALUES (?, ?, CURDATE(), ?);";
                     paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId, itemsInShoppingCart.get(itemId).toString());
+
+                    HashMap<String, String> order = new HashMap<>();
+                    order.put("customerId", String.valueOf(customerId));
+                    order.put("movieId", itemId);
+                    order.put("saleDate", String.valueOf(java.time.LocalDate.now()));
+                    order.put("quantity", itemsInShoppingCart.get(itemId).toString());
+
+                    mostRecentOrders.add(order);
                 }
+
+                session.setAttribute("mostRecentOrders", mostRecentOrders); // Reset the most recent order in the sessions
 
             } else {
                 // Credit card info is incorrect

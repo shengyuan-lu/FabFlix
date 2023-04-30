@@ -35,49 +35,52 @@ public class ConfirmationServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getServletContext().log("Get in payment servlet.");
-
-        String cardNumber = request.getParameter("cardNumber");
-        String cardHolderFirstName = request.getParameter("cardHolderFirstName");
-        String cardHolderLastName = request.getParameter("cardHolderLastName");
-        String cardExpiryDate = (Objects.equals(request.getParameter("cardExpiryDate"), "")) ? "00-00-0000" : request.getParameter("cardExpiryDate");
+        request.getServletContext().log("Get in Confirmation servlet.");
 
         HttpSession session = request.getSession();
-        int customerId = ((Customer) session.getAttribute("customer")).getId();
-        HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemsInShoppingCart");
+
+        List<HashMap<String, String>> mostRecentOrders = (ArrayList<HashMap<String, String>>) session.getAttribute("mostRecentOrders");
 
         PrintWriter out = response.getWriter();
+
 
         try {
             DatabaseHandler paymentDBHandler = new DatabaseHandler(dataSource);
 
-            String creditCardInfoQuery = "SELECT * FROM creditcards as cc\n" +
-                    "WHERE cc.id = ? and cc.firstName = ? and cc.lastName = ? and cc.expiration = ?;";
-            // There is going to be only one row in the query result
-            List<HashMap<String, String>> creditCardInfo = paymentDBHandler.executeQuery(creditCardInfoQuery, cardNumber, cardHolderFirstName, cardHolderLastName, cardExpiryDate);
-            JsonObject responseJsonObj = new JsonObject();
 
-            if (creditCardInfo.size() > 0) {
-                // Credit card info is correct
-                responseJsonObj.addProperty("status", "success");
-                responseJsonObj.addProperty("message", "success");
-                request.getServletContext().log("Credit card info is correct.");
+            String orderConfirmationQuery = "SELECT sales.id as saleId, movies.title as movieTitle, sales.quantity as saleQuantity, movies.price as moviePrice FROM sales\n" +
+                    "JOIN movies ON movies.id = sales.movieId\n" +
+                    "WHERE sales.movieId = ? and sales.customerId = ? and sales.saleDate = ? and sales.quantity = ?;";
 
-                for (String itemId : itemsInShoppingCart.keySet()) {
-                    // Add each item in shopping cart to the sales table
-                    String salesUpdateQuery = "INSERT INTO sales (customerId, movieId, saleDate, quantity)\n" +
-                            "VALUES (?, ?, CURDATE(), ?);";
-                    paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId, itemsInShoppingCart.get(itemId).toString());
+            JsonArray responseJsonArr = new JsonArray(); // Response with a list of orders confirmed
+
+            for (HashMap<String, String> order : mostRecentOrders) {
+                String movieId = order.get("movieId");
+                String customerId = order.get("customerId");
+                String saleDate = order.get("saleDate");
+                String quantity = order.get("quantity");
+
+                List<HashMap<String, String>> orderConfirmationInfo = paymentDBHandler.executeQuery(orderConfirmationQuery, movieId, customerId, saleDate, quantity);
+
+
+                JsonObject responseJsonObj = new JsonObject();
+
+                if (orderConfirmationInfo.size() > 0) {
+                    // Credit card info is correct
+                    HashMap<String, String> mostRecentOrder = orderConfirmationInfo.get(orderConfirmationInfo.size() - 1);
+                    responseJsonObj.addProperty("saleId", mostRecentOrder.get("saleId"));
+                    responseJsonObj.addProperty("movieTitle", mostRecentOrder.get("movieTitle"));
+                    responseJsonObj.addProperty("saleQuantity", mostRecentOrder.get("saleQuantity"));
+                    responseJsonObj.addProperty("moviePrice", mostRecentOrder.get("moviePrice"));
+
+                    responseJsonArr.add(responseJsonObj);
+                } else {
+                    request.getServletContext().log("No order placed.");
                 }
-
-            } else {
-                // Credit card info is incorrect
-                responseJsonObj.addProperty("status", "fail");
-                responseJsonObj.addProperty("message", "Credit card information entered in incorrect.");
-                request.getServletContext().log("Credit card info is incorrect.");
             }
+
             // Write JSON string to output
-            out.write(responseJsonObj.toString());
+            out.write(responseJsonArr.toString());
             // Set response status to 200 (OK)
             response.setStatus(200);
 
