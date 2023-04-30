@@ -64,29 +64,45 @@
         <script type="module" src="js/shopping-cart.js"></script>
         <script>
             function addOneMovieToCart(movieId) {
-                let addOneMovieBtn = document.querySelector(`#${movieId}`);
-                addOneMovieBtn.innerHTML = (
-                    parseInt(addOneMovieBtn.innerHTML) + 1
-                ).toString();
+                let movieQuantityElement = document.querySelector(`#movie-quantity-${movieId}`);
+                movieQuantityElement.innerHTML = (parseInt(movieQuantityElement.innerHTML) + 1).toString();
+
+                // update total price
+                let movieTotalElement = document.querySelector(`#movie-total-${movieId}`);
+                let moviePriceElement = document.querySelector(`#movie-price-${movieId}`);
+                let shoppingCartTotalPriceElement = document.querySelector("#shopping-cart-total-price");
+                movieTotalElement.innerHTML = (parseFloat(movieTotalElement.innerHTML) + parseFloat(moviePriceElement.innerHTML)).toString();
+                shoppingCartTotalPriceElement.innerHTML = (parseFloat(shoppingCartTotalPriceElement.innerHTML) + parseFloat(moviePriceElement.innerHTML)).toString();
 
                 jQuery.ajax({
                     method: "GET", // Setting request method
-                    url: `api/shopping-cart?added_item_id=${addOneMovieBtn.id}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                    url: `api/shopping-cart?added_one_item_id=${movieId}`, // Setting request url, which is mapped by moviesServlet in Stars.java
                 });
             }
             function removeOneMovieFromCart(movieId) {
-                let addOneMovieBtn = document.querySelector(`#${movieId}`);
-                addOneMovieBtn.innerHTML = (
-                    parseInt(addOneMovieBtn.innerHTML) - 1
-                ).toString();
+                let movieQuantityElement = document.querySelector(`#movie-quantity-${movieId}`);
+                movieQuantityElement.innerHTML = (parseInt(movieQuantityElement.innerHTML) - 1).toString();
+
+                // update total price
+                let movieTotalElement = document.querySelector(`#movie-total-${movieId}`);
+                let moviePriceElement = document.querySelector(`#movie-price-${movieId}`);
+                let shoppingCartTotalPriceElement = document.querySelector("#shopping-cart-total-price");
+                movieTotalElement.innerHTML = (parseFloat(movieTotalElement.innerHTML) - parseFloat(moviePriceElement.innerHTML)).toString();
+                if (parseFloat(movieQuantityElement.innerHTML) === 0) {
+                    document.querySelector(`#cart-row-${movieId}`).remove(); // If the quantity is reduced to 0, remove that row
+                }
+
+                shoppingCartTotalPriceElement.innerHTML = (parseFloat(shoppingCartTotalPriceElement.innerHTML) - parseFloat(moviePriceElement.innerHTML)).toString();
 
                 jQuery.ajax({
                     method: "GET", // Setting request method
-                    url: `api/shopping-cart?added_item_id=${movieId}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                    url: `api/shopping-cart?removed_one_item_id=${movieId}`, // Setting request url, which is mapped by moviesServlet in Stars.java
                 });
             }
             function removeMovieFromCart(movieId) {
                 alert("Movie removed from shopping cart!");
+                document.querySelector(`#cart-row-${movieId}`).remove(); // Remove that row
+
                 jQuery.ajax({
                     method: "GET", // Setting request method
                     url: `api/shopping-cart?removed_item_id=${movieId}`, // Setting request url, which is mapped by moviesServlet in Stars.java

@@ -43,27 +43,35 @@ public class ShoppingCartServlet extends HttpServlet {
 
         String addedItemID = request.getParameter("added_item_id");
         String removedItemID = request.getParameter("removed_item_id");
+        String addedOneItemID = request.getParameter("added_one_item_id");
+        String removedOneItemID = request.getParameter("removed_one_item_id");
         if (addedItemID != null) {
-            // In order to prevent multiple requests from altering itemsInShoppingCart ArrayList at the same time, we
-            // lock the ArrayList while updating
             synchronized (itemsInShoppingCart) {
                 if (!itemsInShoppingCart.containsKey(addedItemID)) {
-                    // First time the movie is added
                     itemsInShoppingCart.put(addedItemID, 1);
                 } else {
-                    // When the movie is added afterward, increment the count
                     itemsInShoppingCart.put(addedItemID, itemsInShoppingCart.get(addedItemID) + 1);
                 }
-                 // Add the new item ID to the itemsInShoppingCart ArrayList
-                request.getServletContext().log(itemsInShoppingCart.toString()); // Log to localhost log
             }
         } else if (removedItemID != null) {
             synchronized (itemsInShoppingCart) {
+                // remove an item from shopping cart
+                itemsInShoppingCart.remove(removedItemID);
+            }
+        } else if (addedOneItemID != null) {
+            // In order to prevent multiple requests from altering itemsInShoppingCart ArrayList at the same time, we
+            // lock the ArrayList while updating
+            synchronized (itemsInShoppingCart) {
+                // When the movie is added afterward, increment the count
+                itemsInShoppingCart.put(addedOneItemID, itemsInShoppingCart.get(addedOneItemID) + 1);
+            }
+        } else if (removedOneItemID != null) {
+            synchronized (itemsInShoppingCart) {
                 // When the movie is deleted, decrement the count
-                itemsInShoppingCart.put(removedItemID, itemsInShoppingCart.get(removedItemID) - 1);
-                if (itemsInShoppingCart.get(removedItemID) == 0) {
+                itemsInShoppingCart.put(removedOneItemID, itemsInShoppingCart.get(removedOneItemID) - 1);
+                if (itemsInShoppingCart.get(removedOneItemID) == 0) {
                     // If the number of an item is reduced to zero, remove it from backend
-                    itemsInShoppingCart.remove(removedItemID);
+                    itemsInShoppingCart.remove(removedOneItemID);
                 }
                 // Add the new item ID to the itemsInShoppingCart ArrayList
                 request.getServletContext().log(itemsInShoppingCart.toString()); // Log to localhost log

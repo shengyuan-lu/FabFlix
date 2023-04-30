@@ -1,4 +1,4 @@
-import { plusIcon, minusIcon } from "./icons.js";
+import {plusIcon, minusIcon} from "./icons.js"
 
 function handleShoppingCartResult(resultData) {
     console.log(`handleStarResult: ${resultData}`);
@@ -12,21 +12,18 @@ function handleShoppingCartResult(resultData) {
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
-        rowHTML += "<tr>";
+        rowHTML += `<tr id="cart-row-${resultData[i]['movie_id']}">`;
         rowHTML += `<th>
             <a href="single-movie.html?id=${resultData[i]["movie_id"]}"><h3>${resultData[i]["movie_title"]}</h3>
             </a> 
            </th>`;
-        rowHTML += `<th class="fs-4"><button class="btn" name="${
-            resultData[i]["movie_id"]
-        }" onclick="addOneMovieToCart(this.name)">${plusIcon()}</button><span id="${
-            resultData[i]["movie_id"]
-        }">${resultData[i]["movie_quantity"]}</span><button class="btn" name="${
-            resultData[i]["movie_id"]
-        }" onclick="removeOneMovieFromCart(this.name)">${minusIcon()}</button></th>`;
-        rowHTML += `<th class="fs-4">${resultData[i]["movie_price"]}</th>`;
-        rowHTML += `<th class="fs-4"><i class="bi bi-file-plus"></i>${resultData[i]["movie_total"]}</th>`;
-        rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" name="${resultData[i]["movie_id"]}" onclick="removeMovieFromCart(this.name)">Remove from Cart</button></th>`;
+        rowHTML += `<th class="fs-4">` +
+            `<button class="btn" name="${resultData[i]['movie_id']}" onclick="addOneMovieToCart(this.name)">${plusIcon()}</button>` +
+            `<span id="movie-quantity-${resultData[i]['movie_id']}">${resultData[i]["movie_quantity"]}</span>` +
+            `<button class="btn" name="${resultData[i]['movie_id']}" onclick="removeOneMovieFromCart(this.name)">${minusIcon()}</button></th>`;
+        rowHTML += `<th class="fs-4" id="movie-price-${resultData[i]['movie_id']}">${resultData[i]["movie_price"]}</th>`;
+        rowHTML += `<th class="fs-4"><i class="bi bi-file-plus"></i><span id="movie-total-${resultData[i]['movie_id']}">${resultData[i]["movie_total"]}</span></th>`;
+        rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" name="${resultData[i]['movie_id']}" onclick="removeMovieFromCart(this.name)">Remove from Cart</button></th>`
         rowHTML += "</tr>";
 
         totalPrice += parseFloat(resultData[i]["movie_total"]);
