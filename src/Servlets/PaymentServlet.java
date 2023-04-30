@@ -42,11 +42,13 @@ public class PaymentServlet extends HttpServlet {
         String cardNumber = request.getParameter("cardNumber");
         String cardHolderFirstName = request.getParameter("cardHolderFirstName");
         String cardHolderLastName = request.getParameter("cardHolderLastName");
-        String cardExpiryDate = (Objects.equals(request.getParameter("cardExpiryDate"), "")) ? "00-00-0000" : request.getParameter("cardExpiryDate");
+        String cardExpiryDate = (Objects.equals(request.getParameter("cardExpiryDate"), "")) ? "00-00-0000"
+                : request.getParameter("cardExpiryDate");
 
         HttpSession session = request.getSession();
         int customerId = ((Customer) session.getAttribute("customer")).getId();
-        HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemsInShoppingCart");
+        HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session
+                .getAttribute("itemsInShoppingCart");
         PrintWriter out = response.getWriter();
 
         try {
@@ -55,7 +57,8 @@ public class PaymentServlet extends HttpServlet {
             String creditCardInfoQuery = "SELECT * FROM creditcards as cc\n" +
                     "WHERE cc.id = ? and cc.firstName = ? and cc.lastName = ? and cc.expiration = ?;";
             // There is going to be only one row in the query result
-            List<HashMap<String, String>> creditCardInfo = paymentDBHandler.executeQuery(creditCardInfoQuery, cardNumber, cardHolderFirstName, cardHolderLastName, cardExpiryDate);
+            List<HashMap<String, String>> creditCardInfo = paymentDBHandler.executeQuery(creditCardInfoQuery,
+                    cardNumber, cardHolderFirstName, cardHolderLastName, cardExpiryDate);
             JsonObject responseJsonObj = new JsonObject();
 
             if (creditCardInfo.size() > 0) {
@@ -70,7 +73,8 @@ public class PaymentServlet extends HttpServlet {
                     // Add each item in shopping cart to the sales table
                     String salesUpdateQuery = "INSERT INTO sales (customerId, movieId, saleDate, quantity)\n" +
                             "VALUES (?, ?, CURDATE(), ?);";
-                    paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId, itemsInShoppingCart.get(itemId).toString());
+                    paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId,
+                            itemsInShoppingCart.get(itemId).toString());
 
                     HashMap<String, String> order = new HashMap<>();
                     order.put("customerId", String.valueOf(customerId));
@@ -81,7 +85,8 @@ public class PaymentServlet extends HttpServlet {
                     mostRecentOrders.add(order);
                 }
 
-                session.setAttribute("mostRecentOrders", mostRecentOrders); // Reset the most recent order in the sessions
+                session.setAttribute("mostRecentOrders", mostRecentOrders); // Reset the most recent order in the
+                                                                            // sessions
 
             } else {
                 // Credit card info is incorrect

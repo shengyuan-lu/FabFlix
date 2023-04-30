@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import Helpers.DatabaseHandler;
 
-
 @WebServlet(name = "Servlets.MovieListServlet", urlPatterns = "/api/movies")
 public class MovieListServlet extends HttpServlet {
     private DataSource dataSource;
@@ -67,7 +66,6 @@ public class MovieListServlet extends HttpServlet {
                 alphabet = "^[^A-Za-z0-9]";
             }
         }
-
 
         // director_name is only search
         String director_name = "%";
@@ -133,11 +131,13 @@ public class MovieListServlet extends HttpServlet {
 
             String sortClause = "";
 
-            if (sort.equals("rating")){
-                sortClause = String.format("ORDER BY rating %s, title %s \n", rating_order.toUpperCase(), title_order.toUpperCase());
+            if (sort.equals("rating")) {
+                sortClause = String.format("ORDER BY rating %s, title %s \n", rating_order.toUpperCase(),
+                        title_order.toUpperCase());
 
             } else {
-                sortClause = String.format("ORDER BY title %s, rating %s \n", title_order.toUpperCase(), rating_order.toUpperCase());
+                sortClause = String.format("ORDER BY title %s, rating %s \n", title_order.toUpperCase(),
+                        rating_order.toUpperCase());
             }
 
             if (genre_id != null && alphabet == null) {
@@ -149,7 +149,7 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         "WHERE gim.genreId = ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
-                        sortClause+
+                        sortClause +
                         paginationClause;
 
                 movieList = movieListDBHandler.executeQuery(movieQuery, genre_id);
@@ -171,7 +171,7 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         whereClause +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
-                        sortClause+
+                        sortClause +
                         paginationClause;
 
                 movieList = movieListDBHandler.executeQuery(movieQuery, alphabet);
@@ -197,7 +197,7 @@ public class MovieListServlet extends HttpServlet {
                         yearClause +
                         "AND stars.name LIKE ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
-                        sortClause+
+                        sortClause +
                         paginationClause;
 
                 movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
@@ -235,7 +235,8 @@ public class MovieListServlet extends HttpServlet {
 
                 String movieStarQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n" +
                         "WHERE s.id = sm.starId AND sm.movieId=?\n" +
-                        "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n" +
+                        "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n"
+                        +
                         "LIMIT 3\n";
 
                 List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);
@@ -276,17 +277,16 @@ public class MovieListServlet extends HttpServlet {
 
         } catch (Exception e) {
 
-                // Write error message JSON object to output
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("errorMessage", e.getMessage());
-                out.write(jsonObject.toString());
+            // Write error message JSON object to output
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("errorMessage", e.getMessage());
+            out.write(jsonObject.toString());
 
-                // Set response status to 500 (Internal Server Error)
-                response.setStatus(500);
+            // Set response status to 500 (Internal Server Error)
+            response.setStatus(500);
 
         } finally {
             out.close();
         }
     }
 }
-

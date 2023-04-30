@@ -11,7 +11,8 @@ import jakarta.servlet.http.HttpSession;
 public class LogoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        HttpSession session = request.getSession(false); // Get the current session, but do not create a new one if it doesn't exist
+        HttpSession session = request.getSession(false); // Get the current session, but do not create a new one if it
+                                                         // doesn't exist
 
         if (session != null) {
             session.invalidate(); // Invalidate the session, removing all attributes

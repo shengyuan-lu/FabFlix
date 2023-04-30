@@ -51,9 +51,9 @@ public class SingleStarServlet extends HttpServlet {
         try {
 
             /*
-            name;
-            year of birth (N/A if not available);
-            all movies (hyperlinked) in which the star acted.
+             * name;
+             * year of birth (N/A if not available);
+             * all movies (hyperlinked) in which the star acted.
              */
 
             // Construct a query with parameter represented by "?"
@@ -96,7 +96,7 @@ public class SingleStarServlet extends HttpServlet {
                 singleStarObj.addProperty("star_id", starId);
                 singleStarObj.addProperty("star_name", starName);
 
-                if((starDob != null && !starDob.trim().isEmpty())) {
+                if ((starDob != null && !starDob.trim().isEmpty())) {
                     singleStarObj.addProperty("star_dob", Integer.parseInt(starDob));
                 } else {
                     singleStarObj.add("star_dob", JsonNull.INSTANCE);

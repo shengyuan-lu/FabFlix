@@ -13,7 +13,8 @@ import java.io.PrintWriter;
 @WebServlet(name = "AlphabetServlet", urlPatterns = "/api/alphabet")
 public class AlphabetServlet extends HttpServlet {
 
-    public void init(ServletConfig config) {}
+    public void init(ServletConfig config) {
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -27,15 +28,13 @@ public class AlphabetServlet extends HttpServlet {
 
             JsonArray alphabetArray = new JsonArray();
 
-            for (int i = 0; i < 10; i ++) {
+            for (int i = 0; i < 10; i++) {
                 alphabetArray.add(Integer.toString(i));
             }
 
-            for (char alphabet = 'A'; alphabet <='Z'; alphabet++ )
-            {
+            for (char alphabet = 'A'; alphabet <= 'Z'; alphabet++) {
                 alphabetArray.add(alphabet);
             }
-
 
             alphabetArray.add("*");
 
