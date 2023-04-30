@@ -59,15 +59,15 @@ function handleMovieResult(resultData, limit) {
         rowHTML += `<th class="fs-4">${resultData[i]["movie_year"]}</th>`;
         rowHTML += `<th class="fs-4">${resultData[i]["movie_director"]}</th>`;
         rowHTML += `<th class="fs-4">${getGenresHtml(
-          resultData[i]["movie_genres"]
+            resultData[i]["movie_genres"]
         )}</th>`;
         rowHTML += `<th class="fs-4">${getStarsHtml(
-          resultData[i]["movie_stars"]
+            resultData[i]["movie_stars"]
         )}</th>`;
-        rowHTML += `<th class="fs-3"><div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${
-          resultData[i]["movie_rating"]
-        }</div></th>`;
-        rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" id="${resultData[i]['movie_id']}" onclick="addMovieToCart(this.id)">Add to Cart</button></th>`;
+        rowHTML += `<th class="fs-3"><div class="d-flex flex-row align-items-center"><span class="me-1 d-flex">${starIcon(
+            { size: 20 }
+        )}</span>${resultData[i]["movie_rating"]}</div></th>`;
+        rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" id="${resultData[i]["movie_id"]}" onclick="addMovieToCart(this.id)">Add to Cart</button></th>`;
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
@@ -132,11 +132,15 @@ function assembleRequestURL(baseUrl = "api/movies", offsetVal = offset) {
         requestUrl += `star_name=${star_name}&`;
     }
 
+    requestUrl += `sort=${sort}&`;
+
     // config offset and limit
 
     requestUrl += `offset=${offsetVal}&`;
 
     requestUrl += `limit=${limit}&`;
+    requestUrl += `title_order=${titleOrder}&`;
+    requestUrl += `rating_order=${ratingOrder}&`;
 
     // Trim the last &
     if (requestUrl.endsWith("&")) {
@@ -149,10 +153,20 @@ function assembleRequestURL(baseUrl = "api/movies", offsetVal = offset) {
 let prevBtn = jQuery("#prev-btn");
 let nextBtn = jQuery("#next-btn");
 let limitSelector = jQuery("#limit-selector");
+let sortSelector = jQuery("#sort-selector");
+let titleOrderToggle = jQuery("#title-order");
+let titleOrderLabel = jQuery("#title-order-label");
+let ratingOrderToggle = jQuery("#rating-order");
+let ratingOrderLabel = jQuery("#rating-order-label");
 
 // current offset and limit
 let offset = parseInt(getParameterByName("offset")) || 0;
 let limit = parseInt(getParameterByName("limit")) || 10;
+let sort = getParameterByName("sort") || "rating";
+let titleOrder = getParameterByName("title_order") || "asc";
+let ratingOrder = getParameterByName("rating_order") || "desc";
+
+sortSelector.val(sort);
 
 switch (limit) {
     case 10:
@@ -172,6 +186,32 @@ switch (limit) {
         break;
 }
 
+if (titleOrder == "asc") {
+    titleOrderLabel.html("&#8593;");
+    titleOrderToggle.attr("value", "desc");
+} else {
+    titleOrderLabel.html("&#8595;");
+    titleOrderToggle.attr("value", "asc");
+}
+
+if (ratingOrder == "asc") {
+    ratingOrderLabel.html("&#8593;");
+    ratingOrderToggle.attr("value", "desc");
+} else {
+    ratingOrderLabel.html("&#8595;");
+    ratingOrderToggle.attr("value", "asc");
+}
+
+titleOrderToggle.change((e) => {
+    titleOrder = e.target.value;
+    window.location.href = assembleRequestURL("movie-list.html");
+});
+
+ratingOrderToggle.change((e) => {
+    ratingOrder = e.target.value;
+    window.location.href = assembleRequestURL("movie-list.html");
+});
+
 if (offset === 0) {
     prevBtn.remove();
 } else {
@@ -187,7 +227,10 @@ limitSelector.on("change", (e) => {
     console.log(limit);
     window.location.href = assembleRequestURL("movie-list.html");
 });
-
+sortSelector.change((e) => {
+    sort = e.target.value;
+    window.location.href = assembleRequestURL("movie-list.html");
+});
 sessionStorage.setItem("prevUrl", `movie-list.html${window.location.search}`);
 
 // Makes the HTTP GET request and registers on success callback function handleMovieResult

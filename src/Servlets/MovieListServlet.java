@@ -106,6 +106,21 @@ public class MovieListServlet extends HttpServlet {
             limit = Integer.parseInt(request.getParameter("limit"));
         }
 
+        String sort = "rating";
+        if (!request.getParameter("sort").equals("rating")){
+            sort = "title";
+        }
+
+        String rating_order = "desc";
+        if (!request.getParameter("rating_order").equals("desc")){
+            rating_order = "asc";
+        }
+
+        String title_order = "asc";
+        if (!request.getParameter("title_order").equals("asc")){
+            title_order = "desc";
+        }
+
         try {
 
             String movieQuery;
@@ -113,6 +128,13 @@ public class MovieListServlet extends HttpServlet {
             List<HashMap<String, String>> movieList;
 
             String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
+            String sortClause = "";
+            if (sort.equals("rating")){
+                sortClause = String.format("ORDER BY rating %s, title %s \n",rating_order,title_order);
+
+            }else{
+                sortClause = String.format("ORDER BY title %s, rating %s \n",title_order,rating_order);
+            }
 
             if (genre_id != null && alphabet == null) {
 
@@ -123,6 +145,7 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         "WHERE gim.genreId = ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        sortClause+
                         paginationClause;
 
                 movieList = movieListDBHandler.executeQuery(movieQuery, genre_id);
@@ -144,6 +167,7 @@ public class MovieListServlet extends HttpServlet {
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         whereClause +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        sortClause+
                         paginationClause;
 
                 movieList = movieListDBHandler.executeQuery(movieQuery, alphabet);
@@ -169,6 +193,7 @@ public class MovieListServlet extends HttpServlet {
                         yearClause +
                         "AND stars.name LIKE ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        sortClause+
                         paginationClause;
 
                 movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
