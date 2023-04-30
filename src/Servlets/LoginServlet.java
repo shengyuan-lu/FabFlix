@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import Models.User;
+import Models.Customer;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
                     // Login success
 
                     // set this user into the session
-                    request.getSession().setAttribute("user", new User(Integer.parseInt(user.get("id")), user.get("firstName"), user.get("lastName"), user.get("ccid"), user.get("address"), user.get("username")));
+                    request.getSession().setAttribute("customer", new Customer(Integer.parseInt(user.get("id")), user.get("firstName"), user.get("lastName"), user.get("ccid"), user.get("address"), user.get("username")));
 
                     loginStatusObject.addProperty("status", "success");
                     loginStatusObject.addProperty("message", "success");
