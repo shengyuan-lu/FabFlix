@@ -7,9 +7,11 @@
 ### Contributions
 
 Tony Liu
-- Implemented single movie page, including HTML, JavaScript, and Servlet codes
-- Updated the database handler written by my teammate
-- Helped design the UIs
+- Implemented shopping cart page, which displays information about movies in the shopping cart and allows for quantity modification for each item as well as deletion of items in the shopping cart 
+- Constructed payment page, including card information collection and verification
+- Built Confirmation page, displaying information about the movies ordered
+- Added "add to shopping cart" button on movie list and single movie page
+- Refactored movies and sales tables in the MySQL database
 - Helped with video demo and AWS setup
 
 **Shengyuan Lu**
