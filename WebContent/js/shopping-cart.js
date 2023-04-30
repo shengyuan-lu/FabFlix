@@ -1,47 +1,4 @@
-/**
- * Handles the data returned by the API, read the jsonObject and populate data into html elements
- * @param resultData jsonObject
- */
-
-function getStarsHtml(starsList) {
-    let starsHTML = "<ul>";
-    for (let i = 0; i < starsList.length; i++) {
-        starsHTML += `<li><a href="single-star.html?id=${starsList[i]["id"]}">${starsList[i]["name"]}</a></li>`;
-    }
-    starsHTML += "</ul>";
-    return starsHTML;
-}
-
-function getGenresHtml(genresList) {
-    let genresHTML = "<ul>";
-    for (let i = 0; i < genresList.length; i++) {
-        genresHTML += `<li>${genresList[i]["name"]}</li>`;
-    }
-    genresHTML += "</ul>";
-    return genresHTML;
-}
-
-/**
- * Retrieve parameter from request URL, matching by parameter name
- * @param target String
- * @returns {*}
- */
-function getParameterByName(target) {
-    // Get request URL
-    let url = window.location.href;
-
-    // Encode target parameter name to url encoding
-    target = target.replace(/[\[\]]/g, "\\$&");
-
-    // Ues regular expression to find matched parameter value
-    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return "";
-
-    // Return the decoded parameter value
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
+import {plusIcon, minusIcon} from "./icons.js"
 
 function handleShoppingCartResult(resultData) {
     console.log(`handleStarResult: ${resultData}`);
@@ -58,10 +15,10 @@ function handleShoppingCartResult(resultData) {
             <a href="single-movie.html?id=${resultData[i]["movie_id"]}"><h3>${resultData[i]["movie_title"]}</h3>
             </a> 
            </th>`;
-        rowHTML += `<th class="fs-4">${resultData[i]["movie_quantity"]}</th>`;
+        rowHTML += `<th class="fs-4"><button class="btn" name="${resultData[i]['movie_id']}" onclick="addOneMovieToCart(this.name)">${plusIcon()}</button><span id="${resultData[i]['movie_id']}">${resultData[i]["movie_quantity"]}</span><button class="btn" name="${resultData[i]['movie_id']}" onclick="removeOneMovieFromCart(this.name)">${minusIcon()}</button></th>`;
         rowHTML += `<th class="fs-4">${resultData[i]["movie_price"]}</th>`;
-        rowHTML += `<th class="fs-4">${resultData[i]["movie_total"]}</th>`;
-        rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" id="${resultData[i]['movie_id']}" onclick="removeMovieFromCart(this.id)">Remove from Cart</button></th>`
+        rowHTML += `<th class="fs-4"><i class="bi bi-file-plus"></i>${resultData[i]["movie_total"]}</th>`;
+        rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" name="${resultData[i]['movie_id']}" onclick="removeMovieFromCart(this.name)">Remove from Cart</button></th>`
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page

@@ -59,14 +59,30 @@
         <script type="module" src="js/add-nav.js"></script>
         <script type="module" src="js/shopping-cart.js"></script>
         <script>
-            function removeMovieFromCart(removedMovieID) {
-                function addMovieToCart(movieID) {
-                    alert("Movie removed from shopping cart!");
-                    jQuery.ajax({
-                        method: "GET", // Setting request method
-                        url: `api/shopping-cart?removed_item_id=${movieID}`, // Setting request url, which is mapped by moviesServlet in Stars.java
-                    });
-                }
+            function addOneMovieToCart(movieId) {
+                let addOneMovieBtn = document.querySelector(`#${movieId}`);
+                addOneMovieBtn.innerHTML = (parseInt(addOneMovieBtn.innerHTML) + 1).toString();
+
+                jQuery.ajax({
+                    method: "GET", // Setting request method
+                    url: `api/shopping-cart?added_item_id=${addOneMovieBtn.id}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                });
+            }
+            function removeOneMovieFromCart(movieID) {
+                let addOneMovieBtn = document.querySelector(`#${movieId}`);
+                addOneMovieBtn.innerHTML = (parseInt(addOneMovieBtn.innerHTML) - 1).toString();
+
+                jQuery.ajax({
+                    method: "GET", // Setting request method
+                    url: `api/shopping-cart?added_item_id=${movieID}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                });
+            }
+            function removeMovieFromCart(movieID) {
+                alert("Movie removed from shopping cart!");
+                jQuery.ajax({
+                    method: "GET", // Setting request method
+                    url: `api/shopping-cart?removed_item_id=${movieID}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                });
             }
         </script>
     </body>
