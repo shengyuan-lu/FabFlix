@@ -107,17 +107,19 @@ public class MovieListServlet extends HttpServlet {
         }
 
         String sort = "rating";
-        if (!request.getParameter("sort").equals("rating")){
+
+        if (!request.getParameter("sort").equals("rating")) {
             sort = "title";
         }
 
         String rating_order = "desc";
-        if (!request.getParameter("rating_order").equals("desc")){
+
+        if (!request.getParameter("rating_order").equals("desc")) {
             rating_order = "asc";
         }
 
         String title_order = "asc";
-        if (!request.getParameter("title_order").equals("asc")){
+        if (!request.getParameter("title_order").equals("asc")) {
             title_order = "desc";
         }
 
@@ -128,12 +130,14 @@ public class MovieListServlet extends HttpServlet {
             List<HashMap<String, String>> movieList;
 
             String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
-            String sortClause = "";
-            if (sort.equals("rating")){
-                sortClause = String.format("ORDER BY rating %s, title %s \n",rating_order,title_order);
 
-            }else{
-                sortClause = String.format("ORDER BY title %s, rating %s \n",title_order,rating_order);
+            String sortClause = "";
+
+            if (sort.equals("rating")){
+                sortClause = String.format("ORDER BY rating %s, title %s \n", rating_order.toUpperCase(), title_order.toUpperCase());
+
+            } else {
+                sortClause = String.format("ORDER BY title %s, rating %s \n", title_order.toUpperCase(), rating_order.toUpperCase());
             }
 
             if (genre_id != null && alphabet == null) {
