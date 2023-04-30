@@ -17,25 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import Helpers.DatabaseHandler;
 
-// Declaring a WebServlet called Servlets.MovieListServlet, which maps to url "/api/movies"
-
-/*
-In Project 1, the Movie list Page shows the top 20 rated movies, sorted by the rating. You don't need to show all the movies. Each movie needs to contain the following information:
-
-title;
-year;
-director;
-first three genres (order does not matter) ;
-first three stars (order does not matter);
-rating.
-
- */
-
 @WebServlet(name = "Servlets.MovieListServlet", urlPatterns = "/api/movies")
-
 public class MovieListServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -46,31 +29,184 @@ public class MovieListServlet extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);
 
         response.setContentType("application/json"); // Response type
 
-        // Output stream to STDOUT
+        // Output stream
         PrintWriter out = response.getWriter();
+
+        // 5 possible query strings
+        // title (string like pattern needed)
+        // genre_id
+        // star_name (string like pattern needed)
+        // director_name (string like pattern needed)
+        // year
+
+        //
+        // Require movie table only
+        //
+
+        // title is only search
+        String title = "%";
+
+        if (request.getParameter("title") != null) {
+            title = "%" + request.getParameter("title") + "%";
+        }
+
+        // alphabet is only browse
+        String alphabet = null;
+
+        if (request.getParameter("alphabet") != null) {
+            alphabet = request.getParameter("alphabet") + "%";
+
+            if (alphabet.equals("*%")) {
+                alphabet = "^[^A-Za-z0-9]";
+            }
+        }
+
+        // director_name is only search
+        String director_name = "%";
+
+        if (request.getParameter("director_name") != null) {
+            director_name = "%" + request.getParameter("director_name") + "%";
+        }
+
+        // year is only search
+        String year = request.getParameter("year");
+
+        //
+        // Require JOIN another table
+        //
+
+        // genre_id is only browse
+        String genre_id = request.getParameter("genre_id");
+
+        // star_name is only search
+        String star_name = "%";
+
+        if (request.getParameter("star_name") != null) {
+            star_name = "%" + request.getParameter("star_name") + "%";
+        }
+
+        // paganization is both search and browse
+        int offset = 0;
+
+        if (request.getParameter("offset") != null) {
+            offset = Integer.parseInt(request.getParameter("offset"));
+        }
+
+        int limit = 10;
+
+        if (request.getParameter("limit") != null) {
+            limit = Integer.parseInt(request.getParameter("limit"));
+        }
+
+        String sort = "rating";
+
+        if (!request.getParameter("sort").equals("rating")) {
+            sort = "title";
+        }
+
+        String rating_order = "desc";
+
+        if (!request.getParameter("rating_order").equals("desc")) {
+            rating_order = "asc";
+        }
+
+        String title_order = "asc";
+        if (!request.getParameter("title_order").equals("asc")) {
+            title_order = "desc";
+        }
 
         try {
 
-            String movieQuery = "SELECT * FROM movies JOIN ratings r ON movies.id = r.movieId\n" +
-                    "ORDER BY r.rating DESC\n" +
-                    "LIMIT 20";
+            String movieQuery;
 
-            // Perform the movieQuery
-            List<HashMap<String, String>> topTwentyMovies = movieListDBHandler.executeQuery(movieQuery);
+            List<HashMap<String, String>> movieList;
+
+            String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
+
+            String sortClause = "";
+
+            if (sort.equals("rating")) {
+                sortClause = String.format("ORDER BY rating %s, title %s \n", rating_order.toUpperCase(),
+                        title_order.toUpperCase());
+
+            } else {
+                sortClause = String.format("ORDER BY title %s, rating %s \n", title_order.toUpperCase(),
+                        rating_order.toUpperCase());
+            }
+
+            if (genre_id != null && alphabet == null) {
+
+                // Handle browse by genre
+
+                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
+                        "JOIN ratings r ON movies.id = r.movieId\n" +
+                        "WHERE gim.genreId = ?\n" +
+                        "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        sortClause +
+                        paginationClause;
+
+                movieList = movieListDBHandler.executeQuery(movieQuery, genre_id);
+
+            } else if (alphabet != null && genre_id == null) {
+
+                // Handle alphabet
+
+                String whereClause;
+
+                if (alphabet.equals("^[^A-Za-z0-9]")) {
+                    whereClause = "WHERE title regexp ? \n";
+                } else {
+                    whereClause = "WHERE LOWER(title) LIKE LOWER(?) \n";
+                }
+
+                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
+                        "JOIN ratings r ON movies.id = r.movieId\n" +
+                        whereClause +
+                        "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        sortClause +
+                        paginationClause;
+
+                movieList = movieListDBHandler.executeQuery(movieQuery, alphabet);
+
+            } else {
+
+                // Handle title, director_name, year, star_name
+                String yearClause;
+
+                if (year != null) {
+                    yearClause = "AND year = " + year + "\n";
+                } else {
+                    yearClause = "";
+                }
+
+                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                        "JOIN ratings r ON movies.id = r.movieId\n" +
+                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
+                        "JOIN stars_in_movies sim ON movies.id = sim.movieId\n" +
+                        "JOIN stars ON stars.id = sim.starId\n" +
+                        "WHERE title LIKE ?\n" +
+                        "AND director LIKE ?\n" +
+                        yearClause +
+                        "AND stars.name LIKE ?\n" +
+                        "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        sortClause +
+                        paginationClause;
+
+                movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
+            }
 
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of topTwentyMovies
-            for (HashMap<String, String> movie : topTwentyMovies) {
+            for (HashMap<String, String> movie : movieList) {
 
                 String movie_id = movie.get("id");
                 String movie_title = movie.get("title");
@@ -78,11 +214,13 @@ public class MovieListServlet extends HttpServlet {
                 String movie_director = movie.get("director");
                 String movie_rating = movie.get("rating");
 
-                String movieGenreQuery = "SELECT genres.id, genres.name FROM genres JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
-                        "WHERE gim.movieId = '" + movie_id + "'\n" +
-                        "LIMIT 3";
+                String movieGenreQuery = "SELECT genres.id, genres.name FROM genres \n" +
+                        "JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
+                        "WHERE gim.movieId = ?\n" +
+                        "ORDER BY genres.name\n" +
+                        "LIMIT 3\n";
 
-                List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery);
+                List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
 
                 JsonArray movie_genres = new JsonArray();
 
@@ -93,14 +231,15 @@ public class MovieListServlet extends HttpServlet {
                     gr.addProperty("name", genre.get("name"));
 
                     movie_genres.add(gr);
-
                 }
 
-                String movieStarQuery = "SELECT stars.id, stars.name FROM stars JOIN stars_in_movies sim ON stars.id = sim.starId\n" +
-                        "WHERE sim.movieId = '" + movie_id + "'\n" +
-                        "LIMIT 3";
+                String movieStarQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n" +
+                        "WHERE s.id = sm.starId AND sm.movieId=?\n" +
+                        "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n"
+                        +
+                        "LIMIT 3\n";
 
-                List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery);
+                List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);
 
                 JsonArray movie_stars = new JsonArray();
 
@@ -138,17 +277,16 @@ public class MovieListServlet extends HttpServlet {
 
         } catch (Exception e) {
 
-                // Write error message JSON object to output
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("errorMessage", e.getMessage());
-                out.write(jsonObject.toString());
+            // Write error message JSON object to output
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("errorMessage", e.getMessage());
+            out.write(jsonObject.toString());
 
-                // Set response status to 500 (Internal Server Error)
-                response.setStatus(500);
+            // Set response status to 500 (Internal Server Error)
+            response.setStatus(500);
 
         } finally {
             out.close();
         }
     }
 }
-

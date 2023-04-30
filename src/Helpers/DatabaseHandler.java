@@ -26,6 +26,8 @@ public class DatabaseHandler {
                 index += 1;
             }
 
+            System.out.println("Executed Query: \n" + preparedStatement.toString().substring( preparedStatement.toString().indexOf( ": " ) + 2 ));
+
             ResultSet rs = preparedStatement.executeQuery();
 
             ResultSetMetaData md = rs.getMetaData();
@@ -48,6 +50,28 @@ public class DatabaseHandler {
             preparedStatement.close();
 
             return list;
+        }
+    }
+
+    // Execute DML statements like INSERT, UPDATE or DELETE
+    public int executeUpdate(String query, String... queryStrings) throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+            int index = 1;
+
+            for (int i = 1; i <= queryStrings.length; ++i) {
+                preparedStatement.setString(index, queryStrings[i - 1]);
+                index += 1;
+            }
+
+            System.out.println("Executed Query: \n" + preparedStatement.toString().substring( preparedStatement.toString().indexOf( ": " ) + 2 ));
+
+            int rowCount = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+
+            return rowCount;
         }
     }
 }

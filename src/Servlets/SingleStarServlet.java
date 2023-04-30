@@ -21,9 +21,8 @@ import java.util.List;
 // Declaring a WebServlet called Servlets.SingleStarServlet, which maps to url "/api/single-star"
 @WebServlet(name = "Servlets.SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
-    private static final long serialVersionUID = 2L;
 
-    // Create a dataSource which registered in web.xml
+    // Create a dataSource
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -34,10 +33,6 @@ public class SingleStarServlet extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     * response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         DatabaseHandler singleStarDBH = new DatabaseHandler(dataSource);
@@ -56,14 +51,14 @@ public class SingleStarServlet extends HttpServlet {
         try {
 
             /*
-            name;
-            year of birth (N/A if not available);
-            all movies (hyperlinked) in which the star acted.
+             * name;
+             * year of birth (N/A if not available);
+             * all movies (hyperlinked) in which the star acted.
              */
 
             // Construct a query with parameter represented by "?"
-            String starQuery = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
-                    "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
+            String starQuery = "SELECT * FROM stars AS s, stars_in_movies AS sim, movies AS m\n" +
+                    "WHERE m.id = sim.movieId AND sim.starId = s.id AND s.id = ?\n";
 
             List<HashMap<String, String>> singleStar = singleStarDBH.executeQuery(starQuery, id);
 
@@ -77,9 +72,10 @@ public class SingleStarServlet extends HttpServlet {
                 String starDob = ss.get("birthYear");
 
                 String movieForStarQuery = "SELECT m.id, m.title FROM stars_in_movies\n" +
-                        "    JOIN stars s ON stars_in_movies.starId = s.id\n" +
-                        "    JOIN movies m ON stars_in_movies.movieId = m.id\n" +
-                        "WHERE s.id = ?";
+                        "JOIN stars s ON stars_in_movies.starId = s.id\n" +
+                        "JOIN movies m ON stars_in_movies.movieId = m.id\n" +
+                        "WHERE s.id = ?\n" +
+                        "ORDER BY m.year DESC, m.title \n";
 
                 List<HashMap<String, String>> movies = singleStarDBH.executeQuery(movieForStarQuery, starId);
 
@@ -100,7 +96,7 @@ public class SingleStarServlet extends HttpServlet {
                 singleStarObj.addProperty("star_id", starId);
                 singleStarObj.addProperty("star_name", starName);
 
-                if((starDob != null && !starDob.trim().isEmpty())) {
+                if ((starDob != null && !starDob.trim().isEmpty())) {
                     singleStarObj.addProperty("star_dob", Integer.parseInt(starDob));
                 } else {
                     singleStarObj.add("star_dob", JsonNull.INSTANCE);

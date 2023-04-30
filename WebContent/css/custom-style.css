@@ -1,11 +1,16 @@
-
-#single_star_table th{
+#single_star_table th {
     width: 20%;
 }
-@media only screen and (min-width: 1400px){
-    .container{
+
+.flex-none {
+    flex: none !important;
+}
+.width-auto {
+    width: auto !important;
+}
+@media only screen and (min-width: 1400px) {
+    .container {
         width: 85%;
         max-width: 3000px;
     }
-
 }

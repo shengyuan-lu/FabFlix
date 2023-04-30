@@ -20,8 +20,6 @@ import Helpers.DatabaseHandler;
 // Declaring a WebServlet called Servlets.SingleMovieServlet, which maps to url "/api/single-movie"
 @WebServlet(name = "Servlets.SingleMovieServlet", urlPatterns = "/api/single-movie")
 public class SingleMovieServlet extends HttpServlet {
-    private static final long serialVersionUID = 2L;
-
     // Create a dataSource which registered in web.xml
     private DataSource dataSource;
 
@@ -33,10 +31,6 @@ public class SingleMovieServlet extends HttpServlet {
         }
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     * response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         response.setContentType("application/json"); // Response mime type
@@ -50,28 +44,32 @@ public class SingleMovieServlet extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
-
         try {
             DatabaseHandler singleMovieDBHandler = new DatabaseHandler(dataSource);
 
-            String singleMovieInfoQuery = "select * from movies as m " +
-                    "join ratings as r on r.movieId = m.id " +
-                    "where m.id = ?";
+            String singleMovieInfoQuery = "SELECT * FROM movies AS m \n" +
+                    "JOIN ratings AS r ON r.movieId = m.id \n" +
+                    "WHERE m.id = ?\n";
             // There is going to be only one row in the query result
-            HashMap<String, String> singleMovieInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, movieId).get(0);
+            HashMap<String, String> singleMovieInfo = singleMovieDBHandler.executeQuery(singleMovieInfoQuery, movieId)
+                    .get(0);
 
             JsonObject singleMovieObj = new JsonObject();
 
+            singleMovieObj.addProperty("movieId", movieId);
             singleMovieObj.addProperty("movieTitle", singleMovieInfo.get("title"));
             singleMovieObj.addProperty("movieYear", singleMovieInfo.get("year"));
             singleMovieObj.addProperty("movieDirector", singleMovieInfo.get("director"));
             singleMovieObj.addProperty("movieRating", singleMovieInfo.get("rating"));
 
-            String singleMovieGenresQuery = "select g.name as 'genreName' from movies as m " +
-                    "join genres_in_movies as gim on gim.movieId = m.id " +
-                    "join genres as g on g.id = gim.genreId " +
-                    "where m.id = ?";
-            List<HashMap<String, String>> singleMovieGenres = singleMovieDBHandler.executeQuery(singleMovieGenresQuery, movieId);
+            String singleMovieGenresQuery = "SELECT g.name AS 'genreName' FROM movies AS m \n" +
+                    "JOIN genres_in_movies AS gim ON gim.movieId = m.id \n" +
+                    "JOIN genres as g ON g.id = gim.genreId \n" +
+                    "WHERE m.id = ?\n" +
+                    "ORDER BY genreName\n";
+
+            List<HashMap<String, String>> singleMovieGenres = singleMovieDBHandler.executeQuery(singleMovieGenresQuery,
+                    movieId);
 
             JsonArray singleMovieGenresArr = new JsonArray();
             for (HashMap<String, String> genre : singleMovieGenres) {
@@ -80,19 +78,20 @@ public class SingleMovieServlet extends HttpServlet {
 
             singleMovieObj.add("movieGenres", singleMovieGenresArr);
 
+            String singleMovieStarsQuery = "SELECT s.name AS name, s.id AS id FROM stars AS s, stars_in_movies AS sm \n"
+                    +
+                    "WHERE s.id = sm.starId AND sm.movieId=?\n" +
+                    "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n";
 
-            String singleMovieStarsQuery = "select s.id as 'starId', s.name as 'starName' from movies as m " +
-                    "join stars_in_movies as sim on sim.movieId = m.id " +
-                    "join stars as s on s.id = sim.starId " +
-                    "where m.id = ?";
-            List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery, movieId);
+            List<HashMap<String, String>> singleMovieStars = singleMovieDBHandler.executeQuery(singleMovieStarsQuery,
+                    movieId);
 
             JsonArray singleMovieStarsArr = new JsonArray();
 
             for (HashMap<String, String> star : singleMovieStars) {
                 JsonObject starObj = new JsonObject();
-                starObj.addProperty("starId", star.get("starId"));
-                starObj.addProperty("starName", star.get("starName"));
+                starObj.addProperty("starId", star.get("id"));
+                starObj.addProperty("starName", star.get("name"));
 
                 singleMovieStarsArr.add(starObj);
             }
