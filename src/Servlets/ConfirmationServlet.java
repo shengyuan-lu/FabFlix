@@ -72,6 +72,7 @@ public class ConfirmationServlet extends HttpServlet {
                     responseJsonObj.addProperty("movieTitle", mostRecentOrder.get("movieTitle"));
                     responseJsonObj.addProperty("saleQuantity", mostRecentOrder.get("saleQuantity"));
                     responseJsonObj.addProperty("moviePrice", mostRecentOrder.get("moviePrice"));
+                    responseJsonObj.addProperty("movieTotal", Float.parseFloat(mostRecentOrder.get("moviePrice")) * Integer.parseInt(mostRecentOrder.get("saleQuantity")));
 
                     responseJsonArr.add(responseJsonObj);
                 } else {

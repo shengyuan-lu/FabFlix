@@ -46,6 +46,10 @@
                 <!-- Again, id "movie_table_body" is useful for jQuery to find this html element -->
                 <tbody id="shopping-cart-body"></tbody>
             </table>
+            <div class="d-flex justify-content-between">
+                <a class="btn btn-primary btn-lg" href="payment.html" role="button">Proceed to Checkout</a>
+                <h3>Total: <span id="shopping-cart-total-price"></span></h3>
+            </div>
         </div>
         <!-- Load jQuery and Bootstrap JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -70,7 +74,7 @@
                     url: `api/shopping-cart?added_item_id=${addOneMovieBtn.id}`, // Setting request url, which is mapped by moviesServlet in Stars.java
                 });
             }
-            function removeOneMovieFromCart(movieID) {
+            function removeOneMovieFromCart(movieId) {
                 let addOneMovieBtn = document.querySelector(`#${movieId}`);
                 addOneMovieBtn.innerHTML = (
                     parseInt(addOneMovieBtn.innerHTML) - 1
@@ -78,14 +82,14 @@
 
                 jQuery.ajax({
                     method: "GET", // Setting request method
-                    url: `api/shopping-cart?added_item_id=${movieID}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                    url: `api/shopping-cart?added_item_id=${movieId}`, // Setting request url, which is mapped by moviesServlet in Stars.java
                 });
             }
-            function removeMovieFromCart(movieID) {
+            function removeMovieFromCart(movieId) {
                 alert("Movie removed from shopping cart!");
                 jQuery.ajax({
                     method: "GET", // Setting request method
-                    url: `api/shopping-cart?removed_item_id=${movieID}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                    url: `api/shopping-cart?removed_item_id=${movieId}`, // Setting request url, which is mapped by moviesServlet in Stars.java
                 });
             }
         </script>

@@ -7,6 +7,8 @@ function handleShoppingCartResult(resultData) {
     // Find the empty table body by id "movie_table_body"
     let shoppingCartTableElement = jQuery("#shopping-cart-table");
 
+    let totalPrice = 0.0;
+
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
@@ -27,9 +29,13 @@ function handleShoppingCartResult(resultData) {
         rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" name="${resultData[i]["movie_id"]}" onclick="removeMovieFromCart(this.name)">Remove from Cart</button></th>`;
         rowHTML += "</tr>";
 
+        totalPrice += parseFloat(resultData[i]["movie_total"]);
+
         // Append the row created to the table body, which will refresh the page
         shoppingCartTableElement.append(rowHTML);
     }
+
+    $("#shopping-cart-total-price").append(totalPrice.toString());
 }
 
 /**
