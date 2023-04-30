@@ -43,10 +43,11 @@
                 Movie List</a
             >
         </nav>
-        <div class="container">
+        <div class="container d-flex justify-content-between">
             <p class="fs-2 text-secondary mt-4 fw-bold">
                 Single Movie - <span class="movie-title"></span>
             </p>
+            <div id="add-to-cart-btn"></div>
         </div>
         <div class="container">
             <table class="table mt-4 fs-3">
@@ -95,5 +96,16 @@
      otherwise the url is relative to the root path-->
         <script type="module" src="js/add-nav.js"></script>
         <script type="module" src="js/single-movie.js"></script>
+
+        <script>
+            // for some reason the function in onclick has to be placed in the html file
+            function addMovieToCart(movieID) {
+                alert("Movie added to shopping cart!");
+                jQuery.ajax({
+                    method: "GET", // Setting request method
+                    url: `api/shopping-cart?added_item_id=${movieID}`, // Setting request url, which is mapped by moviesServlet in Stars.java
+                });
+            }
+        </script>
     </body>
 </html>

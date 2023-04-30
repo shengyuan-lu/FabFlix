@@ -50,6 +50,7 @@ function handleResult(resultData) {
 
     // Populate the single movie table
     // Find the empty table body by id "movie_table_body"
+    let addToCartBtn = jQuery("#add-to-cart-btn");
     let movieNameElem = jQuery(".movie-title");
     let movieReleaseYearElem = jQuery(".movie-release-year");
     let movieDirectorElem = jQuery(".movie-director");
@@ -57,13 +58,14 @@ function handleResult(resultData) {
     let movieStarsElem = jQuery(".movie-stars");
     let movieRatingElem = jQuery(".movie-rating");
 
+    addToCartBtn.html(`<button class="btn btn-outline-primary" name="${resultData['movieId']}" onclick="addMovieToCart(this.name)">Add to Cart</button>`);
     movieNameElem.html(resultData["movieTitle"]);
     movieReleaseYearElem.html(resultData["movieYear"]);
     movieDirectorElem.html(resultData["movieDirector"]);
     movieGenresElem.html(getGenresHtml(resultData["movieGenres"]));
     movieStarsElem.html(getStarsHtml(resultData["movieStars"]));
     movieRatingElem.html(
-        `<div className="d-flex flex-row align-items-center"><span className="me-2">${starIcon()}</span>${
+        `<div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${
             resultData["movieRating"]
         }</div>`
     );
