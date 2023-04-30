@@ -33,6 +33,8 @@ function handleShoppingCartResult(resultData) {
     }
 
     $("#shopping-cart-total-price").append(totalPrice.toString());
+    sessionStorage.setItem("cartTotalPrice", totalPrice.toString());
+    console.log("cartTotalPrice:" + sessionStorage.getItem("cartTotalPrice"));
 }
 
 /**

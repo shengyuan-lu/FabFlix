@@ -39,5 +39,7 @@ function placeOrder() {
     });
 }
 
-// Bind the submit action of the form to a handler function
-placeOrderBtn.on("click", placeOrder);
+console.log("total price is " + sessionStorage.getItem("cartTotalPrice"));
+$("#payment-total-price-element").html(sessionStorage.getItem("cartTotalPrice")); // populate the total price in the payment page
+
+placeOrderBtn.on("click", placeOrder); // Bind the submit action of the form to a handler function
