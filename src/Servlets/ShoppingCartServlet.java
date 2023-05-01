@@ -52,6 +52,7 @@ public class ShoppingCartServlet extends HttpServlet {
                 } else {
                     itemsInShoppingCart.put(addedItemID, itemsInShoppingCart.get(addedItemID) + 1);
                 }
+                request.getServletContext().log("items in shopping cart is " + itemsInShoppingCart);
             }
         } else if (removedItemID != null) {
             synchronized (itemsInShoppingCart) {
