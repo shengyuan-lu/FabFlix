@@ -38,4 +38,4 @@ Browse
 - Genre: Exact match by genre id only
 
 ### Demo Video
-[Click here for the demo video]()
+[Click here for the demo video](https://youtu.be/Uv-Rdf61szo)
