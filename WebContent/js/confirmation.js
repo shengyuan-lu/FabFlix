@@ -9,7 +9,6 @@ function handleConfirmationResult(resultData, limit) {
     // Populate the movie table
     // Find the empty table body by id "movie_table_body"
     let orderConfirmationTableBodyElement = jQuery("#order-confirmation-table-body");
-    let totalPrice = 0.0;
 
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
@@ -22,14 +21,11 @@ function handleConfirmationResult(resultData, limit) {
         rowHTML += `<th class="fs-4">${resultData[i]["movieTotal"]}</th>`;
         rowHTML += "</tr>";
 
-        totalPrice += parseFloat(resultData[i]["movieTotal"]);
-
         // Append the row created to the table body, which will refresh the page
         orderConfirmationTableBodyElement.append(rowHTML);
     }
 
-    $("#order-confirmation-total-price").innerHTML = totalPrice.toString();
-
+    $("#order-confirmation-total-price").html(sessionStorage.getItem("cartTotalPrice"));
 
 }
 

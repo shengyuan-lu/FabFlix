@@ -48,8 +48,7 @@ public class PaymentServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
         int customerId = ((Customer) session.getAttribute("customer")).getId();
-        HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session
-                .getAttribute("itemsInShoppingCart");
+        HashMap<String, Integer> itemsInShoppingCart = (HashMap<String, Integer>) session.getAttribute("itemsInShoppingCart");
         PrintWriter out = response.getWriter();
 
         try {
@@ -73,9 +72,8 @@ public class PaymentServlet extends HttpServlet {
                 for (String itemId : itemsInShoppingCart.keySet()) {
                     // Add each item in shopping cart to the sales table
                     String salesUpdateQuery = "INSERT INTO sales (customerId, movieId, saleDate, quantity)\n" +
-                            "VALUES (?, ?, CURDATE(), ?);";
-                    paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId,
-                            itemsInShoppingCart.get(itemId).toString());
+                            "VALUES (?, ?, ?, ?);";
+                    paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId, LocalDateTime.now().toString(), itemsInShoppingCart.get(itemId).toString());
 
                     HashMap<String, String> order = new HashMap<>();
                     order.put("customerId", String.valueOf(customerId));
