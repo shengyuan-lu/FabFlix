@@ -30,15 +30,14 @@ function handleShoppingCartResult(resultData) {
         rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" name="${resultData[i]['movie_id']}" onclick="removeMovieFromCart(this.name)">Remove from Cart</button></th>`
         rowHTML += "</tr>";
 
-        totalPrice = Number(totalPrice + movieTotalPrice).toFixed(2); // Ensure 2 decimal places
+        totalPrice += movieTotalPrice;
 
         // Append the row created to the table body, which will refresh the page
         shoppingCartTableElement.append(rowHTML);
     }
 
-    $("#shopping-cart-total-price").append(totalPrice.toString());
-    sessionStorage.setItem("cartTotalPrice", totalPrice.toString());
-    console.log("cartTotalPrice:" + sessionStorage.getItem("cartTotalPrice"));
+    $("#shopping-cart-total-price").append(totalPrice.toFixed(2));
+    sessionStorage.setItem("cartTotalPrice", totalPrice.toFixed(2));
 }
 
 /**
