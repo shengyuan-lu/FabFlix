@@ -38,13 +38,6 @@ public class MovieListServlet extends HttpServlet {
         // Output stream
         PrintWriter out = response.getWriter();
 
-        // 5 possible query strings
-        // title (string like pattern needed)
-        // genre_id
-        // star_name (string like pattern needed)
-        // director_name (string like pattern needed)
-        // year
-
         //
         // Require movie table only
         //

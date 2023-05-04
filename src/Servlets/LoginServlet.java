@@ -1,7 +1,7 @@
 package Servlets;
 
 import Helpers.DatabaseHandler;
-import com.google.gson.JsonArray;
+import Helpers.RecaptchaVerifyUtils;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,11 +12,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-
 import Models.Customer;
 import jakarta.servlet.http.HttpSession;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -37,12 +34,33 @@ public class LoginServlet extends HttpServlet {
     // You must use HTTP POST instead of HTTP GET so that the username and password will not be displayed on the address bar.
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        PrintWriter out = response.getWriter();
+
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+
+        try {
+
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+
+        } catch (Exception e) {
+
+            JsonObject loginStatusObject = new JsonObject();
+
+            loginStatusObject.addProperty("status", "fail");
+            loginStatusObject.addProperty("message", "reCAPTCHA verification failed. Please try again.");
+
+            out.write(loginStatusObject.toString());
+
+            out.close();
+
+            return;
+        }
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
         DatabaseHandler loginDBH = new DatabaseHandler(dataSource);
-
-        PrintWriter out = response.getWriter();
 
         // Get a instance of current session on the request
         HttpSession session = request.getSession();
@@ -73,9 +91,6 @@ public class LoginServlet extends HttpServlet {
 
                     // Log to localhost log
                     request.getServletContext().log("Login successful");
-
-
-
 
                 } else {
 
