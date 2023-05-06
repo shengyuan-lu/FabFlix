@@ -1,4 +1,4 @@
-## CS 122B Project 2: Developing FabFlix Website
+## CS 122B Project 2:  reCAPTCHA, HTTPS, PreparedStatement, Stored Procedure, XML Parsing
 
 ***Team #: stanford_rejects***  
 ***Team member 1: Tony Liu 34195333***  
@@ -7,35 +7,45 @@
 ### Contributions
 
 **Tony Liu**
-- Implemented shopping cart page, which displays information about movies in the shopping cart and allows for quantity modification for each item as well as deletion of items in the shopping cart 
-- Constructed payment page, including card information collection and verification
-- Built Confirmation page, displaying information about the movies ordered
-- Added "add to shopping cart" button on movie list and single movie page
-- Refactored movies and sales tables in the MySQL database
-- Helped with video demo and AWS setup
+
 
 **Shengyuan Lu**
-- Built login functionalities
-- Built search and browse functionalities
-- Designed substring match patterns
-- Built sorting, display # of results functionalities
-- Maintained the status of the Movie List Page
-- Helped with video demo and AWS setup
 
-### Substring Matching Design
+### Filenames with Prepared Statements
 
-Search
+- src/Helpers/DatabaseHandler.java
+```
+Notes to the grader:
 
-- Title: `LIKE %ABC%`
-- Director: `LIKE %ABC%`
-- Year: Exact match only
-- Star: `LIKE %ABC%`
+We designed a DatabaseHandler class to handle everything related to the query
 
-Browse
+This class has 2 methods:
+executeQuery(String query, String... queryStrings)
+executeUpdate(String query, String... queryStrings)
 
-- Alphabet (NOT *): `WHERE LOWER(title) LIKE LOWER(A%)` 
-- Alphabet (* Only): `WHERE title regexp ^[^A-Za-z0-9]`
-- Genre: Exact match by genre id only
+which prepares the query string with args queryStrings in this way:
+
+    PreparedStatement preparedStatement = conn.prepareStatement(query);
+    
+    for (int i = 1; i <= queryStrings.length; ++i) {
+        preparedStatement.setString(i, queryStrings[i - 1]);
+    }
+
+Usage example:
+
+    DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);
+    
+    String movie_id = movie.get("id");
+    
+    String movieGenreQuery = "SELECT genres.id, genres.name FROM genres \n" +
+            "JOIN genres_in_movies gim ON genres.id = gim.genreId\n" +
+            "WHERE gim.movieId = ?\n" +
+            "ORDER BY genres.name\n" +
+            "LIMIT 3\n";
+    
+    List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
+
+```
 
 ### Demo Video
-[Click here for the demo video](https://youtu.be/Uv-Rdf61szo)
+[Click here for the demo video]()
