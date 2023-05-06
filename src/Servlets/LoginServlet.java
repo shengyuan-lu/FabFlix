@@ -2,21 +2,23 @@ package Servlets;
 
 import Helpers.DatabaseHandler;
 import Helpers.RecaptchaVerifyUtils;
+import Models.Customer;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import Models.Customer;
-import jakarta.servlet.http.HttpSession;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
@@ -78,9 +80,11 @@ public class LoginServlet extends HttpServlet {
 
                 HashMap<String, String> user = loginResult.get(0);
                 
-                String userpassword = user.get("password");
+                String encryptedPassword = user.get("password");
 
-                if (userpassword.equals(password)) {
+                boolean success = new StrongPasswordEncryptor().checkPassword(password, encryptedPassword);
+
+                if (success) {
 
                     // Login success
                     session.setAttribute("customer", new Customer(Integer.parseInt(user.get("id")), user.get("firstName"), user.get("lastName"), user.get("ccid"), user.get("address"), user.get("username"))); // set this user into the session
