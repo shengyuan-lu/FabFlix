@@ -1,4 +1,4 @@
-## CS 122B Project 2:  reCAPTCHA, HTTPS, PreparedStatement, Stored Procedure, XML Parsing
+## CS 122B Project 3:  reCAPTCHA, HTTPS, PreparedStatement, Stored Procedure, XML Parsing
 
 ***Team #: stanford_rejects***  
 ***Team member 1: Tony Liu 34195333***  
