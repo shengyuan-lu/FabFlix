@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
-@WebServlet(name = "DashboardLoginServlet", urlPatterns = "/_dashboard/api/dashboard-login")
+@WebServlet(name = "DashboardLoginServlet", urlPatterns = "/_dashboard/api/login")
 public class DashboardLoginServlet extends HttpServlet {
 
     private DataSource dataSource;
@@ -59,7 +59,7 @@ public class DashboardLoginServlet extends HttpServlet {
             return;
         }
 
-        String username = request.getParameter("username");
+        String employeeEmail = request.getParameter("email");
         String password = request.getParameter("password");
 
         DatabaseHandler loginDBH = new DatabaseHandler(dataSource);
@@ -72,7 +72,7 @@ public class DashboardLoginServlet extends HttpServlet {
             String loginQuery = "SELECT * FROM employees\n"
                     + "WHERE email = ?\n";
 
-            List<HashMap<String, String>> loginResult = loginDBH.executeQuery(loginQuery, username);
+            List<HashMap<String, String>> loginResult = loginDBH.executeQuery(loginQuery, employeeEmail);
 
             JsonObject loginStatusObject = new JsonObject();
 
@@ -107,7 +107,7 @@ public class DashboardLoginServlet extends HttpServlet {
 
                 // Login fail
                 loginStatusObject.addProperty("status", "fail");
-                loginStatusObject.addProperty("message", "Error: User " + username + " Does Not Exist.");
+                loginStatusObject.addProperty("message", "Error: User " + employeeEmail + " Does Not Exist.");
 
                 // Log to localhost log
                 request.getServletContext().log("Login failed - user does not exist");

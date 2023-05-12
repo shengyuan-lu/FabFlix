@@ -1,4 +1,4 @@
-let login_form = $("#dashboard_login-form");
+let login_form = $("#dashboard-login-form");
 
 /**
  * Handle the data returned by LoginServlet
@@ -38,7 +38,7 @@ function submitLoginForm(formSubmitEvent) {
      */
     formSubmitEvent.preventDefault();
 
-    $.ajax("api/dashboard-login", {
+    $.ajax("api/login", {
         method: "POST",
         // Serialize the login form to the data sent by POST request
         data: login_form.serialize(),
