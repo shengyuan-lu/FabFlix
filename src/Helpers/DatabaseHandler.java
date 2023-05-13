@@ -14,14 +14,14 @@ public class DatabaseHandler {
         this.dataSource = dataSource;
     }
 
-    public <T> List<HashMap<String, String>> executeQuery(String query, T... queryStrings) throws Exception {
+    public <T> List<HashMap<String, String>> executeQuery(String query, T... queryParameters) throws Exception {
 
         try (Connection conn = dataSource.getConnection()) {
 
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
-            for (int i = 1; i <= queryStrings.length; ++i) {
-                T queryString = queryStrings[i-1];
+            for (int i = 1; i <= queryParameters.length; ++i) {
+                T queryString = queryParameters[i-1];
                 if (queryString instanceof Integer) {
                     preparedStatement.setInt(i, (Integer) queryString);
                 } else if (queryString instanceof String) {
@@ -59,13 +59,13 @@ public class DatabaseHandler {
     }
 
     // Execute DML statements like INSERT, UPDATE or DELETE
-    public <T> int executeUpdate(String query, T... queryStrings) throws Exception {
+    public <T> int executeUpdate(String query, T... queryParameters) throws Exception {
 
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
-            for (int i = 1; i <= queryStrings.length; ++i) {
-                T queryString = queryStrings[i-1];
+            for (int i = 1; i <= queryParameters.length; ++i) {
+                T queryString = queryParameters[i-1];
                 if (queryString instanceof Integer) {
                     preparedStatement.setInt(i, (Integer) queryString);
                 } else if (queryString instanceof String) {
@@ -82,6 +82,51 @@ public class DatabaseHandler {
             preparedStatement.close();
 
             return rowCount;
+        }
+    }
+
+    public <T> void executeBatchUpdate(String query, T[][] queryParameters) throws Exception {
+        int batchLimit = 1000;
+
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+            try {
+                for (int i = 0; i < queryParameters.length; i++) {
+
+                    for (int j = 0; j < queryParameters[i].length; j++) {
+
+                        T queryString = queryParameters[i][j];
+
+                        if (queryString instanceof Integer) {
+                            preparedStatement.setInt(j + 1, (Integer) queryString);
+
+                        } else if (queryString instanceof String) {
+                            preparedStatement.setString(j + 1, (String) queryString);
+
+                        } else if (queryString == null) {
+                            preparedStatement.setNull(j + 1, Types.NULL);
+                        }
+                    }
+
+                    preparedStatement.addBatch();
+
+                    batchLimit--;
+
+                    if (batchLimit == 0) {
+                        preparedStatement.executeBatch();
+                        preparedStatement.clearBatch();
+                        batchLimit = 1000;
+                    }
+
+                    preparedStatement.clearParameters();
+                }
+            } finally {
+                preparedStatement.executeBatch();
+                preparedStatement.close();
+            }
+
+            System.out.println("Executed Batch DML Query: \n" + query);
         }
     }
 }
