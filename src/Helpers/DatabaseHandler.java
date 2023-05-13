@@ -14,14 +14,21 @@ public class DatabaseHandler {
         this.dataSource = dataSource;
     }
 
-    public List<HashMap<String, String>> executeQuery(String query, String... queryStrings) throws Exception {
+    public <T> List<HashMap<String, String>> executeQuery(String query, T... queryStrings) throws Exception {
 
         try (Connection conn = dataSource.getConnection()) {
 
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             for (int i = 1; i <= queryStrings.length; ++i) {
-                preparedStatement.setString(i, queryStrings[i - 1]);
+                T queryString = queryStrings[i-1];
+                if (queryString instanceof Integer) {
+                    preparedStatement.setInt(i, (Integer) queryString);
+                } else if (queryString instanceof String) {
+                    preparedStatement.setString(i, (String) queryString);
+                } else if (queryString == null) {
+                    preparedStatement.setNull(i, Types.NULL);
+                }
             }
 
             System.out.println("Executed Query: \n" + preparedStatement.toString().substring( preparedStatement.toString().indexOf( ": " ) + 2 ));
@@ -52,13 +59,20 @@ public class DatabaseHandler {
     }
 
     // Execute DML statements like INSERT, UPDATE or DELETE
-    public int executeUpdate(String query, String... queryStrings) throws Exception {
+    public <T> int executeUpdate(String query, T... queryStrings) throws Exception {
 
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             for (int i = 1; i <= queryStrings.length; ++i) {
-                preparedStatement.setString(i, queryStrings[i - 1]);
+                T queryString = queryStrings[i-1];
+                if (queryString instanceof Integer) {
+                    preparedStatement.setInt(i, (Integer) queryString);
+                } else if (queryString instanceof String) {
+                    preparedStatement.setString(i, (String) queryString);
+                } else if (queryString == null) {
+                    preparedStatement.setNull(i, Types.NULL);
+                }
             }
 
             System.out.println("Executed Query: \n" + preparedStatement.toString().substring( preparedStatement.toString().indexOf( ": " ) + 2 ));
