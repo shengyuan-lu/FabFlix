@@ -171,3 +171,11 @@ buildNumber.properties
 # some additional files not meant to be added to git
 .DS_Store
 .idea/
+
+xmlParser/stanford-movies
+xmlParser/stanford-movies/actor6.dtd
+xmlParser/stanford-movies/actors63.xml
+xmlParser/stanford-movies/cast93.dtd
+xmlParser/stanford-movies/casts124.xml
+xmlParser/stanford-movies/main32.dtd
+xmlParser/stanford-movies/mains243.xml

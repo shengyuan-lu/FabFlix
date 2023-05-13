@@ -1,8 +1,8 @@
-package Servlets;
+package servlets;
 
-import Helpers.DatabaseHandler;
-import Helpers.RecaptchaVerifyUtils;
-import Models.Customer;
+import helpers.DatabaseHandler;
+import helpers.RecaptchaVerifyUtils;
+import models.Customer;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,8 +20,8 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 
-@WebServlet(name = "DashboardLoginServlet", urlPatterns = "/_dashboard/api/login")
-public class DashboardLoginServlet extends HttpServlet {
+@WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
+public class LoginServlet extends HttpServlet {
 
     private DataSource dataSource;
 
@@ -59,7 +59,7 @@ public class DashboardLoginServlet extends HttpServlet {
             return;
         }
 
-        String employeeEmail = request.getParameter("email");
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
 
         DatabaseHandler loginDBH = new DatabaseHandler(dataSource);
@@ -69,23 +69,26 @@ public class DashboardLoginServlet extends HttpServlet {
 
         try {
 
-            String loginQuery = "SELECT * FROM employees\n"
+            String loginQuery = "SELECT * FROM customers\n"
                     + "WHERE email = ?\n";
 
-            List<HashMap<String, String>> loginResult = loginDBH.executeQuery(loginQuery, employeeEmail);
+            List<HashMap<String, String>> loginResult = loginDBH.executeQuery(loginQuery, username);
 
             JsonObject loginStatusObject = new JsonObject();
 
             if (loginResult.size() == 1) {
 
                 HashMap<String, String> user = loginResult.get(0);
-
+                
                 String encryptedPassword = user.get("password");
 
                 boolean success = new StrongPasswordEncryptor().checkPassword(password, encryptedPassword);
 
                 if (success) {
-                    session.setAttribute("employee", true);
+
+                    // Login success
+                    session.setAttribute("customer", new Customer(Integer.parseInt(user.get("id")), user.get("firstName"), user.get("lastName"), user.get("ccid"), user.get("address"), user.get("username"))); // set this user into the session
+                    session.setAttribute("itemsInShoppingCart", new HashMap<String, Integer>()); // Set associated shopping cart
 
                     loginStatusObject.addProperty("status", "success");
                     loginStatusObject.addProperty("message", "success");
@@ -107,7 +110,7 @@ public class DashboardLoginServlet extends HttpServlet {
 
                 // Login fail
                 loginStatusObject.addProperty("status", "fail");
-                loginStatusObject.addProperty("message", "Error: User " + employeeEmail + " Does Not Exist.");
+                loginStatusObject.addProperty("message", "Error: User " + username + " Does Not Exist.");
 
                 // Log to localhost log
                 request.getServletContext().log("Login failed - user does not exist");

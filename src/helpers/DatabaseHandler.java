@@ -1,4 +1,4 @@
-package Helpers;
+package helpers;
 
 import javax.sql.DataSource;
 import java.sql.*;

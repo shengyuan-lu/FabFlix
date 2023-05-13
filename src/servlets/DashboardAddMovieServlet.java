@@ -1,25 +1,19 @@
-package Servlets;
+package servlets;
 
-import Helpers.DatabaseHandler;
-import Models.Customer;
+import helpers.DatabaseHandler;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 @WebServlet(name = "DashboardAddMovieServlet", urlPatterns = "/_dashboard/api/add-movie")
 public class DashboardAddMovieServlet extends HttpServlet {

@@ -13,7 +13,7 @@
 
 ### Filenames with Prepared Statements
 
-- src/Helpers/DatabaseHandler.java
+- src/helpers/DatabaseHandler.java
 ```
 Notes to the grader:
 

@@ -1,6 +1,6 @@
-package Servlets;
+package servlets;
 
-import Helpers.DatabaseHandler;
+import helpers.DatabaseHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;

@@ -1,4 +1,4 @@
-package Servlets;
+package servlets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import Helpers.DatabaseHandler;
+import helpers.DatabaseHandler;
 
 // Declaring a WebServlet called Servlets.SingleMovieServlet, which maps to url "/api/single-movie"
 @WebServlet(name = "Servlets.SingleMovieServlet", urlPatterns = "/api/single-movie")

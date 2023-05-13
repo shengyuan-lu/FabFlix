@@ -1,7 +1,6 @@
-package Servlets;
+package servlets;
 
-import Helpers.DatabaseHandler;
-import com.google.gson.JsonArray;
+import helpers.DatabaseHandler;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
