@@ -17,7 +17,6 @@ function handleMetadataResult(resultData) {
                                 </thead>
                                 <tbody>`;
         for (const [columnName, columnType] of Object.entries(tableInfo)) {
-
             metadataTableHTML += "<tr>";
             metadataTableHTML += `<td><h3>${columnName}</h3></td>`;
             metadataTableHTML += `<td><h3>${columnType}</h3></td>`;
@@ -36,5 +35,5 @@ jQuery.ajax({
     dataType: "json",
     method: "GET",
     url: "api/dashboard-metadata",
-    success: (resultData) => handleMetadataResult(resultData)
+    success: (resultData) => handleMetadataResult(resultData),
 });
