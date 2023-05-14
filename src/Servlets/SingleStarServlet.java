@@ -1,6 +1,6 @@
-package servlets;
+package Servlets;
 
-import helpers.DatabaseHandler;
+import Helpers.DatabaseHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 // Declaring a WebServlet called Servlets.SingleStarServlet, which maps to url "/api/single-star"
-@WebServlet(name = "Servlets.SingleStarServlet", urlPatterns = "/api/single-star")
+@WebServlet(name = "SingleStarServlet", urlPatterns = "/api/single-star")
 public class SingleStarServlet extends HttpServlet {
 
     // Create a dataSource

@@ -1,6 +1,6 @@
-package servlets;
+package Servlets;
 
-import helpers.DatabaseHandler;
+import Helpers.DatabaseHandler;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 // Declaring a WebServlet called Servlets.SingleMovieServlet, which maps to url "/api/single-movie"
-@WebServlet(name = "Servlets.DashboardMetadataServlet", urlPatterns = "/_dashboard/api/dashboard-metadata")
+@WebServlet(name = "DashboardMetadataServlet", urlPatterns = "/_dashboard/api/dashboard-metadata")
 public class DashboardMetadataServlet extends HttpServlet {
     // Create a dataSource which registered in web.xml
     private DataSource dataSource;

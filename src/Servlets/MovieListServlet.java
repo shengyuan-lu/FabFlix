@@ -1,4 +1,4 @@
-package servlets;
+package Servlets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import helpers.DatabaseHandler;
+import Helpers.DatabaseHandler;
 
-@WebServlet(name = "Servlets.MovieListServlet", urlPatterns = "/api/movies")
+@WebServlet(name = "MovieListServlet", urlPatterns = "/api/movies")
 public class MovieListServlet extends HttpServlet {
     private DataSource dataSource;
 

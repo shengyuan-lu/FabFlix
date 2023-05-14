@@ -1,4 +1,4 @@
-package helpers;
+package Helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
