@@ -22,7 +22,7 @@ function handleAddMovieResult(resultData) {
 
         addMovieMessage.text(resultData["message"]);
     } else {
-        console.log("Adding movie failed.")
+        console.log("Adding movie failed.");
         if (addMovieMessage.hasClass("alert-success")) {
             addMovieMessage.removeClass("alert-success");
         }
