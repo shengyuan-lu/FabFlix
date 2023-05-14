@@ -21,7 +21,7 @@ public class Movie {
     private String title; // title in table (can't be null)
     private Integer year; // year in table, int (can't be null)
     private String director; // director in table (can't be null)
-    private Double price; // price in table (can't be null), amount doesn't matter
+    private Float price; // price in table (can't be null), amount doesn't matter
     private Set<String> genres; // 1 movie can have multiple genres, a list genre names
 
     private Set<String> starIds; // 1 movie can have multiple stars, a list of starIds
@@ -71,11 +71,11 @@ public class Movie {
         this.director = director;
     }
 
-    public double getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 

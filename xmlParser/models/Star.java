@@ -29,7 +29,7 @@ public class Star {
         this.name = name;
     }
 
-    public int getBirthYear() {
+    public Integer getBirthYear() {
         return birthYear;
     }
 
@@ -39,5 +39,9 @@ public class Star {
 
     public boolean validate() {
         return !this.name.isEmpty();
+    }
+
+    public String getCSVLine() {
+        return String.format("%s,%s,%d\n", this.id, this.name, this.birthYear);
     }
 }
