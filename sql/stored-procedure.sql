@@ -42,7 +42,7 @@ begin
 		
 
 		# =========== Add star for a movie ==========
-		set is_star_exists = exists(select * from stars where stars.name = star_name and stars.birthYear = star_birth_year);
+		set is_star_exists = exists(select * from stars where stars.name = star_name);
 		if not is_star_exists then
 			# If star doesn't exist yet, create it
 			select max(id) into max_star_id from stars;
