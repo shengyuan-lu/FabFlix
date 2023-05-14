@@ -50,8 +50,8 @@ function addMovie() {
     // console.log(payment_form.serialize())
     $.ajax("api/add-movie", {
         dataType: "json",
-        method: "POST",
-        // Serialize the login form to the data sent by POST request
+        method: "get",
+        // Serialize the login form to the data sent by get request
         data: addMovieForm.serialize(),
         success: (resultData) => handleAddMovieResult(resultData),
     });
