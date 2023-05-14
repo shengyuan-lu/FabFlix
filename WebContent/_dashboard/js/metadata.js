@@ -7,7 +7,7 @@ let dashboardMetadataTable = $("#dashboard-metadata-table");
 function handleMetadataResult(resultData) {
     let metadataTableHTML = "";
     for (const [tableName, tableInfo] of Object.entries(resultData)) {
-        metadataTableHTML += `<h3>${tableName}<h3>
+        metadataTableHTML += `<h3 class="fs-2 text-secondary mt-4">${tableName}<h3>
                                 <table class="table table-striped mt-4 border">
                                 <thead class="table-dark fs-5">
                                 <tr>
