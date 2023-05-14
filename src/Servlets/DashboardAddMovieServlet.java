@@ -60,24 +60,7 @@ public class DashboardAddMovieServlet extends HttpServlet {
 
             DatabaseHandler addMovieDBHandler = new DatabaseHandler(dataSource);
 
-//            String checkIsMovieExistsQuery = "select exists(SELECT * from movies\n" +
-//                    "WHERE movies.title = ? and movies.year = ? and movies.director = ?) as isMovieExists;";
-//            String isMovieExistsResult = addMovieDBHandler.executeQuery(checkIsMovieExistsQuery, movieTitle, movieYear, movieDirector).get(0).get("isMovieExists");
-
-//            if (Objects.equals(isMovieExistsResult, "1")) {
-//                // If a movie doesn't exist in the database yet, report failure
-//                responseJsonObj.addProperty("status", "failed");
-//                responseJsonObj.addProperty("message", "Adding movie failed! The movie added is duplicated in the database.");
-//                request.getServletContext().log("Movie added failed due to duplicate movie.");
-//            } else {
-                // Otherwise, report success
             String addMovieQuery = "{call add_movie(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-//            String getIdsQuery = "select movies.id as movieId, max(stars.id) as starId, genres.id as genreId from movies, stars, genres \n" +
-//                    "where movies.title = ? and movies.year = ? and movies.director = ?\n" +
-//                    "and stars.name = ? and stars.birthYear = ?\n" +
-//                    "and genres.name = ?";
-
-            // HashMap<String, String> ids;
 
             List<Object> outParams;
 
@@ -118,17 +101,6 @@ public class DashboardAddMovieServlet extends HttpServlet {
                 responseJsonObj.addProperty("message", String.format("Add movie successful! Movie ID is %s, star ID is %s, genre ID is %s", outParams.get(1), outParams.get(2), outParams.get(3)));
                 request.getServletContext().log(String.format("Add movie successful! Movie ID is %s, star ID is %s, genre ID is %s", outParams.get(1), outParams.get(2), outParams.get(3)));
             }
-//
-//                addMovieDBHandler.executeUpdate(addMovieQuery, movieTitle, movieYear, movieDirector, starName, null, genreName);
-//                ids = addMovieDBHandler.executeQuery(getIdsQuery, movieTitle, movieYear, movieDirector, starName, null, genreName).get(0);
-//            } else {
-//                addMovieDBHandler.executeUpdate(addMovieQuery, movieTitle, movieYear, movieDirector, starName, Integer.parseInt(starBirthYearString), genreName);
-//                ids = addMovieDBHandler.executeQuery(getIdsQuery, movieTitle, movieYear, movieDirector, starName, Integer.parseInt(starBirthYearString), genreName).get(0);
-//            }
-
-
-            // }
-
 
             // Write JSON string to output
             out.write(responseJsonObj.toString());
