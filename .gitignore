@@ -176,3 +176,4 @@ xmlParser/stanford-movies
 
 # ignore the inconsistency reports
 duplicateStarErrors.txt
+stars.csv
