@@ -1,20 +1,23 @@
 package helpers;
 
-import javax.sql.DataSource;
 import java.sql.*;
 
 public class XMLDatabaseHandler {
 
-    private final DataSource dataSource;
-
-    public XMLDatabaseHandler(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    public XMLDatabaseHandler() {}
 
     public <T> void executeBatchUpdate(String query, T[][] queryParameters) throws Exception {
+
         int batchLimit = 1000;
 
-        try (Connection conn = dataSource.getConnection()) {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        try (Connection conn = DriverManager.getConnection(
+                "jdbc:mysql:///localhost:3306/moviedb?autoReconnect=true&useSSL=false",
+                "mytestuser",
+                "My6$Password"
+        )) {
+
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             try {
