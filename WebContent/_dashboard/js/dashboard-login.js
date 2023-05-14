@@ -1,4 +1,5 @@
 let login_form = $("#dashboard-login-form");
+let dashboard_login_error_message = $("#dashboard-login-error-message")
 
 /**
  * Handle the data returned by LoginServlet
@@ -20,8 +21,8 @@ function handleLoginResult(resultDataString) {
         console.log("show error message");
         console.log(resultDataJson["message"]);
 
-        $("#dashboard_login_error_message").text(resultDataJson["message"]);
-        $("#dashboard_login_error_message").removeClass("d-none");
+        dashboard_login_error_message.text(resultDataJson["message"]);
+        dashboard_login_error_message.removeClass("d-none");
     }
 }
 
