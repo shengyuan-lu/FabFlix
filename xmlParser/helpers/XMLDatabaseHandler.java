@@ -2,15 +2,12 @@ package helpers;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
-public class DatabaseHandler {
+public class XMLDatabaseHandler {
 
     private final DataSource dataSource;
 
-    public DatabaseHandler(DataSource dataSource) {
+    public XMLDatabaseHandler(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
