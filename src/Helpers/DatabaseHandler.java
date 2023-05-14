@@ -16,14 +16,14 @@ public class DatabaseHandler {
         this.dataSource = dataSource;
     }
 
-    public <T> List<HashMap<String, String>> executeQuery(String query, T... queryParameters) throws Exception {
+    public List<HashMap<String, String>> executeQuery(String query, @Nullable Object... queryParameters) throws Exception {
 
         try (Connection conn = dataSource.getConnection()) {
 
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             for (int i = 1; i <= queryParameters.length; ++i) {
-                T queryString = queryParameters[i-1];
+                Object queryString = queryParameters[i-1];
                 if (queryString instanceof Integer) {
                     preparedStatement.setInt(i, (Integer) queryString);
                 } else if (queryString instanceof String) {
@@ -61,13 +61,13 @@ public class DatabaseHandler {
     }
 
     // Execute DML statements like INSERT, UPDATE or DELETE
-    public <T> int executeUpdate(String query, T... queryParameters) throws Exception {
+    public int executeUpdate(String query, @Nullable Object... queryParameters) throws Exception {
 
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             for (int i = 1; i <= queryParameters.length; ++i) {
-                T queryString = queryParameters[i-1];
+                Object queryString = queryParameters[i-1];
                 if (queryString instanceof Integer) {
                     preparedStatement.setInt(i, (Integer) queryString);
                 } else if (queryString instanceof String) {
