@@ -19,9 +19,9 @@ price: float
 public class Movie {
     private String id; // id in table (can't be null)
     private String title; // title in table (can't be null)
-    private int year; // year in table, int (can't be null)
+    private Integer year; // year in table, int (can't be null)
     private String director; // director in table (can't be null)
-    private float price; // price in table (can't be null), amount doesn't matter
+    private Double price; // price in table (can't be null), amount doesn't matter
     private Set<String> genres; // 1 movie can have multiple genres
 
     public Movie(String id, String title, int year, String director, Set<String> genres) {

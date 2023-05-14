@@ -2,7 +2,6 @@ import java.util.*;
 
 import java.io.IOException;
 
-import javax.sql.DataSource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -16,8 +15,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import helpers.Constants;
 
 public class MainParser extends DefaultHandler {
-
-    private DataSource dataSource;
 
     // For generating random movie prices
     private Random random = new Random();
@@ -69,20 +66,17 @@ public class MainParser extends DefaultHandler {
 
         // get a factory
         SAXParserFactory spf = SAXParserFactory.newInstance();
-        spf.setNamespaceAware(true);
-        factory.setValidating(true);
 
         try {
             // get a new instance of parser
             SAXParser sp = spf.newSAXParser();
-            XMLReader xmlReader = sp.getXMLReader();
-            xmlReader.setContentHandler(this);
-            xmlReader.setErrorHandler(new ErrorHandler(System.err));
 
             InputSource source = new InputSource(currentDocument);
+
             source.setEncoding("ISO-8859-1");
 
-            xmlReader.parse(source);
+            // parse the file and also register this class for call backs
+            sp.parse(source, this);
 
         } catch (SAXException | ParserConfigurationException | IOException error) {
             error.printStackTrace();
@@ -208,39 +202,4 @@ public class MainParser extends DefaultHandler {
         return Math.round((5 + random.nextDouble() * (20 - 5)) * 100) / 100.0;
     }
 
-}
-
-private static class ErrorHandler implements ErrorHandler {
-    private PrintStream out;
-
-    MyErrorHandler(PrintStream out) {
-        this.out = out;
-    }
-
-    private String getParseExceptionInfo(SAXParseException spe) {
-        String systemId = spe.getSystemId();
-
-        if (systemId == null) {
-            systemId = "null";
-        }
-
-        String info = "URI=" + systemId + " Line="
-                + spe.getLineNumber() + ": " + spe.getMessage();
-
-        return info;
-    }
-
-    public void warning(SAXParseException spe) throws SAXException {
-        out.println("Warning: " + getParseExceptionInfo(spe));
-    }
-
-    public void error(SAXParseException spe) throws SAXException {
-        String message = "Error: " + getParseExceptionInfo(spe);
-        throw new SAXException(message);
-    }
-
-    public void fatalError(SAXParseException spe) throws SAXException {
-        String message = "Fatal Error: " + getParseExceptionInfo(spe);
-        throw new SAXException(message);
-    }
 }
