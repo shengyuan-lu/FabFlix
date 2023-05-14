@@ -6,7 +6,7 @@ public class XMLDatabaseHandler {
 
     public XMLDatabaseHandler() {}
 
-    public <T> void executeBatchUpdate(String query, T[][] queryParameters) throws Exception {
+    public void executeBatchUpdate(String query, Object[][] queryParameters) throws Exception {
 
         int batchLimit = 1000;
 
@@ -25,7 +25,7 @@ public class XMLDatabaseHandler {
 
                     for (int j = 0; j < queryParameters[i].length; j++) {
 
-                        T queryString = queryParameters[i][j];
+                        Object queryString = queryParameters[i][j];
 
                         if (queryString instanceof Integer) {
                             preparedStatement.setInt(j + 1, (Integer) queryString);

@@ -38,6 +38,7 @@ public class MainParser extends DefaultHandler {
 
     // For parsing - actors63.xml
     private List<Star> parsedStars;
+//    private List<Object[]> parsedStars;
     private Set<String> parsedStarNames;
     private Star tempStar;
     private FileWriter duplicateStarsWriter;
@@ -51,13 +52,13 @@ public class MainParser extends DefaultHandler {
 
         MainParser parser = new MainParser();
 
-         parser.parseDocument(Constants.movieFileName);
+          parser.parseDocument(Constants.movieFileName);
 
-         parser.parseDocument(Constants.castFileName);
+          parser.parseDocument(Constants.castFileName);
 
          parser.parseDocument(Constants.actorFileName);
 
-        parser.generateReport();
+         parser.generateReport();
     }
 
     public MainParser() {
@@ -71,13 +72,6 @@ public class MainParser extends DefaultHandler {
         this.parsedStarNames = new HashSet<>();
 
         this.currentStarId = 0;
-
-        try {
-            this.duplicateStarsWriter = new FileWriter("duplicateStarErrors.txt");
-        } catch (IOException e) {
-            System.err.println("An error occurred.");
-            e.printStackTrace();
-        }
     }
 
     private void parseDocument(String fileName) {
@@ -88,6 +82,10 @@ public class MainParser extends DefaultHandler {
         SAXParserFactory spf = SAXParserFactory.newInstance();
 
         try {
+            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
+                this.duplicateStarsWriter = new FileWriter("xmlParser/duplicateStarErrors.txt");
+            }
+
             // get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
@@ -98,9 +96,9 @@ public class MainParser extends DefaultHandler {
             // parse the file and also register this class for call backs
             sp.parse(source, this);
 
-            if (duplicateStarsWriter != null) {
+            if (this.duplicateStarsWriter != null) {
                 try {
-                    duplicateStarsWriter.close();
+                    this.duplicateStarsWriter.close();
                 } catch (IOException e) {
                     System.err.println("An error occurred.");
                     e.printStackTrace();
@@ -243,6 +241,10 @@ public class MainParser extends DefaultHandler {
             }
 
         }
+    }
+
+    public void updateDatabase() {
+        System.out.println("Parsed Stars Count: " + parsedStars.size());
     }
 
     public void generateReport() {
