@@ -1,3 +1,5 @@
+package xmlParser;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,8 +17,8 @@ import org.xml.sax.helpers.DefaultHandler;
 public class MainParser extends DefaultHandler {
 
     public static void main(String[] args) {
-        StarSAXParser starParser = new StarSAXParser();
-        starParser.runExample();
+
+
     }
 
 }
