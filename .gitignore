@@ -173,3 +173,6 @@ buildNumber.properties
 .idea/
 
 xmlParser/stanford-movies
+
+# ignore the inconsistency reports
+duplicateStarErrors.txt
