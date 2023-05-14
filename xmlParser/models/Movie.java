@@ -1,7 +1,6 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,15 +24,12 @@ public class Movie {
     private float price; // price in table (can't be null), amount doesn't matter
     private Set<String> genres; // 1 movie can have multiple genres
 
-    private Random rd = new Random();
-
     public Movie(String id, String title, int year, String director, Set<String> genres) {
         this.id = id;
         this.title = title;
         this.year = year;
         this.director = director;
         this.genres = genres;
-        this.price = (float) Math.round((rd.nextFloat() * 9 + 1) * 100) / 100;
     }
 
     public Movie() {
