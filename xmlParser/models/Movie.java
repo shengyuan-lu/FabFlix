@@ -1,17 +1,18 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.HashSet;
 import java.util.Set;
 
 
 /* In the table
 
-id
-title
-year
-director
-price
+id: varchar
+title: varchat
+year: int
+director: varchar
+price: float
 
 */
 
@@ -19,18 +20,20 @@ price
 public class Movie {
     private String id; // id in table (can't be null)
     private String title; // title in table (can't be null)
-    private Integer year; // year in table, int (can't be null)
+    private int year; // year in table, int (can't be null)
     private String director; // director in table (can't be null)
-    private Double price; // price in table (can't be null), amount doesn't matter
+    private float price; // price in table (can't be null), amount doesn't matter
     private Set<String> genres; // 1 movie can have multiple genres
 
-    public Movie(String id, String title, int year, String director, double price, Set<String> genres) {
+    private Random rd = new Random();
+
+    public Movie(String id, String title, int year, String director, Set<String> genres) {
         this.id = id;
         this.title = title;
         this.year = year;
         this.director = director;
         this.genres = genres;
-        this.price = price;
+        this.price = (float) Math.round((rd.nextFloat() * 9 + 1) * 100) / 100;
     }
 
     public Movie() {
@@ -53,7 +56,7 @@ public class Movie {
         this.title = title;
     }
 
-    public Integer getYear() {
+    public int getYear() {
         return year;
     }
 
