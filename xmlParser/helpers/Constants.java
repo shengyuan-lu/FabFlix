@@ -4,11 +4,11 @@ import java.util.Map;
 
 public class Constants {
 
-    public static final String actorFileName = "actors63.xml";
+    public static final String actorFileName = "stanford-movies/actors63.xml";
 
-    public static final String castFileName = "casts124.xml";
+    public static final String castFileName = "stanford-movies/casts124.xml";
 
-    public static final String movieFileName = "mains243.xml";
+    public static final String movieFileName = "stanford-movies/mains243.xml";
 
     public static final Map<String, String> genreMapping = Map.<String, String>ofEntries(
 
