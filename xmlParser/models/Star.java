@@ -36,4 +36,8 @@ public class Star {
     public void setBirthYear(Integer year) {
         this.birthYear = year;
     }
+
+    public boolean validate() {
+        return !this.name.isEmpty();
+    }
 }

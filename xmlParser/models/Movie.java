@@ -22,7 +22,9 @@ public class Movie {
     private Integer year; // year in table, int (can't be null)
     private String director; // director in table (can't be null)
     private Double price; // price in table (can't be null), amount doesn't matter
-    private Set<String> genres; // 1 movie can have multiple genres
+    private Set<String> genres; // 1 movie can have multiple genres, a list genre names
+
+    private Set<String> starIds; // 1 movie can have multiple stars, a list of starIds
 
     public Movie(String id, String title, int year, String director, Set<String> genres) {
         this.id = id;
@@ -34,6 +36,7 @@ public class Movie {
 
     public Movie() {
         genres = new HashSet<>();
+        starIds = new HashSet<>();
     }
 
     public String getId() {
@@ -76,6 +79,7 @@ public class Movie {
         this.price = price;
     }
 
+    // Genres
     public Set<String> getGenres() {
         return genres;
     }
@@ -88,9 +92,22 @@ public class Movie {
         this.genres = genres;
     }
 
+    // Star IDs
+    public Set<String> getStarIds() {
+        return starIds;
+    }
+
+    public void addStarId(String id) {
+        this.starIds.add(id);
+    }
+
+    public void setStarIds(Set<String> starIds) {
+        this.starIds = starIds;
+    }
+
 
     public boolean validate() {
-        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null ) {
+        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null || this.genres.isEmpty()) {
             return false;
         } else {
             return true;

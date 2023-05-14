@@ -32,33 +32,36 @@ public class MainParser extends DefaultHandler {
     private String currentDocument;
 
     // For parsing - mains243.xml
-    private ArrayList<Movie> parsedMovies;
+    private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
     private Movie tempMovie;
     private String tempDirector;
 
+    // For parsing - casts124.xml <f> = movie id, <M> = star name
+    private String tempMovieID;
+    private String tempStarName;
+    private HashMap<String, String> parsedCasts;  // key = star name , value = movie id
+
+
     // For parsing - actors63.xml
-    private List<Star> parsedStars;
-//    private List<Object[]> parsedStars;
+    private HashSet<Star> parsedStars;
     private Set<String> parsedStarNames;
     private Star tempStar;
     private FileWriter duplicateStarsWriter;
     private int currentStarId;
 
-    // For parsing - casts124.xml
-    // ...
 
     // The main function of the parser
     public static void main(String[] args) {
 
         MainParser parser = new MainParser();
 
-          parser.parseDocument(Constants.movieFileName);
+        parser.parseDocument(Constants.movieFileName);
 
-          parser.parseDocument(Constants.castFileName);
+        parser.parseDocument(Constants.castFileName);
 
-         parser.parseDocument(Constants.actorFileName);
+        parser.parseDocument(Constants.actorFileName);
 
-         parser.generateReport();
+        parser.generateReport();
     }
 
     public MainParser() {
@@ -67,9 +70,10 @@ public class MainParser extends DefaultHandler {
         this.currentDocument = "";
         this.tempDirector = "";
 
-        this.parsedMovies = new ArrayList<>();
-        this.parsedStars = new ArrayList<>();
+        this.parsedMovies = new HashMap<>();
+        this.parsedStars = new HashSet<>();
         this.parsedStarNames = new HashSet<>();
+        this.parsedCasts = new HashMap<>();
 
         this.currentStarId = 0;
     }
@@ -125,6 +129,7 @@ public class MainParser extends DefaultHandler {
 
         } else if (currentDocument.equals(Constants.castFileName)) {
 
+            // No action needed
 
         } else if (currentDocument.equals(Constants.actorFileName)) {
             if (qName.equalsIgnoreCase("actor")) {
@@ -154,7 +159,7 @@ public class MainParser extends DefaultHandler {
             } else if (qName.equalsIgnoreCase("fid")) {
 
                 // Add a prefix to simplify the removal process
-                tempMovie.setId("AddedMovie-" + tempVal);
+                tempMovie.setId("p-" + tempVal);
 
             } else if (qName.equalsIgnoreCase("t")) {
                 tempMovie.setTitle(tempVal);
@@ -165,7 +170,7 @@ public class MainParser extends DefaultHandler {
                     tempMovie.setYear(Integer.parseInt(tempVal));
 
                 } catch (NumberFormatException e) {
-                    tempMovie.setYear(null); // Inconsistency!!
+                    tempMovie.setYear(null);
 
                 }
 
@@ -197,7 +202,7 @@ public class MainParser extends DefaultHandler {
                 tempMovie.setDirector(tempDirector);
 
                 if (tempMovie.validate()) {
-                    parsedMovies.add(tempMovie);
+                    parsedMovies.put(tempMovie.getId(), tempMovie);
 
                 } else {
                     // Process Movie Inconsistencies
@@ -211,20 +216,59 @@ public class MainParser extends DefaultHandler {
 
         } else if (currentDocument.equals(Constants.castFileName)) {
 
+            if (qName.equalsIgnoreCase("f")) {
+                tempMovieID = "p-" + tempVal;
+
+            } else if (qName.equalsIgnoreCase("a")) {
+                tempStarName = tempVal;
+
+            } else if (qName.equalsIgnoreCase("m")) {
+                parsedCasts.put(tempStarName, tempMovieID);
+            }
+
 
         } else if (currentDocument.equals(Constants.actorFileName)) {
+
             if (qName.equalsIgnoreCase("actor")) {
+
                 //add it to the list
-                if (!tempStar.getName().isEmpty()) {
+
+                if (tempStar.validate()) {
+
                     if (!parsedStarNames.contains(tempStar.getName())) {
+
                         tempStar.setId("p-" + (this.currentStarId++)); // p stands for parsed
+
                         parsedStars.add(tempStar);
+
                         parsedStarNames.add(tempStar.getName());
+
+                        // parsedCasts key = star name , value = movie id
+
+                        if (parsedCasts.containsKey(tempStar.getName())) {
+
+                            String castMovieId = parsedCasts.get(tempStar.getName());
+
+                            if (parsedMovies.containsKey(castMovieId)) {
+
+                                parsedMovies.get(castMovieId).addStarId(tempStar.getId());
+
+                            } else {
+                                // Inconsistency: Movie ID from cast does not exist in parsedMovies
+                            }
+
+                        } else {
+
+                            // Inconsistency: Star name from actor does not exist in the cast
+
+                        }
+
                     } else {
+
                         try {
                             duplicateStarsWriter.write(String.format("Star %s already existed in the database.\n", tempStar.getName()));
                         } catch (IOException e) {
-                            System.err.println("An error occurred.");
+                            System.err.println("An error occurred: ");
                             e.printStackTrace();
                         }
                     }
@@ -232,11 +276,13 @@ public class MainParser extends DefaultHandler {
 
             } else if (qName.equalsIgnoreCase("stagename")) {
                 tempStar.setName(tempVal);
+
             } else if (qName.equalsIgnoreCase("dob")) {
                 try {
                     tempStar.setBirthYear(Integer.parseInt(tempVal));
+
                 } catch (NumberFormatException e) {
-                    tempStar.setBirthYear(null); // Inconsistency!!
+                    tempStar.setBirthYear(null);
                 }
             }
 
@@ -253,6 +299,7 @@ public class MainParser extends DefaultHandler {
 
         System.out.println("Parsed Movies Count: " + parsedMovies.size());
         System.out.println("Parsed Stars Count: " + parsedStars.size());
+        System.out.println("Parsed Casts Count: " + parsedCasts.size());
     }
 
     private Double generatePrice() {
