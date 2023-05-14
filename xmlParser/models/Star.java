@@ -3,9 +3,9 @@ package models;
 public class Star {
     private String id; // id in table (can't be null)
     private String name; // name in table (can't be null)
-    private int birthYear; // birthYear in table (can be null)
+    private Integer birthYear; // birthYear in table (can be null)
 
-    public Star(String id, String name, int birthYear) {
+    public Star(String id, String name, Integer birthYear) {
         this.id = id;
         this.name = name;
         this.birthYear = birthYear;
@@ -33,7 +33,7 @@ public class Star {
         return birthYear;
     }
 
-    public void setBirthYear(int year) {
+    public void setBirthYear(Integer year) {
         this.birthYear = year;
     }
 }
