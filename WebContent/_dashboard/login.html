@@ -8,14 +8,17 @@
             integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
             crossorigin="anonymous"
         />
-        <link rel="stylesheet" href="css/custom-style.css" />
+        <link rel="stylesheet" href="../css/custom-style.css" />
         <!-- recaptcha JS -->
-        <script src='https://www.google.com/recaptcha/api.js' type="text/javascript"></script>
-        <title>Login</title>
+        <script
+            src="https://www.google.com/recaptcha/api.js"
+            type="text/javascript"
+        ></script>
+        <title>Login to Dashboard</title>
     </head>
     <body>
         <!-- Set the method to POST to avoid showing the username/password in the URL
-       The default action is disabled to allow your own implementation. -->
+The default action is disabled to allow your own implementation. -->
 
         <section class="vh-100 bg-primary-subtle">
             <div class="container p-5 h-100">
@@ -29,24 +32,28 @@
                         >
                             <div class="card-body p-5 text-left">
                                 <p class="fs-2 text-dark mt-4 fw-bold pb-3">
-                                    Login To FabFlix
+                                    Login To FabFlix Dashboard
                                 </p>
                                 <div
-                                    id="login_error_message"
+                                    id="dashboard-login-error-message"
                                     class="alert alert-danger d-none"
                                     role="alert"
                                 ></div>
-                                <form id="login-form" method="post" action="#">
+                                <form
+                                    id="dashboard-login-form"
+                                    method="post"
+                                    action="#"
+                                >
                                     <div
                                         class="mb-3 input-group input-group-lg"
                                     >
                                         <span class="input-group-text"
-                                            >Username</span
+                                            >Employee Email</span
                                         >
                                         <input
-                                            name="username"
+                                            name="email"
                                             class="form-control"
-                                            placeholder="Enter Username"
+                                            placeholder="Enter employee email"
                                             type="text"
                                         />
                                     </div>
@@ -90,6 +97,6 @@
             crossorigin="anonymous"
         ></script>
         <!-- include our own JS file -->
-        <script type="module" src="js/login.js"></script>
+        <script type="module" src="js/dashboard-login.js"></script>
     </body>
 </html>

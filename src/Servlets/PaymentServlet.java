@@ -2,7 +2,6 @@ package Servlets;
 
 import Helpers.DatabaseHandler;
 import Models.Customer;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -72,7 +71,8 @@ public class PaymentServlet extends HttpServlet {
                 for (String itemId : itemsInShoppingCart.keySet()) {
                     // Add each item in shopping cart to the sales table
                     String salesUpdateQuery = "INSERT INTO sales (customerId, movieId, saleDate, quantity)\n" +
-                            "VALUES (?, ?, ?, ?);";
+                            "VALUES (?, ?, ?, ?);\n";
+
                     paymentDBHandler.executeUpdate(salesUpdateQuery, String.valueOf(customerId), itemId, LocalDateTime.now().toString(), itemsInShoppingCart.get(itemId).toString());
 
                     HashMap<String, String> order = new HashMap<>();
@@ -84,8 +84,7 @@ public class PaymentServlet extends HttpServlet {
                     mostRecentOrders.add(order);
                 }
 
-                session.setAttribute("mostRecentOrders", mostRecentOrders); // Reset the most recent order in the
-                                                                            // sessions
+                session.setAttribute("mostRecentOrders", mostRecentOrders); // Reset the most recent order in the sessions
 
             } else {
                 // Credit card info is incorrect
@@ -96,12 +95,14 @@ public class PaymentServlet extends HttpServlet {
 
             // Write JSON string to output
             out.write(responseJsonObj.toString());
+
             // Set response status to 200 (OK)
             response.setStatus(200);
 
         } catch (SQLException e) {
             // Write error message JSON object to output
             JsonObject responseJsonObj = new JsonObject();
+
             // Credit card info is incorrect
             responseJsonObj.addProperty("status", "fail");
             responseJsonObj.addProperty("message", "Credit card information is incorrect!");
@@ -111,6 +112,7 @@ public class PaymentServlet extends HttpServlet {
             request.getServletContext().log("Error:", e);
             // Set response status to 500 (Internal Server Error)
             response.setStatus(200);
+
         } catch (Exception e) {
             // Write error message JSON object to output
             JsonObject jsonObject = new JsonObject();

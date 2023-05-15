@@ -18,6 +18,7 @@ public class LoginFilter implements Filter {
         allowedURIs.add("api/login");
         allowedURIs.add("icon.js");
         allowedURIs.add("login.js");
+        allowedURIs.add("api/dashboard-login");
 
         allowedURIs.add("css/custom-style.css");
 
@@ -43,14 +44,20 @@ public class LoginFilter implements Filter {
             return;
         }
 
-        // Redirect to login page if the "user" attribute doesn't exist in session
-        if (httpRequest.getSession().getAttribute("customer") == null) {
 
+        if (!httpRequest.getRequestURI().toLowerCase().contains("_dashboard") && httpRequest.getSession().getAttribute("customer") == null) {
+            // Redirect to login page if the "user" attribute doesn't exist in session
             System.out.println("LoginFilter: Not Allowed - User Not Logged In: " + httpRequest.getRequestURI());
             System.out.println("LoginFilter: Redirect to: login.html");
 
             httpResponse.sendRedirect("./login.html");
 
+        } else if (httpRequest.getRequestURI().toLowerCase().contains("_dashboard") && httpRequest.getSession().getAttribute("employee") == null) {
+            // Redirect to login page if the "employee" attribute doesn't exist in session
+            System.out.println("LoginFilter: Not Allowed - Employee Not Logged In: " + httpRequest.getRequestURI());
+            System.out.println("LoginFilter: Redirect to: _dashboard/login.html");
+
+            httpResponse.sendRedirect("./_dashboard/login.html");
         } else {
 
             System.out.println("LoginFilter: Allowed - User Logged In: " + httpRequest.getRequestURI());

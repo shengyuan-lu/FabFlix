@@ -171,3 +171,15 @@ buildNumber.properties
 # some additional files not meant to be added to git
 .DS_Store
 .idea/
+
+src/xmlParser/stanford-movies
+
+# ignore the inconsistency reports
+MovieInconsistencyReport.txt
+CastInconsistencyReport.txt
+StarInconsistencyReport.txt
+stars.csv
+sim.csv
+movies.csv
+gim.csv
+ratings.csv

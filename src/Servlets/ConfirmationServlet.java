@@ -1,7 +1,6 @@
 package Servlets;
 
 import Helpers.DatabaseHandler;
-import Models.Customer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
@@ -19,7 +18,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 // Declaring a WebServlet called ShoppingCartServlet, which maps to url "/api/shopping-cart"
 @WebServlet(name = "ConfirmationServlet", urlPatterns = "/api/confirmation")

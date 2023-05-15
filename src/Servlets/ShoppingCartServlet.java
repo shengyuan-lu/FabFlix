@@ -15,9 +15,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 // Declaring a WebServlet called ShoppingCartServlet, which maps to url "/api/shopping-cart"
 @WebServlet(name = "ShoppingCartServlet", urlPatterns = "/api/shopping-cart")

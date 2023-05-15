@@ -41,7 +41,7 @@ function handleResult(resultData) {
     let starMovies = jQuery(".star-movies");
     starName.html(resultData["star_name"]);
 
-    if (resultData["star_dob"] != null) {
+    if (resultData["star_dob"] != null && resultData["star_dob"] != "0" ) {
         starDOB.html(resultData["star_dob"]);
     } else {
         starDOB.html("N/A");
