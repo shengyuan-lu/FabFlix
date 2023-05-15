@@ -323,7 +323,8 @@ public class MainParser extends DefaultHandler {
             float price = movie.getPrice();
 
             try {
-                this.csvWriter.write(String.format("%s,%s,%d,%s,%f\n", movieId, title, year, director, price));
+
+                this.csvWriter.write(String.format("%s$%s$%d$%s$%f\n", movieId, title, year, director, price));
                 this.csvWriter.flush();
 
             } catch (IOException e) {
@@ -359,7 +360,7 @@ public class MainParser extends DefaultHandler {
         }
 
         String loadStarsQuery = "load data local infile 'src/xmlParser/movies.csv' into table movies\n" +
-                "fields terminated by ','\n" +
+                "fields terminated by '$'\n" +
                 "lines terminated by '\n';";
         try {
             new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);

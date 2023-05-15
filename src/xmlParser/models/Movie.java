@@ -106,7 +106,7 @@ public class Movie {
     }
 
     public boolean validate() {
-        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null || this.price == 0 || this.year <= 1900) {
+        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null || this.price == 0 || this.year <= 1900 || this.director.startsWith("1")) {
             return false;
         } else {
             return true;
