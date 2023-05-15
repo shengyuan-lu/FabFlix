@@ -262,11 +262,23 @@ public class MainParser extends DefaultHandler {
         }
     }
 
+    private void handleMovieWithNoStars() {
+
+        Set<String> movieIDsWithoutStars = new HashSet<>(this.parsedMovies.keySet());
+
+        Set<String> movieIDsWithStars = new HashSet<>(this.parsedCasts.values());
+
+        // Unfinished
+
+
+
+    }
+
     public void updateDatabase() {
 
     }
 
-    public void generateSummaryReport() {
+    private void generateSummaryReport() {
 
         System.out.println("Parsed Movie Count: " + parsedMovies.size());
         System.out.println("Parsed Casts Count: " + parsedCasts.size());
@@ -302,7 +314,7 @@ public class MainParser extends DefaultHandler {
 
     }
 
-    public void generateInconsistencyReport() {
+    private void generateInconsistencyReport() {
 
         ArrayList<String> reports = new ArrayList<>();
         reports.add("xmlParser/MovieInconsistencyReport.txt");
