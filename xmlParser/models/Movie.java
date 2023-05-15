@@ -107,7 +107,7 @@ public class Movie {
 
 
     public boolean validate() {
-        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null || this.genres.isEmpty()) {
+        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null) {
             return false;
         } else {
             return true;
@@ -131,6 +131,28 @@ public class Movie {
         sb.append("Movie Director: " + this.director + "\n");
         sb.append("Movie Price: " + this.price + "\n");
         sb.append("Movie Genres: " + this.genres.toString() + "\n");
+
+        return sb.toString();
+    }
+
+    public String GetMissingRequiredFieldsDetail() {
+        StringBuilder sb = new StringBuilder();
+
+        if (this.id == null) {
+            sb.append("ID: " + this.id + "\n");
+        }
+
+        if (this.title == null) {
+            sb.append("Title: " + this.title + "\n");
+        }
+
+        if (this.year == null) {
+            sb.append("Year: " + this.year + "\n");
+        }
+
+        if (this.director == null) {
+            sb.append("Director: " + this.director + "\n");
+        }
 
         return sb.toString();
     }

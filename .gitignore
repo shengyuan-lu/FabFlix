@@ -175,5 +175,7 @@ buildNumber.properties
 xmlParser/stanford-movies
 
 # ignore the inconsistency reports
-duplicateStarErrors.txt
+MovieInconsistencyReport.txt
+CastInconsistencyReport.txt
+StarInconsistencyReport.txt
 stars.csv

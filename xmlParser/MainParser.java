@@ -3,15 +3,10 @@ import java.util.*;
 
 import java.io.IOException;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import Helpers.DatabaseHandler;
-import jakarta.servlet.ServletConfig;
 import models.Movie;
 import models.Star;
 import org.xml.sax.Attributes;
@@ -23,33 +18,6 @@ import helpers.Constants;
 
 public class MainParser extends DefaultHandler {
 
-    // For generating random movie prices
-    private Random random = new Random();
-
-
-    // For parsing - universal
-    private String tempVal;
-    private String currentDocument;
-
-    // For parsing - mains243.xml
-    private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
-    private Movie tempMovie;
-    private String tempDirector;
-
-    // For parsing - casts124.xml <f> = movie id, <M> = star name
-    private String tempMovieID;
-    private String tempStarName;
-    private HashMap<String, String> parsedCasts;  // key = star name , value = movie id
-
-
-    // For parsing - actors63.xml
-    private HashSet<Star> parsedStars;
-    private Set<String> parsedStarNames;
-    private Star tempStar;
-    private FileWriter duplicateStarsWriter;
-    private int currentStarId;
-
-
     // The main function of the parser
     public static void main(String[] args) {
 
@@ -60,9 +28,29 @@ public class MainParser extends DefaultHandler {
         parser.parseDocument(Constants.castFileName);
 
         parser.parseDocument(Constants.actorFileName);
-
-        parser.generateReport();
     }
+
+    // For parsing - universal
+    private String tempVal;
+    private String currentDocument;
+    private FileWriter inconsistencyReportWriter;
+
+    // For parsing - mains243.xml
+    private Random random = new Random();
+    private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
+    private Movie tempMovie;
+    private String tempDirector;
+
+    // For parsing - casts124.xml
+    private String tempMovieID;
+    private String tempStarName;
+    private HashMap<String, String> parsedCasts;  // key = star name , value = movie id
+
+    // For parsing - actors63.xml
+    private HashSet<Star> parsedStars;
+    private Set<String> parsedStarNames;
+    private Star tempStar;
+    private int currentStarId;
 
     public MainParser() {
 
@@ -71,9 +59,9 @@ public class MainParser extends DefaultHandler {
         this.tempDirector = "";
 
         this.parsedMovies = new HashMap<>();
+        this.parsedCasts = new HashMap<>();
         this.parsedStars = new HashSet<>();
         this.parsedStarNames = new HashSet<>();
-        this.parsedCasts = new HashMap<>();
 
         this.currentStarId = 0;
     }
@@ -86,8 +74,15 @@ public class MainParser extends DefaultHandler {
         SAXParserFactory spf = SAXParserFactory.newInstance();
 
         try {
-            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
-                this.duplicateStarsWriter = new FileWriter("xmlParser/duplicateStarErrors.txt");
+
+            if (Objects.equals(this.currentDocument, Constants.movieFileName)) {
+                this.inconsistencyReportWriter = new FileWriter("xmlParser/MovieInconsistencyReport.txt");
+
+            } else if (Objects.equals(this.currentDocument, Constants.castFileName)) {
+                this.inconsistencyReportWriter = new FileWriter("xmlParser/CastInconsistencyReport.txt");
+
+            } else if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
+                this.inconsistencyReportWriter = new FileWriter("xmlParser/StarInconsistencyReport.txt");
             }
 
             // get a new instance of parser
@@ -100,15 +95,16 @@ public class MainParser extends DefaultHandler {
             // parse the file and also register this class for call backs
             sp.parse(source, this);
 
-            if (this.duplicateStarsWriter != null) {
+            if (this.inconsistencyReportWriter != null) {
+
                 try {
-                    this.duplicateStarsWriter.close();
+                    this.inconsistencyReportWriter.close();
                 } catch (IOException e) {
                     System.err.println("An error occurred.");
                     e.printStackTrace();
                 }
-
             }
+
         } catch (SAXException | ParserConfigurationException | IOException error) {
             error.printStackTrace();
         }
@@ -179,14 +175,12 @@ public class MainParser extends DefaultHandler {
                 String[] result = tempVal.trim().toLowerCase().split(" ");
 
                 for (String r : result) {
+
                     if (Constants.genreMapping.containsKey(r)) {
 
                         String mappedGenre = Constants.genreMapping.get(r);
 
                         tempMovie.addGenre(mappedGenre);
-                    } else {
-                        // Process Genre Not In Mapping
-                        // System.out.println("Genre Not In Mapping: " + r);
                     }
                 }
 
@@ -205,11 +199,14 @@ public class MainParser extends DefaultHandler {
                     parsedMovies.put(tempMovie.getId(), tempMovie);
 
                 } else {
-                    // Process Movie Inconsistencies
-                    /*
-                    System.out.println("Movie Parsing Failed Because Of Missing Required Field(s):");
-                    System.out.println(tempMovie.GetDetails());
-                    */
+                    // Handle Movie Inconsistencies
+                    try {
+                        inconsistencyReportWriter.write("Movie Parsing Failed Because Of Missing Required Field(s):\n");
+                        inconsistencyReportWriter.write(tempMovie.GetMissingRequiredFieldsDetail() + "\n");
+                    } catch (IOException e) {
+                        System.err.println("An error occurred: ");
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -254,19 +251,33 @@ public class MainParser extends DefaultHandler {
                                 parsedMovies.get(castMovieId).addStarId(tempStar.getId());
 
                             } else {
-                                // Inconsistency: Movie ID from cast does not exist in parsedMovies
+
+                                // Handle Inconsistency: Movie ID from cast does not exist in parsedMovies
+                                try {
+                                    inconsistencyReportWriter.write(String.format("Movie ID %s from casts124.xml does not exists in mains243.xml.\n\n", castMovieId));
+                                } catch (IOException e) {
+                                    System.err.println("An error occurred: ");
+                                    e.printStackTrace();
+                                }
                             }
 
                         } else {
 
-                            // Inconsistency: Star name from actor does not exist in the cast
+                            // Handle Inconsistency: Star name from actor does not exist in the cast
+                            try {
+                                inconsistencyReportWriter.write(String.format("Star %s from actors63.xml does not exists in casts124.xml.\n\n", tempStar.getName()));
+                            } catch (IOException e) {
+                                System.err.println("An error occurred: ");
+                                e.printStackTrace();
+                            }
 
                         }
 
                     } else {
 
+                        // Handle Inconsistency: Star already existed in the database
                         try {
-                            duplicateStarsWriter.write(String.format("Star %s already existed in the database.\n", tempStar.getName()));
+                            inconsistencyReportWriter.write(String.format("Star %s already existed in the database.\n\n", tempStar.getName()));
                         } catch (IOException e) {
                             System.err.println("An error occurred: ");
                             e.printStackTrace();
@@ -290,21 +301,12 @@ public class MainParser extends DefaultHandler {
     }
 
     public void updateDatabase() {
-        System.out.println("Parsed Stars Count: " + parsedStars.size());
+
     }
 
-    public void generateReport() {
-
-        // More report is needed
-
-        System.out.println("Parsed Movies Count: " + parsedMovies.size());
-        System.out.println("Parsed Stars Count: " + parsedStars.size());
-        System.out.println("Parsed Casts Count: " + parsedCasts.size());
-    }
-
-    private Double generatePrice() {
+    private float generatePrice() {
         // Range: 5 - 20
-        return Math.round((5 + random.nextDouble() * (20 - 5)) * 100) / 100.0;
+        return (float) ((float)Math.round((5 + random.nextFloat() * (20 - 5)) * 100) / 100.0);
     }
 
 }
