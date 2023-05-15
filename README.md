@@ -27,7 +27,7 @@
 ```
 Notes to the grader:
 
-For each part of the program, we designed a DatabaseHandler class to handle everything related to the query
+We designed a DatabaseHandler class to handle everything related to communication with MySQL database in the project
 
 This class has 2 methods:
 executeQuery(String query, @Nullable Object... queryParameters)
@@ -66,7 +66,7 @@ Usage example:
 ### Parsing time optimization strategies
 - We frequently used HashMap to reduce retrieval time. For example, with
 ```private HashMap<String, Movie> parsedMovies; // Key = Movie ID, Value = Movie Object```, we can identify a movie by ID and later when we want to insert a star into a movie, we can find a movie in O(1) time complexity by ID. 
-- We created in-memory hashsets for checking duplicate entries
+- We created in-memory hashsets for checking duplicate entries.
 - Instead of updating the database row by row, we created corresponding CSV files containing all the data when parsing each XML file, and then use LOAD DATA MySQL statement to load these CSV files into the database. This approach makes parsing significantly faster.
 
 ### Inconsistent data reports
