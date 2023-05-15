@@ -160,6 +160,9 @@ public class MainParser extends DefaultHandler {
             } else if (qName.equalsIgnoreCase("t")) {
                 tempMovie.setTitle(tempVal);
 
+            } else if (qName.equalsIgnoreCase("dirn")) {
+                tempMovie.setDirector(tempVal);
+
             } else if (qName.equalsIgnoreCase("year")) {
 
                 try {
@@ -192,7 +195,9 @@ public class MainParser extends DefaultHandler {
 
                 tempMovie.setPrice(generatePrice());
 
-                tempMovie.setDirector(tempDirector);
+                if (tempMovie.getDirector() == null && tempDirector != null) {
+                    tempMovie.setDirector(tempDirector);
+                }
 
                 if (tempMovie.validate()) {
                     parsedMovies.put(tempMovie.getId(), tempMovie);
@@ -296,8 +301,8 @@ public class MainParser extends DefaultHandler {
         writeStarsToDB();
         writeStarsInMoviesToDB();
         writeGenresToDB();
-        writeGenresInMovies();
-        writeRatings();
+        writeGenresInMoviesToDB();
+        writeRatingsToDB();
     }
 
     private void writeMoviesToDB() {
@@ -503,7 +508,7 @@ public class MainParser extends DefaultHandler {
 
     }
 
-    private void writeGenresInMovies() {
+    private void writeGenresInMoviesToDB() {
 
         try {
             this.csvWriter = new FileWriter("src/xmlParser/gim.csv");
@@ -565,7 +570,7 @@ public class MainParser extends DefaultHandler {
 
     }
 
-    private void writeRatings() {
+    private void writeRatingsToDB() {
 
         try {
             this.csvWriter = new FileWriter("src/xmlParser/ratings.csv");
