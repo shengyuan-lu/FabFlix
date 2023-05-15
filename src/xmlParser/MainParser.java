@@ -69,6 +69,7 @@ public class MainParser extends DefaultHandler {
 
     // Genres
     Set<String> seenGenres = new HashSet<>();
+    HashMap<String, Integer> genresMapping = new HashMap();
 
 
     public MainParser() {
@@ -293,8 +294,9 @@ public class MainParser extends DefaultHandler {
     private void updateDatabase() {
         writeMoviesToDB();
         writeStarsToDB();
-        writeStarInMoviesToDB();
+        writeStarsInMoviesToDB();
         writeGenresToDB();
+        writeGenresInMovies();
     }
 
     private void writeMoviesToDB() {
@@ -402,7 +404,7 @@ public class MainParser extends DefaultHandler {
         }
     }
 
-    private void writeStarInMoviesToDB() {
+    private void writeStarsInMoviesToDB() {
 
         // Write Star CSV
         try {
@@ -475,6 +477,90 @@ public class MainParser extends DefaultHandler {
                 e.printStackTrace();
             }
         }
+
+        String getGenresMapping = "SELECT id, name FROM genres";
+
+        try {
+            List<HashMap<String, String>> result = dbh.executeQuery(getGenresMapping);
+
+            // System.out.println(result.toString());
+
+            for (HashMap<String, String> hm : result) {
+
+                Integer id = Integer.parseInt(hm.get("id"));
+                String name = hm.get("name");
+
+                this.genresMapping.put(name, id);
+            }
+
+            // System.out.println(this.genresMapping.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void writeGenresInMovies() {
+
+        try {
+            this.csvWriter = new FileWriter("src/xmlParser/gim.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Map.Entry<String, Movie> entry : this.parsedMovies.entrySet()) {
+
+            Movie movie = entry.getValue();
+
+            String movieId = movie.getId();
+
+            Set<String> genres = movie.getGenres();
+
+            Iterator<String> iterator = genres.iterator();
+
+            // System.out.println(this.genresMapping.toString());
+
+            while (iterator.hasNext()) {
+
+                String name = iterator.next();
+
+                // System.out.println(name);
+
+                Integer id = this.genresMapping.get(name);
+
+                // System.out.println(id);
+
+                try {
+                    this.csvWriter.write(String.format("%d,%s\n", id, movieId));
+                    this.csvWriter.flush();
+
+                } catch (IOException e) {
+                    System.err.println("An error occurred.");
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        if (this.csvWriter != null) {
+            try {
+                this.csvWriter.close();
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        String loadStarsQuery = "load data local infile 'src/xmlParser/gim.csv' into table genres_in_movies\n" +
+                "fields terminated by ','\n" +
+                "lines terminated by '\n';";
+        try {
+            new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
     }
 
     private void generateSummaryReport() {
