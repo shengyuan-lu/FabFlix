@@ -11,12 +11,14 @@
 - Task 3
 - Task 5
 - Task 6
+- Set up AWS and recorded demo video
 
 **Shengyuan Lu**
 - Task 1
 - Task 3
 - Task 4
 - Task 6
+- Helped prepare for recording demo video
 
 ### Filenames with Prepared Statements
 
