@@ -1,4 +1,4 @@
-package models;
+package xmlParser.models;
 
 import java.util.ArrayList;
 import java.util.HashSet;

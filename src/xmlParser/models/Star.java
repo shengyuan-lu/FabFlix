@@ -1,4 +1,4 @@
-package models;
+package xmlParser.models;
 
 public class Star {
     private String id; // id in table (can't be null)

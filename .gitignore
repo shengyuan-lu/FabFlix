@@ -172,7 +172,7 @@ buildNumber.properties
 .DS_Store
 .idea/
 
-xmlParser/stanford-movies
+src/xmlParser/stanford-movies
 
 # ignore the inconsistency reports
 MovieInconsistencyReport.txt
@@ -181,4 +181,3 @@ StarInconsistencyReport.txt
 stars.csv
 sim.csv
 movie.csv
-xmlParser/movies.csv

@@ -1,3 +1,5 @@
+package xmlParser;
+
 import java.io.FileWriter;
 import java.util.*;
 
@@ -8,16 +10,16 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import helpers.StarPair;
-import helpers.XMLDatabaseHandler;
-import models.Movie;
-import models.Star;
+import xmlParser.helpers.StarPair;
+import xmlParser.helpers.XMLDatabaseHandler;
+import xmlParser.models.Movie;
+import xmlParser.models.Star;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import helpers.Constants;
+import xmlParser.helpers.Constants;
 
 public class MainParser extends DefaultHandler {
 
@@ -296,7 +298,7 @@ public class MainParser extends DefaultHandler {
     private void writeMoviesToDB() {
         // Write Star CSV
         try {
-            this.csvWriter = new FileWriter("xmlParser/movies.csv");
+            this.csvWriter = new FileWriter("src/xmlParser/movies.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -335,7 +337,7 @@ public class MainParser extends DefaultHandler {
             }
         }
 
-        String loadStarsQuery = "load data local infile 'xmlParser/movies.csv' into table movies\n" +
+        String loadStarsQuery = "load data local infile 'src/xmlParser/movies.csv' into table movies\n" +
                 "fields terminated by ','\n" +
                 "lines terminated by '\n';";
         try {
@@ -348,7 +350,7 @@ public class MainParser extends DefaultHandler {
     private void writeStarsToDB() {
         // Write Star CSV
         try {
-            this.csvWriter = new FileWriter("xmlParser/stars.csv");
+            this.csvWriter = new FileWriter("src/xmlParser/stars.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -372,7 +374,7 @@ public class MainParser extends DefaultHandler {
             }
         }
 
-        String loadStarsQuery = "load data local infile 'xmlParser/stars.csv' into table stars\n" +
+        String loadStarsQuery = "load data local infile 'src/xmlParser/stars.csv' into table stars\n" +
                 "fields terminated by ','\n" +
                 "lines terminated by '\n';";
         try {
@@ -386,7 +388,7 @@ public class MainParser extends DefaultHandler {
 
         // Write Star CSV
         try {
-            this.csvWriter = new FileWriter("xmlParser/sim.csv");
+            this.csvWriter = new FileWriter("src/xmlParser/sim.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -426,7 +428,7 @@ public class MainParser extends DefaultHandler {
             }
         }
 
-        String loadStarsQuery = "load data local infile 'xmlParser/sim.csv' into table stars_in_movies\n" +
+        String loadStarsQuery = "load data local infile 'src/xmlParser/sim.csv' into table stars_in_movies\n" +
                 "fields terminated by ','\n" +
                 "lines terminated by '\n';";
         try {
@@ -476,9 +478,9 @@ public class MainParser extends DefaultHandler {
     private void generateInconsistencyReport() {
 
         ArrayList<String> reports = new ArrayList<>();
-        reports.add("xmlParser/MovieInconsistencyReport.txt");
-        reports.add("xmlParser/CastInconsistencyReport.txt");
-        reports.add("xmlParser/StarInconsistencyReport.txt");
+        reports.add("src/xmlParser/MovieInconsistencyReport.txt");
+        reports.add("src/xmlParser/CastInconsistencyReport.txt");
+        reports.add("src/xmlParser/StarInconsistencyReport.txt");
 
         for (String report : reports) {
 
@@ -486,7 +488,7 @@ public class MainParser extends DefaultHandler {
 
                 this.inconsistencyReportWriter = new FileWriter(report);
 
-                if (report.equals("xmlParser/MovieInconsistencyReport.txt")) {
+                if (report.equals("src/xmlParser/MovieInconsistencyReport.txt")) {
                     for (String err : this.movieErrors) {
                         try {
                             inconsistencyReportWriter.write(err);
@@ -496,7 +498,7 @@ public class MainParser extends DefaultHandler {
                         }
                     }
 
-                } else if (report.equals("xmlParser/CastInconsistencyReport.txt")) {
+                } else if (report.equals("src/xmlParser/CastInconsistencyReport.txt")) {
                     for (String err : this.castErrors) {
                         try {
                             inconsistencyReportWriter.write(err);
@@ -505,7 +507,7 @@ public class MainParser extends DefaultHandler {
                             e.printStackTrace();
                         }
                     }
-                } else if (report.equals("xmlParser/StarInconsistencyReport.txt")) {
+                } else if (report.equals("src/xmlParser/StarInconsistencyReport.txt")) {
                     for (String err : this.actorErrors) {
                         try {
                             inconsistencyReportWriter.write(err);

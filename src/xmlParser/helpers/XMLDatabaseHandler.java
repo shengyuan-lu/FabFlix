@@ -1,6 +1,6 @@
-package helpers;
+package xmlParser.helpers;
 
-import models.Movie;
+import xmlParser.models.Movie;
 
 import java.sql.*;
 import java.util.HashMap;

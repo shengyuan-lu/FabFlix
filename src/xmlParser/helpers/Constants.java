@@ -1,14 +1,14 @@
-package helpers;
+package xmlParser.helpers;
 
 import java.util.Map;
 
 public class Constants {
 
-    public static final String actorFileName = "xmlParser/stanford-movies/actors63.xml";
+    public static final String actorFileName = "src/xmlParser/stanford-movies/actors63.xml";
 
-    public static final String castFileName = "xmlParser/stanford-movies/casts124.xml";
+    public static final String castFileName = "src/xmlParser/stanford-movies/casts124.xml";
 
-    public static final String movieFileName = "xmlParser/stanford-movies/mains243.xml";
+    public static final String movieFileName = "src/xmlParser/stanford-movies/mains243.xml";
 
     public static final Map<String, String> genreMapping = Map.<String, String>ofEntries(
 

@@ -1,4 +1,4 @@
-package helpers;
+package xmlParser.helpers;
 
 import java.util.Objects;
 
