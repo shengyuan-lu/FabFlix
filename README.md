@@ -20,11 +20,12 @@
 
 ### Filenames with Prepared Statements
 
-- src/Helpers/DatabaseHandler.java
+- src/Helpers/DatabaseHandler.java (For FabFlix)
+- src/xmlParser/helpers/XMLDatabaseHandler.java (For xml parser)
 ```
 Notes to the grader:
 
-We designed a DatabaseHandler class to handle everything related to the query
+For each part of the program, we designed a DatabaseHandler class to handle everything related to the query
 
 This class has 2 methods:
 executeQuery(String query, @Nullable Object... queryParameters)
@@ -71,7 +72,7 @@ The parser will generate the following inconsistency files
 - MovieInconsistencyReport.txt
 - StarInconsistencyReport.txt
 
-Due to the massive size of the file, it is not possible to copy it all here, but we can show you examples of what is logged:
+Due to the massive size of the file, it is not possible to copy all contents here, but we can show you examples of what is logged:
 
 Example In CastInconsistencyReport.txt:
 
