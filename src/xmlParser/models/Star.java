@@ -52,6 +52,12 @@ public class Star {
     }
 
     public String getCSVLine() {
-        return String.format("%s,%s,%d\n", this.id, this.name, this.birthYear);
+
+        if (this.birthYear == null) {
+            return String.format("%s,%s,null\n", this.id, this.name);
+        } else {
+            return String.format("%s,%s,%d\n", this.id, this.name, this.birthYear);
+        }
+
     }
 }

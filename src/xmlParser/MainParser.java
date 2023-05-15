@@ -258,12 +258,15 @@ public class MainParser extends DefaultHandler {
 
             } else if (qName.equalsIgnoreCase("stagename")) {
                 tempStar.setName(tempVal);
+
             } else if (qName.equalsIgnoreCase("dob")) {
+
                 try {
                     tempStar.setBirthYear(Integer.parseInt(tempVal));
                 } catch (NumberFormatException e) {
                     tempStar.setBirthYear(null);
                 }
+
             }
 
         }
@@ -413,7 +416,6 @@ public class MainParser extends DefaultHandler {
 
     private void writeStarsInMoviesToDB() {
 
-        // Write Star CSV
         try {
             this.csvWriter = new FileWriter("src/xmlParser/sim.csv");
         } catch (IOException e) {
