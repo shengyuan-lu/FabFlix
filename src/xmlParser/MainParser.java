@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.util.*;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -48,8 +47,6 @@ public class MainParser extends DefaultHandler {
 
     // For parsing - mains243.xml
     private Random random = new Random();
-    // Genres in movies
-
     private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
     private Movie tempMovie;
     private String tempDirector;
@@ -68,6 +65,10 @@ public class MainParser extends DefaultHandler {
     private FileWriter csvWriter;
     private int currentStarId;
     private ArrayList<String> actorErrors = new ArrayList<>();
+
+
+    // Genres
+    Set<String> seenGenres = new HashSet<>();
 
 
     public MainParser() {
@@ -293,6 +294,7 @@ public class MainParser extends DefaultHandler {
         writeMoviesToDB();
         writeStarsToDB();
         writeStarInMoviesToDB();
+        writeGenresToDB();
     }
 
     private void writeMoviesToDB() {
@@ -324,6 +326,22 @@ public class MainParser extends DefaultHandler {
             } catch (IOException e) {
                 System.err.println("An error occurred.");
                 e.printStackTrace();
+            }
+
+            // Genre in movies
+
+            Set<String> genres = movie.getGenres();
+
+            Iterator<String> iterator = genres.iterator();
+
+
+            while (iterator.hasNext()) {
+
+                String genre = iterator.next();
+
+                if (!seenGenres.contains(genre)) {
+                    seenGenres.add(genre);
+                }
             }
 
         }
@@ -439,11 +457,33 @@ public class MainParser extends DefaultHandler {
 
     }
 
+    private void writeGenresToDB() {
+        String genreUpdate = "INSERT IGNORE INTO genres SELECT null, ? WHERE NOT EXISTS (SELECT * FROM genres WHERE name= ? )";
+
+        XMLDatabaseHandler dbh = new XMLDatabaseHandler();
+
+        Iterator<String> iterator = this.seenGenres.iterator();
+
+        while (iterator.hasNext()) {
+
+            String genre = iterator.next();
+
+            try {
+                dbh.executeUpdate(genreUpdate, genre, genre);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void generateSummaryReport() {
 
         System.out.println("Parsed Movie Count: " + parsedMovies.size());
         System.out.println("Parsed Casts Count: " + parsedCasts.size());
         System.out.println("Parsed Stars Count: " + parsedStars.size());
+
+        /*
 
         System.out.println("\n10 Sample Movies:");
         int printedMovieCount = 0;
@@ -472,6 +512,8 @@ public class MainParser extends DefaultHandler {
             Star star = iterator.next();
             System.out.println(star.getDetails());
         }
+
+         */
 
     }
 
