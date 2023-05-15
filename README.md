@@ -61,10 +61,11 @@ Usage example:
     List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
 
 ```
-### Two parsing time optimization strategies
-- We frequently used HashMap and HashSet to reduce retrieval time. For example, with
+### Parsing time optimization strategies
+- We frequently used HashMap to reduce retrieval time. For example, with
 ```private HashMap<String, Movie> parsedMovies; // Key = Movie ID, Value = Movie Object```, we can identify a movie by ID and later when we want to insert a star into a movie, we can find a movie in O(1) time complexity by ID. 
-- Instead of updating the database row by row, we create CSV files to contain all new rows we want to add, and load it to the database at one. This approach makes parsing significantly faster.
+- We created in-memory hashsets for checking duplicate entries
+- Instead of updating the database row by row, we created corresponding CSV files containing all the data when parsing each XML file, and then use LOAD DATA MySQL statement to load these CSV files into the database. This approach makes parsing significantly faster.
 
 ### Inconsistent data reports
 The parser will generate the following inconsistency files
