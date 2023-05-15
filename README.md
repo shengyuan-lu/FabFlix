@@ -91,4 +91,4 @@ Example In StarInconsistencyReport:
 ``Star Wilford Brimley already existed in the database.``
 
 ### Demo Video
-[Click here for the demo video]()
+[Click here for the demo video](https://youtu.be/Y8SuAIBKTOc)
