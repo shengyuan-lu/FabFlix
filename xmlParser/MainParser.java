@@ -8,7 +8,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import Helpers.DatabaseHandler;
-import helpers.Pair;
+import helpers.StarPair;
 import helpers.XMLDatabaseHandler;
 import jakarta.servlet.ServletConfig;
 import models.Movie;
@@ -50,7 +50,6 @@ public class MainParser extends DefaultHandler {
     private FileWriter inconsistencyReportWriter;
 
     // For parsing - mains243.xml
-    private Random random = new Random();
     private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
     private Movie tempMovie;
     private String tempDirector;
@@ -64,12 +63,13 @@ public class MainParser extends DefaultHandler {
 
     // For parsing - actors63.xml
     private HashSet<Star> parsedStars;
-    private Set<String> parsedStarNames;
+    private Set<StarPair> parsedStarNames;
     private Star tempStar;
     private FileWriter duplicateStarsWriter;
     private FileWriter starsCsvWriter;
     private int currentStarId;
     private ArrayList<String> actorErrors = new ArrayList<>();
+
 
     public MainParser() {
 
@@ -216,7 +216,6 @@ public class MainParser extends DefaultHandler {
                 String[] result = tempVal.trim().toLowerCase().split(" ");
 
                 for (String r : result) {
-
                     if (Constants.genreMapping.containsKey(r)) {
 
                         String mappedGenre = Constants.genreMapping.get(r);
@@ -262,10 +261,19 @@ public class MainParser extends DefaultHandler {
             if (qName.equalsIgnoreCase("actor")) {
                 //add it to the list
                 if (tempStar.validate()) {
-                    if (!parsedStarNames.contains(tempStar.getName())) {
+                    StarPair starNameBirthYearPair = new StarPair(tempStar.getName(), tempStar.getBirthYear());
+                    if (!parsedStarNames.contains(starNameBirthYearPair)) {
                         tempStar.setId("p-" + (this.currentStarId++)); // p stands for parsed
                         parsedStars.add(tempStar);
-                        parsedStarNames.add(tempStar.getName());
+                        parsedStarNames.add(starNameBirthYearPair);
+
+                        try {
+                            this.starsCsvWriter.write(tempStar.getCSVLine());
+                            this.starsCsvWriter.flush();
+                        } catch (IOException e) {
+                            System.err.println("An error occurred.");
+                            e.printStackTrace();
+                        }
 
                         // parsedCasts key = star name , value = movie id
                         if (parsedCasts.containsKey(tempStar.getName())) {
@@ -287,18 +295,12 @@ public class MainParser extends DefaultHandler {
                         // Handle Inconsistency: Star already existed in the database
                         try {
                             duplicateStarsWriter.write(String.format("Star (%s, %d) already existed in the database.\n", tempStar.getName(), tempStar.getBirthYear()));
+                            duplicateStarsWriter.flush();
                         } catch (IOException e) {
                             System.err.println("An error occurred: ");
                             e.printStackTrace();
                         }
                         actorErrors.add(String.format("Star %s already existed in the database.\n\n", tempStar.getName()));
-                    }
-
-                    try {
-                        this.starsCsvWriter.write(tempStar.getCSVLine());
-                    } catch (IOException e) {
-                        System.err.println("An error occurred.");
-                        e.printStackTrace();
                     }
                 }
 
