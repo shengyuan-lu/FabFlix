@@ -41,6 +41,16 @@ public class Star {
         return !this.name.isEmpty();
     }
 
+    public String getDetails() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Star ID: " + this.id + "\n");
+        sb.append("Star Name: " + this.name + "\n");
+        sb.append("Star Birth Year: " + this.birthYear + "\n");
+
+        return sb.toString();
+    }
+
     public String getCSVLine() {
         return String.format("%s,%s,%d\n", this.id, this.name, this.birthYear);
     }

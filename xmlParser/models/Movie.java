@@ -107,7 +107,7 @@ public class Movie {
 
 
     public boolean validate() {
-        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null) {
+        if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null || this.genres.isEmpty()) {
             return false;
         } else {
             return true;
@@ -131,6 +131,7 @@ public class Movie {
         sb.append("Movie Director: " + this.director + "\n");
         sb.append("Movie Price: " + this.price + "\n");
         sb.append("Movie Genres: " + this.genres.toString() + "\n");
+        sb.append("Movie Star IDs: " + this.starIds.toString() + "\n");
 
         return sb.toString();
     }
@@ -152,6 +153,10 @@ public class Movie {
 
         if (this.director == null) {
             sb.append("Director: " + this.director + "\n");
+        }
+
+        if (this.genres.isEmpty()) {
+            sb.append("No Genre\n");
         }
 
         return sb.toString();

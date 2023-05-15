@@ -28,12 +28,15 @@ public class MainParser extends DefaultHandler {
         parser.parseDocument(Constants.castFileName);
 
         parser.parseDocument(Constants.actorFileName);
+
+        parser.generateReport();
     }
 
     // For parsing - universal
     private String tempVal;
     private String currentDocument;
     private FileWriter inconsistencyReportWriter;
+    private FileWriter inconsistencyReportWriterTwo;
 
     // For parsing - mains243.xml
     private Random random = new Random();
@@ -45,6 +48,7 @@ public class MainParser extends DefaultHandler {
     private String tempMovieID;
     private String tempStarName;
     private HashMap<String, String> parsedCasts;  // key = star name , value = movie id
+    private ArrayList<String> castErrors = new ArrayList<>();
 
     // For parsing - actors63.xml
     private HashSet<Star> parsedStars;
@@ -96,6 +100,26 @@ public class MainParser extends DefaultHandler {
             sp.parse(source, this);
 
             if (this.inconsistencyReportWriter != null) {
+                try {
+                    this.inconsistencyReportWriter.close();
+                } catch (IOException e) {
+                    System.err.println("An error occurred.");
+                    e.printStackTrace();
+                }
+            }
+
+            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
+
+                this.inconsistencyReportWriter = new FileWriter("xmlParser/CastInconsistencyReport.txt");
+
+                for (String err : this.castErrors) {
+                    try {
+                        inconsistencyReportWriter.write(err);
+                    } catch (IOException e) {
+                        System.err.println("An error occurred: ");
+                        e.printStackTrace();
+                    }
+                }
 
                 try {
                     this.inconsistencyReportWriter.close();
@@ -251,26 +275,13 @@ public class MainParser extends DefaultHandler {
                                 parsedMovies.get(castMovieId).addStarId(tempStar.getId());
 
                             } else {
-
                                 // Handle Inconsistency: Movie ID from cast does not exist in parsedMovies
-                                try {
-                                    inconsistencyReportWriter.write(String.format("Movie ID %s from casts124.xml does not exists in mains243.xml.\n\n", castMovieId));
-                                } catch (IOException e) {
-                                    System.err.println("An error occurred: ");
-                                    e.printStackTrace();
-                                }
+                                castErrors.add(String.format("Movie ID %s from casts124.xml does not exists in mains243.xml.\n\n", castMovieId));
                             }
 
                         } else {
-
                             // Handle Inconsistency: Star name from actor does not exist in the cast
-                            try {
-                                inconsistencyReportWriter.write(String.format("Star %s from actors63.xml does not exists in casts124.xml.\n\n", tempStar.getName()));
-                            } catch (IOException e) {
-                                System.err.println("An error occurred: ");
-                                e.printStackTrace();
-                            }
-
+                            castErrors.add(String.format("Star %s from actors63.xml does not exists in casts124.xml.\n\n", tempStar.getName()));
                         }
 
                     } else {
@@ -301,6 +312,42 @@ public class MainParser extends DefaultHandler {
     }
 
     public void updateDatabase() {
+
+    }
+
+    public void generateReport() {
+
+        System.out.println("Parsed Movie Count: " + parsedMovies.size());
+        System.out.println("Parsed Casts Count: " + parsedCasts.size());
+        System.out.println("Parsed Stars Count: " + parsedStars.size());
+
+        System.out.println("\n10 Sample Movies:");
+        int printedMovieCount = 0;
+        for (Map.Entry<String, Movie> entry : parsedMovies.entrySet()) {
+            if (printedMovieCount >= 10) {
+                break;
+            }
+            System.out.println("Key (Movie ID): " + entry.getKey() + "\nValue (Movie): \n" + entry.getValue().GetDetails());
+            printedMovieCount++;
+        }
+
+        System.out.println("\n10 Sample Casts:");
+        int printedCastCount = 0;
+        for (Map.Entry<String, String> entry : parsedCasts.entrySet()) {
+            if (printedCastCount >= 10) {
+                break;
+            }
+            System.out.println("Key (Star Name): " + entry.getKey() + ", Value (Movie ID): " + entry.getValue());
+            printedCastCount++;
+        }
+
+        System.out.println("\n10 Sample Stars:");
+
+        Iterator<Star> iterator = parsedStars.iterator();
+        for (int i = 0; i < 10 && iterator.hasNext(); i++) {
+            Star star = iterator.next();
+            System.out.println(star.getDetails());
+        }
 
     }
 
