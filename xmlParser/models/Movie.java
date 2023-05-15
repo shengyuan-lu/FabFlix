@@ -114,7 +114,7 @@ public class Movie {
     }
 
     public boolean hasStar() {
-        return this.starIds.isEmpty();
+        return !this.starIds.isEmpty();
     }
 
     private boolean checkStringNullOrEmpty(String str) {

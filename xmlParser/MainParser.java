@@ -2,15 +2,14 @@ import java.io.FileWriter;
 import java.util.*;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import Helpers.DatabaseHandler;
 import helpers.StarPair;
 import helpers.XMLDatabaseHandler;
-import jakarta.servlet.ServletConfig;
 import models.Movie;
 import models.Star;
 import org.xml.sax.Attributes;
@@ -41,7 +40,8 @@ public class MainParser extends DefaultHandler {
             System.err.println(e.getMessage());
         }
 
-        parser.generateSummaryReport();
+        // parser.generateSummaryReport();
+
         parser.generateInconsistencyReport();
     }
 
@@ -297,6 +297,13 @@ public class MainParser extends DefaultHandler {
 
             this.movieErrors.add(String.format("Movie with ID %s has no star.\n\n", mId));
         }
+
+        Map<String, Movie> filteredMap = this.parsedMovies.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().hasStar())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        this.parsedMovies = (HashMap<String, Movie>) filteredMap;
     }
 
     public void updateDatabase() {
