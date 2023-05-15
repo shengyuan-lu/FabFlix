@@ -30,8 +30,9 @@ public class MainParser extends DefaultHandler {
         parser.parseDocument(Constants.movieFileName);
         parser.parseDocument(Constants.castFileName);
         parser.parseDocument(Constants.actorFileName);
+        parser.handleMovieWithNoStars();
 
-        String loadStarsQuery = "load data local infile '/Users/tonyl/projects/project-stanford_rejects/xmlParser/stars.csv' into table stars\n" +
+        String loadStarsQuery = "load data local infile 'xmlParser/stars.csv' into table stars\n" +
                 "fields terminated by ','\n" +
                 "lines terminated by '\n';";
         try {
@@ -282,9 +283,20 @@ public class MainParser extends DefaultHandler {
 
     private void handleMovieWithNoStars() {
         Set<String> allMovieIDs = new HashSet<>(this.parsedMovies.keySet());
+
         Set<String> movieIDsWithStars = new HashSet<>(this.parsedCasts.values());
+
         Set<String> movieIDsWithoutStars = new HashSet<>(allMovieIDs);
         movieIDsWithoutStars.removeAll(movieIDsWithStars);
+
+        Iterator<String> iterator = movieIDsWithoutStars.iterator();
+
+        while (iterator.hasNext()) {
+
+            String mId = iterator.next();
+
+            this.movieErrors.add(String.format("Movie with ID %s has no star.\n\n", mId));
+        }
     }
 
     public void updateDatabase() {
