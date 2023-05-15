@@ -7,6 +7,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import Helpers.DatabaseHandler;
+import helpers.Pair;
+import helpers.XMLDatabaseHandler;
+import jakarta.servlet.ServletConfig;
 import models.Movie;
 import models.Star;
 import org.xml.sax.Attributes;
@@ -24,10 +28,17 @@ public class MainParser extends DefaultHandler {
         MainParser parser = new MainParser();
 
         parser.parseDocument(Constants.movieFileName);
-
         parser.parseDocument(Constants.castFileName);
-
         parser.parseDocument(Constants.actorFileName);
+
+        String loadStarsQuery = "load data local infile '/Users/tonyl/projects/project-stanford_rejects/xmlParser/stars.csv' into table stars\n" +
+                "fields terminated by ','\n" +
+                "lines terminated by '\n';";
+        try {
+            new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
 
         parser.generateSummaryReport();
         parser.generateInconsistencyReport();
@@ -55,6 +66,8 @@ public class MainParser extends DefaultHandler {
     private HashSet<Star> parsedStars;
     private Set<String> parsedStarNames;
     private Star tempStar;
+    private FileWriter duplicateStarsWriter;
+    private FileWriter starsCsvWriter;
     private int currentStarId;
     private ArrayList<String> actorErrors = new ArrayList<>();
 
@@ -80,6 +93,9 @@ public class MainParser extends DefaultHandler {
         SAXParserFactory spf = SAXParserFactory.newInstance();
 
         try {
+            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
+                this.duplicateStarsWriter = new FileWriter("xmlParser/duplicateStarErrors.txt");
+                this.starsCsvWriter = new FileWriter("xmlParser/stars.csv");
 
             // get a new instance of parser
             SAXParser sp = spf.newSAXParser();
@@ -90,6 +106,45 @@ public class MainParser extends DefaultHandler {
 
             // parse the file and also register this class for call backs
             sp.parse(source, this);
+
+            if (this.duplicateStarsWriter != null) {
+                try {
+                    this.duplicateStarsWriter.close();
+                } catch (IOException e) {
+                    System.err.println("An error occurred.");
+                    e.printStackTrace();
+                }
+            }
+
+            if (this.inconsistencyReportWriter != null) {
+                try {
+                    this.inconsistencyReportWriter.close();
+                } catch (IOException e) {
+                    System.err.println("An error occurred.");
+                    e.printStackTrace();
+                }
+            }
+
+            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
+
+                this.inconsistencyReportWriter = new FileWriter("xmlParser/CastInconsistencyReport.txt");
+
+                for (String err : this.castErrors) {
+                    try {
+                        inconsistencyReportWriter.write(err);
+                    } catch (IOException e) {
+                        System.err.println("An error occurred: ");
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    this.inconsistencyReportWriter.close();
+                } catch (IOException e) {
+                    System.err.println("An error occurred.");
+                    e.printStackTrace();
+                }
+            }
 
         } catch (SAXException | ParserConfigurationException | IOException error) {
             error.printStackTrace();
@@ -193,13 +248,10 @@ public class MainParser extends DefaultHandler {
             }
 
         } else if (currentDocument.equals(Constants.castFileName)) {
-
             if (qName.equalsIgnoreCase("f")) {
                 tempMovieID = "p-" + tempVal;
-
             } else if (qName.equalsIgnoreCase("a")) {
                 tempStarName = tempVal;
-
             } else if (qName.equalsIgnoreCase("m")) {
                 parsedCasts.put(tempStarName, tempMovieID);
             }
@@ -208,29 +260,19 @@ public class MainParser extends DefaultHandler {
         } else if (currentDocument.equals(Constants.actorFileName)) {
 
             if (qName.equalsIgnoreCase("actor")) {
-
                 //add it to the list
-
                 if (tempStar.validate()) {
-
                     if (!parsedStarNames.contains(tempStar.getName())) {
-
                         tempStar.setId("p-" + (this.currentStarId++)); // p stands for parsed
-
                         parsedStars.add(tempStar);
-
                         parsedStarNames.add(tempStar.getName());
 
                         // parsedCasts key = star name , value = movie id
-
                         if (parsedCasts.containsKey(tempStar.getName())) {
-
                             String castMovieId = parsedCasts.get(tempStar.getName());
 
                             if (parsedMovies.containsKey(castMovieId)) {
-
                                 parsedMovies.get(castMovieId).addStarId(tempStar.getId());
-
                             } else {
                                 // Handle Inconsistency: Movie ID from cast does not exist in parsedMovies
                                 castErrors.add(String.format("Movie ID %s from casts124.xml does not exists in mains243.xml.\n\n", castMovieId));
@@ -243,17 +285,28 @@ public class MainParser extends DefaultHandler {
 
                     } else {
                         // Handle Inconsistency: Star already existed in the database
+                        try {
+                            duplicateStarsWriter.write(String.format("Star (%s, %d) already existed in the database.\n", tempStar.getName(), tempStar.getBirthYear()));
+                        } catch (IOException e) {
+                            System.err.println("An error occurred: ");
+                            e.printStackTrace();
+                        }
                         actorErrors.add(String.format("Star %s already existed in the database.\n\n", tempStar.getName()));
+                    }
+
+                    try {
+                        this.starsCsvWriter.write(tempStar.getCSVLine());
+                    } catch (IOException e) {
+                        System.err.println("An error occurred.");
+                        e.printStackTrace();
                     }
                 }
 
             } else if (qName.equalsIgnoreCase("stagename")) {
                 tempStar.setName(tempVal);
-
             } else if (qName.equalsIgnoreCase("dob")) {
                 try {
                     tempStar.setBirthYear(Integer.parseInt(tempVal));
-
                 } catch (NumberFormatException e) {
                     tempStar.setBirthYear(null);
                 }
@@ -373,9 +426,9 @@ public class MainParser extends DefaultHandler {
 
     }
 
-    private float generatePrice() {
+    private Float generatePrice() {
         // Range: 5 - 20
-        return (float) ((float)Math.round((5 + random.nextFloat() * (20 - 5)) * 100) / 100.0);
+        return (float) Math.round((5 + random.nextFloat() * (20 - 5)) * 100) / 100;
     }
 
 }
