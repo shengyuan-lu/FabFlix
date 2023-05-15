@@ -50,6 +50,7 @@ public class MainParser extends DefaultHandler {
     private FileWriter inconsistencyReportWriter;
 
     // For parsing - mains243.xml
+    private Random random = new Random();
     private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
     private Movie tempMovie;
     private String tempDirector;
@@ -65,7 +66,6 @@ public class MainParser extends DefaultHandler {
     private HashSet<Star> parsedStars;
     private Set<StarPair> parsedStarNames;
     private Star tempStar;
-    private FileWriter duplicateStarsWriter;
     private FileWriter starsCsvWriter;
     private int currentStarId;
     private ArrayList<String> actorErrors = new ArrayList<>();
@@ -94,8 +94,8 @@ public class MainParser extends DefaultHandler {
 
         try {
             if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
-                this.duplicateStarsWriter = new FileWriter("xmlParser/duplicateStarErrors.txt");
                 this.starsCsvWriter = new FileWriter("xmlParser/stars.csv");
+            }
 
             // get a new instance of parser
             SAXParser sp = spf.newSAXParser();
@@ -107,39 +107,9 @@ public class MainParser extends DefaultHandler {
             // parse the file and also register this class for call backs
             sp.parse(source, this);
 
-            if (this.duplicateStarsWriter != null) {
+            if (this.starsCsvWriter != null) {
                 try {
-                    this.duplicateStarsWriter.close();
-                } catch (IOException e) {
-                    System.err.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
-
-            if (this.inconsistencyReportWriter != null) {
-                try {
-                    this.inconsistencyReportWriter.close();
-                } catch (IOException e) {
-                    System.err.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
-
-            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
-
-                this.inconsistencyReportWriter = new FileWriter("xmlParser/CastInconsistencyReport.txt");
-
-                for (String err : this.castErrors) {
-                    try {
-                        inconsistencyReportWriter.write(err);
-                    } catch (IOException e) {
-                        System.err.println("An error occurred: ");
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    this.inconsistencyReportWriter.close();
+                    this.starsCsvWriter.close();
                 } catch (IOException e) {
                     System.err.println("An error occurred.");
                     e.printStackTrace();
@@ -293,13 +263,6 @@ public class MainParser extends DefaultHandler {
 
                     } else {
                         // Handle Inconsistency: Star already existed in the database
-                        try {
-                            duplicateStarsWriter.write(String.format("Star (%s, %d) already existed in the database.\n", tempStar.getName(), tempStar.getBirthYear()));
-                            duplicateStarsWriter.flush();
-                        } catch (IOException e) {
-                            System.err.println("An error occurred: ");
-                            e.printStackTrace();
-                        }
                         actorErrors.add(String.format("Star %s already existed in the database.\n\n", tempStar.getName()));
                     }
                 }
@@ -318,15 +281,10 @@ public class MainParser extends DefaultHandler {
     }
 
     private void handleMovieWithNoStars() {
-
-        Set<String> movieIDsWithoutStars = new HashSet<>(this.parsedMovies.keySet());
-
+        Set<String> allMovieIDs = new HashSet<>(this.parsedMovies.keySet());
         Set<String> movieIDsWithStars = new HashSet<>(this.parsedCasts.values());
-
-        // Unfinished
-
-
-
+        Set<String> movieIDsWithoutStars = new HashSet<>(allMovieIDs);
+        movieIDsWithoutStars.removeAll(movieIDsWithStars);
     }
 
     public void updateDatabase() {
