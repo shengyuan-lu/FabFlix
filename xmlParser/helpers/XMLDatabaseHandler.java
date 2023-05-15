@@ -1,6 +1,12 @@
 package helpers;
 
+import models.Movie;
+
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class XMLDatabaseHandler {
 
@@ -38,11 +44,14 @@ public class XMLDatabaseHandler {
         }
     }
 
-    public void executeBatchUpdate(String query, Object[][] queryParameters) throws Exception {
+    public void executeSimBatchUpdate(HashMap<String, Movie> movieHashMap) throws Exception {
 
         int batchLimit = 1000;
 
         Class.forName("com.mysql.cj.jdbc.Driver");
+
+        String query = "INSERT INTO stars_in_movies (starId, movieId)\n" +
+                "VALUES (?, ?);";
 
         try (Connection conn = DriverManager.getConnection(
                 "jdbc:mysql:///localhost:3306/moviedb?autoReconnect=true&useSSL=false",
@@ -53,35 +62,38 @@ public class XMLDatabaseHandler {
             PreparedStatement preparedStatement = conn.prepareStatement(query);
 
             try {
-                for (int i = 0; i < queryParameters.length; i++) {
 
-                    for (int j = 0; j < queryParameters[i].length; j++) {
+                for (Map.Entry<String, Movie> entry : movieHashMap.entrySet()) {
 
-                        Object queryString = queryParameters[i][j];
+                    Movie movie = entry.getValue();
 
-                        if (queryString instanceof Integer) {
-                            preparedStatement.setInt(j + 1, (Integer) queryString);
+                    String movieId = movie.getId();
 
-                        } else if (queryString instanceof String) {
-                            preparedStatement.setString(j + 1, (String) queryString);
+                    Set<String> starIDs = movie.getStarIds();
 
-                        } else if (queryString == null) {
-                            preparedStatement.setNull(j + 1, Types.NULL);
+                    Iterator<String> iterator = starIDs.iterator();
+
+                    while (iterator.hasNext()) {
+
+                        String starId = iterator.next();
+
+                        preparedStatement.setString(1, starId);
+                        preparedStatement.setString(2, movieId);
+
+                        preparedStatement.addBatch();
+
+                        batchLimit--;
+
+                        if (batchLimit == 0) {
+                            preparedStatement.executeBatch();
+                            preparedStatement.clearBatch();
+                            batchLimit = 1000;
                         }
+
+                        preparedStatement.clearParameters();
                     }
-
-                    preparedStatement.addBatch();
-
-                    batchLimit--;
-
-                    if (batchLimit == 0) {
-                        preparedStatement.executeBatch();
-                        preparedStatement.clearBatch();
-                        batchLimit = 1000;
-                    }
-
-                    preparedStatement.clearParameters();
                 }
+
             } finally {
                 preparedStatement.executeBatch();
                 preparedStatement.close();

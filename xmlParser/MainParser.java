@@ -29,18 +29,12 @@ public class MainParser extends DefaultHandler {
         parser.parseDocument(Constants.movieFileName);
         parser.parseDocument(Constants.castFileName);
         parser.parseDocument(Constants.actorFileName);
-        parser.handleMovieWithNoStars();
 
-        String loadStarsQuery = "load data local infile 'xmlParser/stars.csv' into table stars\n" +
-                "fields terminated by ','\n" +
-                "lines terminated by '\n';";
-        try {
-            new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+        parser.handleMoviesWithNoStars();
 
-        // parser.generateSummaryReport();
+        parser.updateDatabase();
+
+        parser.generateSummaryReport();
 
         parser.generateInconsistencyReport();
     }
@@ -52,6 +46,8 @@ public class MainParser extends DefaultHandler {
 
     // For parsing - mains243.xml
     private Random random = new Random();
+    // Genres in movies
+
     private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
     private Movie tempMovie;
     private String tempDirector;
@@ -67,7 +63,7 @@ public class MainParser extends DefaultHandler {
     private HashSet<Star> parsedStars;
     private Set<StarPair> parsedStarNames;
     private Star tempStar;
-    private FileWriter starsCsvWriter;
+    private FileWriter csvWriter;
     private int currentStarId;
     private ArrayList<String> actorErrors = new ArrayList<>();
 
@@ -94,9 +90,6 @@ public class MainParser extends DefaultHandler {
         SAXParserFactory spf = SAXParserFactory.newInstance();
 
         try {
-            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
-                this.starsCsvWriter = new FileWriter("xmlParser/stars.csv");
-            }
 
             // get a new instance of parser
             SAXParser sp = spf.newSAXParser();
@@ -107,15 +100,6 @@ public class MainParser extends DefaultHandler {
 
             // parse the file and also register this class for call backs
             sp.parse(source, this);
-
-            if (this.starsCsvWriter != null) {
-                try {
-                    this.starsCsvWriter.close();
-                } catch (IOException e) {
-                    System.err.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
 
         } catch (SAXException | ParserConfigurationException | IOException error) {
             error.printStackTrace();
@@ -232,19 +216,14 @@ public class MainParser extends DefaultHandler {
             if (qName.equalsIgnoreCase("actor")) {
                 //add it to the list
                 if (tempStar.validate()) {
+
                     StarPair starNameBirthYearPair = new StarPair(tempStar.getName(), tempStar.getBirthYear());
+
                     if (!parsedStarNames.contains(starNameBirthYearPair)) {
+
                         tempStar.setId("p-" + (this.currentStarId++)); // p stands for parsed
                         parsedStars.add(tempStar);
                         parsedStarNames.add(starNameBirthYearPair);
-
-                        try {
-                            this.starsCsvWriter.write(tempStar.getCSVLine());
-                            this.starsCsvWriter.flush();
-                        } catch (IOException e) {
-                            System.err.println("An error occurred.");
-                            e.printStackTrace();
-                        }
 
                         // parsedCasts key = star name , value = movie id
                         if (parsedCasts.containsKey(tempStar.getName())) {
@@ -281,7 +260,7 @@ public class MainParser extends DefaultHandler {
         }
     }
 
-    private void handleMovieWithNoStars() {
+    private void handleMoviesWithNoStars() {
         Set<String> allMovieIDs = new HashSet<>(this.parsedMovies.keySet());
 
         Set<String> movieIDsWithStars = new HashSet<>(this.parsedCasts.values());
@@ -306,7 +285,155 @@ public class MainParser extends DefaultHandler {
         this.parsedMovies = (HashMap<String, Movie>) filteredMap;
     }
 
-    public void updateDatabase() {
+    private void updateDatabase() {
+        writeMoviesToDB();
+        writeStarsToDB();
+        writeStarInMoviesToDB();
+    }
+
+    private void writeMoviesToDB() {
+        // Write Star CSV
+        try {
+            this.csvWriter = new FileWriter("xmlParser/movies.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Map.Entry<String, Movie> entry : this.parsedMovies.entrySet()) {
+
+            Movie movie = entry.getValue();
+
+            String movieId = movie.getId();
+
+            String title = movie.getTitle();
+
+            int year = movie.getYear();
+
+            String director = movie.getDirector();
+
+            float price = movie.getPrice();
+
+            try {
+                this.csvWriter.write(String.format("%s,%s,%d,%s,%f\n", movieId, title, year, director, price));
+                this.csvWriter.flush();
+
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+
+        }
+
+        if (this.csvWriter != null) {
+            try {
+                this.csvWriter.close();
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+
+        String loadStarsQuery = "load data local infile 'xmlParser/movies.csv' into table movies\n" +
+                "fields terminated by ','\n" +
+                "lines terminated by '\n';";
+        try {
+            new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private void writeStarsToDB() {
+        // Write Star CSV
+        try {
+            this.csvWriter = new FileWriter("xmlParser/stars.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Star star : parsedStars) {
+            try {
+                this.csvWriter.write(star.getCSVLine());
+                this.csvWriter.flush();
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        if (this.csvWriter != null) {
+            try {
+                this.csvWriter.close();
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        String loadStarsQuery = "load data local infile 'xmlParser/stars.csv' into table stars\n" +
+                "fields terminated by ','\n" +
+                "lines terminated by '\n';";
+        try {
+            new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private void writeStarInMoviesToDB() {
+
+        // Write Star CSV
+        try {
+            this.csvWriter = new FileWriter("xmlParser/sim.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Map.Entry<String, Movie> entry : this.parsedMovies.entrySet()) {
+
+            Movie movie = entry.getValue();
+
+            String movieId = movie.getId();
+
+            Set<String> starIDs = movie.getStarIds();
+
+            Iterator<String> iterator = starIDs.iterator();
+
+            while (iterator.hasNext()) {
+
+                String starId = iterator.next();
+
+                try {
+                    this.csvWriter.write(String.format("%s,%s\n", starId, movieId));
+                    this.csvWriter.flush();
+
+                } catch (IOException e) {
+                    System.err.println("An error occurred.");
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        if (this.csvWriter != null) {
+            try {
+                this.csvWriter.close();
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+
+        String loadStarsQuery = "load data local infile 'xmlParser/sim.csv' into table stars_in_movies\n" +
+                "fields terminated by ','\n" +
+                "lines terminated by '\n';";
+        try {
+            new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
 
     }
 
