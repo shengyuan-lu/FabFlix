@@ -46,7 +46,7 @@ public class MovieListServlet extends HttpServlet {
         String title = "%";
 
         if (request.getParameter("title") != null) {
-            title = request.getParameter("title") + "%";
+            title = "%" + request.getParameter("title") + "%";
         }
 
         // director_name
