@@ -333,7 +333,6 @@ public class MainParser extends DefaultHandler {
             }
         }
 
-
         String loadStarsQuery = "load data local infile 'xmlParser/movies.csv' into table movies\n" +
                 "fields terminated by ','\n" +
                 "lines terminated by '\n';";
