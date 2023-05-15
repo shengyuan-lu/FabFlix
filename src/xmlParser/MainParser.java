@@ -155,7 +155,7 @@ public class MainParser extends DefaultHandler {
             } else if (qName.equalsIgnoreCase("fid")) {
 
                 // Add a prefix to simplify the removal process
-                tempMovie.setId("p-" + tempVal);
+                tempMovie.setId("a-" + tempVal);
 
             } else if (qName.equalsIgnoreCase("t")) {
                 tempMovie.setTitle(tempVal);
@@ -212,7 +212,7 @@ public class MainParser extends DefaultHandler {
 
         } else if (currentDocument.equals(Constants.castFileName)) {
             if (qName.equalsIgnoreCase("f")) {
-                tempMovieID = "p-" + tempVal;
+                tempMovieID = "a-" + tempVal;
             } else if (qName.equalsIgnoreCase("a")) {
                 tempStarName = tempVal;
             } else if (qName.equalsIgnoreCase("m")) {
@@ -230,7 +230,7 @@ public class MainParser extends DefaultHandler {
 
                     if (!parsedStarNames.contains(starNameBirthYearPair)) {
 
-                        tempStar.setId("p-" + (this.currentStarId++)); // p stands for parsed
+                        tempStar.setId("a-" + (this.currentStarId++)); // p stands for parsed
                         parsedStars.add(tempStar);
                         parsedStarNames.add(starNameBirthYearPair);
 

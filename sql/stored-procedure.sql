@@ -40,6 +40,8 @@ begin
 		insert into movies (id, title, year, director, price)
 		values (new_movie_id, movie_title, movie_year, movie_director, ROUND(RAND() * 9 + 1, 2));
 		
+        insert into ratings
+        values (new_movie_id, 0.0, 0);
 
 		# =========== Add star for a movie ==========
 		set is_star_exists = exists(select * from stars where stars.name = star_name);

@@ -66,7 +66,7 @@ function handleResult(resultData) {
     movieStarsElem.html(getStarsHtml(resultData["movieStars"]));
     movieRatingElem.html(
         `<div class="d-flex flex-row align-items-center"><span class="me-2">${starIcon()}</span>${
-            resultData["movieRating"]
+            (resultData["movieRating"] === 0.0) ? "N/A" : resultData["movieRating"]
         }</div>`
     );
 

@@ -66,7 +66,7 @@ function handleMovieResult(resultData, limit) {
         )}</th>`;
         rowHTML += `<th class="fs-3"><div class="d-flex flex-row align-items-center"><span class="me-1 d-flex">${starIcon(
             { size: 20 }
-        )}</span>${resultData[i]["movie_rating"]}</div></th>`;
+        )}</span>${(resultData[i]["movie_rating"] === 0.0) ? "N/A" : resultData[i]["movie_rating"]}</div></th>`;
         rowHTML += `<th class="fs-4"><button class="btn btn-outline-primary" name="${resultData[i]["movie_id"]}" onclick="addMovieToCart(this.name)">Add to Cart</button></th>`;
         rowHTML += "</tr>";
 
