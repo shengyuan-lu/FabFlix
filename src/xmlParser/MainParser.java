@@ -297,6 +297,7 @@ public class MainParser extends DefaultHandler {
         writeStarsInMoviesToDB();
         writeGenresToDB();
         writeGenresInMovies();
+        writeRatings();
     }
 
     private void writeMoviesToDB() {
@@ -553,6 +554,50 @@ public class MainParser extends DefaultHandler {
         }
 
         String loadStarsQuery = "load data local infile 'src/xmlParser/gim.csv' into table genres_in_movies\n" +
+                "fields terminated by ','\n" +
+                "lines terminated by '\n';";
+        try {
+            new XMLDatabaseHandler().executeDataLoadQuery(loadStarsQuery);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    private void writeRatings() {
+
+        try {
+            this.csvWriter = new FileWriter("src/xmlParser/ratings.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (Map.Entry<String, Movie> entry : this.parsedMovies.entrySet()) {
+
+            Movie movie = entry.getValue();
+
+            String movieId = movie.getId();
+
+            try {
+                this.csvWriter.write(String.format("%s,%f,%d\n", movieId, 0.0, 100));
+                this.csvWriter.flush();
+
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        if (this.csvWriter != null) {
+            try {
+                this.csvWriter.close();
+            } catch (IOException e) {
+                System.err.println("An error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        String loadStarsQuery = "load data local infile 'src/xmlParser/ratings.csv' into table ratings\n" +
                 "fields terminated by ','\n" +
                 "lines terminated by '\n';";
         try {
