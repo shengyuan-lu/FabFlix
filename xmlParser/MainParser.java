@@ -277,12 +277,14 @@ public class MainParser extends DefaultHandler {
             this.movieErrors.add(String.format("Movie with ID %s has no star.\n\n", mId));
         }
 
+        /*
         Map<String, Movie> filteredMap = this.parsedMovies.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().hasStar())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         this.parsedMovies = (HashMap<String, Movie>) filteredMap;
+        */
     }
 
     private void updateDatabase() {
@@ -423,7 +425,6 @@ public class MainParser extends DefaultHandler {
                 e.printStackTrace();
             }
         }
-
 
         String loadStarsQuery = "load data local infile 'xmlParser/sim.csv' into table stars_in_movies\n" +
                 "fields terminated by ','\n" +
