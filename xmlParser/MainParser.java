@@ -31,7 +31,7 @@ public class MainParser extends DefaultHandler {
         parser.parseDocument(Constants.castFileName);
         parser.parseDocument(Constants.actorFileName);
 
-        String loadStarsQuery = "load data local infile '/Users/tonyl/projects/project-stanford_rejects/xmlParser/stars.csv' into table stars\n" +
+        String loadStarsQuery = "load data local infile 'xmlParser/stars.csv' into table stars\n" +
                 "fields terminated by ','\n" +
                 "lines terminated by '\n';";
         try {
