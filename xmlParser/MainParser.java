@@ -29,20 +29,21 @@ public class MainParser extends DefaultHandler {
 
         parser.parseDocument(Constants.actorFileName);
 
-        parser.generateReport();
+        parser.generateSummaryReport();
+        parser.generateInconsistencyReport();
     }
 
     // For parsing - universal
     private String tempVal;
     private String currentDocument;
     private FileWriter inconsistencyReportWriter;
-    private FileWriter inconsistencyReportWriterTwo;
 
     // For parsing - mains243.xml
     private Random random = new Random();
     private HashMap<String, Movie> parsedMovies; // key = movie id , value = movie object
     private Movie tempMovie;
     private String tempDirector;
+    private ArrayList<String> movieErrors = new ArrayList<>();
 
     // For parsing - casts124.xml
     private String tempMovieID;
@@ -55,6 +56,7 @@ public class MainParser extends DefaultHandler {
     private Set<String> parsedStarNames;
     private Star tempStar;
     private int currentStarId;
+    private ArrayList<String> actorErrors = new ArrayList<>();
 
     public MainParser() {
 
@@ -79,16 +81,6 @@ public class MainParser extends DefaultHandler {
 
         try {
 
-            if (Objects.equals(this.currentDocument, Constants.movieFileName)) {
-                this.inconsistencyReportWriter = new FileWriter("xmlParser/MovieInconsistencyReport.txt");
-
-            } else if (Objects.equals(this.currentDocument, Constants.castFileName)) {
-                this.inconsistencyReportWriter = new FileWriter("xmlParser/CastInconsistencyReport.txt");
-
-            } else if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
-                this.inconsistencyReportWriter = new FileWriter("xmlParser/StarInconsistencyReport.txt");
-            }
-
             // get a new instance of parser
             SAXParser sp = spf.newSAXParser();
 
@@ -98,36 +90,6 @@ public class MainParser extends DefaultHandler {
 
             // parse the file and also register this class for call backs
             sp.parse(source, this);
-
-            if (this.inconsistencyReportWriter != null) {
-                try {
-                    this.inconsistencyReportWriter.close();
-                } catch (IOException e) {
-                    System.err.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
-
-            if (Objects.equals(this.currentDocument, Constants.actorFileName)) {
-
-                this.inconsistencyReportWriter = new FileWriter("xmlParser/CastInconsistencyReport.txt");
-
-                for (String err : this.castErrors) {
-                    try {
-                        inconsistencyReportWriter.write(err);
-                    } catch (IOException e) {
-                        System.err.println("An error occurred: ");
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    this.inconsistencyReportWriter.close();
-                } catch (IOException e) {
-                    System.err.println("An error occurred.");
-                    e.printStackTrace();
-                }
-            }
 
         } catch (SAXException | ParserConfigurationException | IOException error) {
             error.printStackTrace();
@@ -224,13 +186,8 @@ public class MainParser extends DefaultHandler {
 
                 } else {
                     // Handle Movie Inconsistencies
-                    try {
-                        inconsistencyReportWriter.write("Movie Parsing Failed Because Of Missing Required Field(s):\n");
-                        inconsistencyReportWriter.write(tempMovie.GetMissingRequiredFieldsDetail() + "\n");
-                    } catch (IOException e) {
-                        System.err.println("An error occurred: ");
-                        e.printStackTrace();
-                    }
+                    movieErrors.add("Movie Parsing Failed Because Of Missing Required Field(s):\n");
+                    movieErrors.add(tempMovie.GetMissingRequiredFieldsDetail() + "\n");
                 }
 
             }
@@ -285,14 +242,8 @@ public class MainParser extends DefaultHandler {
                         }
 
                     } else {
-
                         // Handle Inconsistency: Star already existed in the database
-                        try {
-                            inconsistencyReportWriter.write(String.format("Star %s already existed in the database.\n\n", tempStar.getName()));
-                        } catch (IOException e) {
-                            System.err.println("An error occurred: ");
-                            e.printStackTrace();
-                        }
+                        actorErrors.add(String.format("Star %s already existed in the database.\n\n", tempStar.getName()));
                     }
                 }
 
@@ -315,7 +266,7 @@ public class MainParser extends DefaultHandler {
 
     }
 
-    public void generateReport() {
+    public void generateSummaryReport() {
 
         System.out.println("Parsed Movie Count: " + parsedMovies.size());
         System.out.println("Parsed Casts Count: " + parsedCasts.size());
@@ -347,6 +298,65 @@ public class MainParser extends DefaultHandler {
         for (int i = 0; i < 10 && iterator.hasNext(); i++) {
             Star star = iterator.next();
             System.out.println(star.getDetails());
+        }
+
+    }
+
+    public void generateInconsistencyReport() {
+
+        ArrayList<String> reports = new ArrayList<>();
+        reports.add("xmlParser/MovieInconsistencyReport.txt");
+        reports.add("xmlParser/CastInconsistencyReport.txt");
+        reports.add("xmlParser/StarInconsistencyReport.txt");
+
+        for (String report : reports) {
+
+            try {
+
+                this.inconsistencyReportWriter = new FileWriter(report);
+
+                if (report.equals("xmlParser/MovieInconsistencyReport.txt")) {
+                    for (String err : this.movieErrors) {
+                        try {
+                            inconsistencyReportWriter.write(err);
+                        } catch (IOException e) {
+                            System.err.println("An error occurred: ");
+                            e.printStackTrace();
+                        }
+                    }
+
+                } else if (report.equals("xmlParser/CastInconsistencyReport.txt")) {
+                    for (String err : this.castErrors) {
+                        try {
+                            inconsistencyReportWriter.write(err);
+                        } catch (IOException e) {
+                            System.err.println("An error occurred: ");
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (report.equals("xmlParser/StarInconsistencyReport.txt")) {
+                    for (String err : this.actorErrors) {
+                        try {
+                            inconsistencyReportWriter.write(err);
+                        } catch (IOException e) {
+                            System.err.println("An error occurred: ");
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                if (this.inconsistencyReportWriter != null) {
+                    try {
+                        this.inconsistencyReportWriter.close();
+                    } catch (IOException e) {
+                        System.err.println("An error occurred.");
+                        e.printStackTrace();
+                    }
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

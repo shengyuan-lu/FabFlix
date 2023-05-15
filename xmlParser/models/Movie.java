@@ -105,7 +105,6 @@ public class Movie {
         this.starIds = starIds;
     }
 
-
     public boolean validate() {
         if (this.checkStringNullOrEmpty(this.id) || this.checkStringNullOrEmpty(this.title) || this.checkStringNullOrEmpty(this.director) || this.price == null || this.year == null || this.genres.isEmpty()) {
             return false;
