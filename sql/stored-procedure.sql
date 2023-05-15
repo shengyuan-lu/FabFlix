@@ -34,7 +34,7 @@ begin
 	if not is_movie_exists then
 		# If the movie doesn't exist yet, create it
 		select max(id) into max_movie_id from movies;
-		set max_movie_id_number = cast(substring(max_movie_id, 3, 7) as unsigned);
+		set max_movie_id_number = cast(substring(max_movie_id, 3) as unsigned);
 		set new_movie_id = concat("tt", cast((max_movie_id_number + 1) as char)); # Increment movie id
 
 		insert into movies (id, title, year, director, price)
@@ -46,7 +46,7 @@ begin
 		if not is_star_exists then
 			# If star doesn't exist yet, create it
 			select max(id) into max_star_id from stars;
-			set max_star_id_number = cast(substring(max_star_id, 3, 7) as unsigned);
+			set max_star_id_number = cast(substring(max_star_id, 3) as unsigned);
 			set new_star_id = concat("nm", cast((max_star_id_number + 1) as char)); # Increment star id
 
 			insert into stars (id, name, birthyear)
