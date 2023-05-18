@@ -183,3 +183,11 @@ sim.csv
 movies.csv
 gim.csv
 ratings.csv
+
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
