@@ -28,9 +28,9 @@ public class LoginActivity extends AppCompatActivity {
       To connect to your machine, you need to use the below IP address
      */
     private final String host = "10.0.2.2";
-    private final String port = "8080";
-    private final String domain = "cs122b_project2_login_cart_example_war";
-    private final String baseURL = "http://" + host + ":" + port + "/" + domain;
+    private final String port = "8443";
+    private final String domain = "cs122b_fabflix_war";
+    private final String baseURL = "https://" + host + ":" + port + "/" + domain;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
