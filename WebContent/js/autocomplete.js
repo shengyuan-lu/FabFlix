@@ -31,8 +31,10 @@ Print and only print log for the following cases:
 
 
 function handleLookup(query, doneCallback) {
-    console.log("autocomplete initiated")
-    console.log("sending AJAX request to backend Java Servlet")
+
+    console.log("Autocomplete initiated")
+
+    console.log("Sending AJAX request to backend Java Servlet")
 
     // TODO: if you want to check past query results first, you can do it here
 
@@ -48,7 +50,7 @@ function handleLookup(query, doneCallback) {
             handleLookupAjaxSuccess(data, query, doneCallback)
         },
         "error": function(errorData) {
-            console.log("lookup ajax error")
+            console.log("Lookup ajax error")
             console.log(errorData)
         }
     })
@@ -87,7 +89,7 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
 function handleSelectSuggestion(suggestion) {
     // TODO: jump to the specific result page based on the selected suggestion
 
-    console.log("you select " + suggestion["value"] + " with ID " + suggestion["data"]["heroID"])
+    console.log("You selected movie" + suggestion["value"] + " with ID " + suggestion["data"]["movieID"])
 }
 
 
@@ -103,6 +105,7 @@ function handleSelectSuggestion(suggestion) {
 // $('#autocomplete') is to find element by the ID "autocomplete"
 console.log($("#autocomplete"))
 $('#autocomplete').autocomplete({
+
     // documentation of the lookup function can be found under the "Custom lookup function" section
     lookup: function (query, doneCallback) {
         console.log(query)
@@ -111,8 +114,10 @@ $('#autocomplete').autocomplete({
     onSelect: function(suggestion) {
         handleSelectSuggestion(suggestion)
     },
+
     // set delay time
     deferRequestBy: 300,
+
     // there are some other parameters that you might want to use to satisfy all the requirements
     // TODO: add other parameters, such as minimum characters
 });
