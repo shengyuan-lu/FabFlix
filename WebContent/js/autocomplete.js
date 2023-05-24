@@ -2,27 +2,26 @@
 
 The Autocomplete is required to perform full-text search on movie title field.
 
-The Autocomplete suggestion list should not have more than 10 entries.
+[Finished] The Autocomplete suggestion list should not have more than 10 entries.
 
 [Finished] The Autocomplete should support keyboard navigation using ↑ ↓ arrow keys.
 
-When a suggestion entry is selected, the entry should be highlighted, the text (query) in the search box should be changed to the entry's content (say, movie title).
+[Finished] When a suggestion entry is selected, the entry should be highlighted, the text (query) in the search box should be changed to the entry's content (say, movie title).
 
 Clicking on any of the suggestion entries, or pressing "Enter" Key if an entry is selected during keyboard navigation, it should jump to the corresponding Single Movie Page directly.
 
 If the customer just presses "Enter" Key or clicks the search button without selecting any suggestion entry, it should perform the same full-text search action as stated above in the "full-text Search" requirement.
 
-Only perform the Autocomplete search when the customer types in at least 3 (>= 3) characters.
+[Finished] Only perform the Autocomplete search when the customer types in at least 3 (>= 3) characters.
 
 [Finished] Set a small delay time (300ms) so that the frontend only performs the Autocomplete search after the customer stops typing for that delay.
 
-Cache the suggestion list of each query (sent to the backend server) in the frontend, you can use LocalStorage or SessionStorage.
+[Finished] Cache the suggestion list of each query (sent to the backend server) in the frontend, you can use LocalStorage or SessionStorage.
+[Finished] Whenever Autocomplete search is triggered, check if the query and its suggestion list are in the cache. If not, send the query to the backend server to get a new suggestion list.
 
-Whenever  Autocomplete search is triggered, check if the query and its suggestion list are in the cache. If not, send the query to the backend server to get a new suggestion list.
+[Finished] Make sure that each Autocomplete search finishes within 2s.
 
-Make sure that each Autocomplete search finishes within 2s.
-
-Print and only print log for the following cases:
+[Finished] Print and only print log for the following cases:
     The Autocomplete search is initiated (after the delay);
     Whether the Autocomplete search is using cached results or sending an ajax request to the server;
     The used suggestion list (either from cache or server response).
@@ -34,14 +33,25 @@ function handleLookup(query, doneCallback) {
 
     console.log("Autocomplete initiated")
 
-    console.log("Sending AJAX request to backend Java Servlet")
+    console.log(`Query: ${query}`)
 
-    // TODO: if you want to check past query results first, you can do it here
+    // Check past query results first
+    if (localStorage.getItem(query)) {
+
+        console.log("Using past query from front-end cache");
+
+        handleLookupAjaxSuccess(JSON.parse(localStorage.getItem(query)), query, doneCallback);
+
+        return;
+    }
+
+    console.log("Getting new query from server")
 
     // sending the HTTP GET request to the Java Servlet endpoint hero-suggestion
     // with the query data
     jQuery.ajax({
         "method": "GET",
+        dataType: "json",
         // generate the request url from the query.
         // escape the query string to avoid errors caused by special characters
         "url": "api/movie-suggestion?query=" + escape(query),
@@ -65,13 +75,14 @@ function handleLookup(query, doneCallback) {
  *
  */
 function handleLookupAjaxSuccess(data, query, doneCallback) {
-    console.log("lookup ajax successful")
-
-    // parse the string into JSON
+    console.log("Handle lookup ajax successful")
 
     console.log(data)
 
-    // TODO: if you want to cache the result into a global variable you can do it here
+    if (!localStorage.getItem(query)) {
+        // Store query results in localStorage
+        localStorage.setItem(query,  JSON.stringify(data));
+    }
 
     // call the callback function provided by the autocomplete library
     // add "{suggestions: jsonData}" to satisfy the library response format according to
@@ -87,9 +98,9 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
  * You can redirect to the page you want using the suggestion data.
  */
 function handleSelectSuggestion(suggestion) {
-    // TODO: jump to the specific result page based on the selected suggestion
-
     console.log("You selected movie" + suggestion["value"] + " with ID " + suggestion["data"]["movieID"])
+
+    window.location.href = "single-movie.html?id=" + suggestion["data"]["movieID"];
 }
 
 
@@ -103,14 +114,14 @@ function handleSelectSuggestion(suggestion) {
  *
  */
 // $('#autocomplete') is to find element by the ID "autocomplete"
-console.log($("#autocomplete"))
+// console.log($("#autocomplete"))
 $('#autocomplete').autocomplete({
 
     // documentation of the lookup function can be found under the "Custom lookup function" section
     lookup: function (query, doneCallback) {
-        console.log(query)
         handleLookup(query, doneCallback)
     },
+
     onSelect: function(suggestion) {
         handleSelectSuggestion(suggestion)
     },
@@ -119,7 +130,7 @@ $('#autocomplete').autocomplete({
     deferRequestBy: 300,
 
     // there are some other parameters that you might want to use to satisfy all the requirements
-    // TODO: add other parameters, such as minimum characters
+    minChars: 3
 });
 
 
@@ -127,8 +138,11 @@ $('#autocomplete').autocomplete({
  * do normal full text search if no suggestion is selected
  */
 function handleNormalSearch(query) {
-    console.log("doing normal search with query: " + query);
-    // TODO: you should do normal search here
+    console.log("Doing normal search with query: " + query);
+
+    if (query) {
+        window.location.href = "movie-list.html?title=" + query;
+    }
 }
 
 // bind pressing enter key to a handler function

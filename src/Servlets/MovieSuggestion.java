@@ -84,7 +84,7 @@ public class MovieSuggestion extends HttpServlet {
                 return;
             }
 
-            String query = "SELECT id, title FROM movies WHERE title LIKE ?"; // TODO: Full Text Search
+            String query = "SELECT id, title FROM movies WHERE title LIKE ? LIMIT 10;"; // TODO: Full Text Search
             // String query = "SELECT id, title, year FROM movies WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) LIMIT 10;";
 
             // search on moviedb and add the results to JSON Array
