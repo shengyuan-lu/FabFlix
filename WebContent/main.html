@@ -25,6 +25,7 @@
 
         <!-- Custom Stylesheet -->
         <link rel="stylesheet" href="css/custom-style.css" />
+        <link rel="stylesheet" href="css/autocomplete-style.css" />
         <title>Main</title>
     </head>
     <body>
@@ -32,6 +33,13 @@
         <div class="container">
             <!-- Search Here -->
             <h2 class="fs-2 text-primary mt-4 fw-bold">Search</h2>
+            <h2 class="fs-4 text-secondary mt-4">With Auto Complete</h2>
+            <form class="d-flex mt-4" role="search">
+                <input id="autocomplete" class="form-control me-2" type="search" placeholder="Search Movies">
+                <button id="autocomplete-submit" class="fs-5 btn btn-primary" type="submit">Search</button>
+            </form>
+            <!-- Search Here -->
+            <h2 class="fs-2 mt-4 text-primary mt-4 fw-bold">Search</h2>
             <h2 class="fs-4 text-secondary mt-4">By Conditions</h2>
             <form
                 id="search-form"
@@ -110,9 +118,13 @@
             integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
             crossorigin="anonymous"
         ></script>
+        <!-- include jquery autocomplete JS  -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.11/jquery.autocomplete.min.js"></script>
         <!-- include our own JS file -->
         <script type="module" src="js/add-nav.js"></script>
         <script type="module" src="js/add-genre.js"></script>
         <script type="module" src="js/add-alphabet.js"></script>
+        <script type="module" src="js/autocomplete.js"></script>
+
     </body>
 </html>
