@@ -116,6 +116,7 @@ public class MovieListServlet extends HttpServlet {
         }
 
         String title_order = "asc";
+
         if (!request.getParameter("title_order").equals("asc")) {
             title_order = "desc";
         }
@@ -136,7 +137,19 @@ public class MovieListServlet extends HttpServlet {
 
             String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
 
-            if (genre_id != null && alphabet == null) {
+            if (request.getParameter("ft").equals("true")) {
+
+                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
+                        "JOIN ratings r ON movies.id = r.movieId\n" +
+                        "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
+                        "GROUP BY movies.id, title, year, director, price, rating\n" +
+                        sortClause +
+                        paginationClause;
+
+                movieList = movieListDBHandler.executeQuery(movieQuery, title);
+
+            } else if (genre_id != null && alphabet == null) {
 
                 // Handle browse by genre
 
@@ -215,7 +228,6 @@ public class MovieListServlet extends HttpServlet {
 
             JsonArray jsonArray = new JsonArray();
 
-            // Iterate through each row of topTwentyMovies
             for (HashMap<String, String> movie : movieList) {
 
                 String movie_id = movie.get("id");

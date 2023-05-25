@@ -34,15 +34,20 @@
             <!-- Simple Search Here -->
             <h2 class="fs-2 text-primary mt-4 fw-bold">Full-Text Search</h2>
             <h2 class="fs-4 text-secondary mt-4">With Auto Complete</h2>
-            <form class="d-flex mt-4" role="search">
+            <form class="d-flex mt-4" role="search" action="movie-list.html">
                 <input
                     id="autocomplete"
+                    name="title"
                     class="form-control me-2"
                     type="search"
                     placeholder="Enter Movie Title"
                 />
+                <input
+                    name="ft"
+                    value="true"
+                    type="hidden"
+                />
                 <button
-                    id="autocomplete-submit"
                     class="fs-5 btn btn-primary"
                     type="submit"
                 >
@@ -137,6 +142,11 @@
         <script type="module" src="js/add-alphabet.js"></script>
         <script type="module" src="js/autocomplete.js"></script>
         <script>
+           window.onpageshow = ()=>{
+               console.log("page reloading");
+               sessionStorage.setItem("prevUrl","main.html");
+           }
+            console.log("page reloading");
             sessionStorage.setItem("prevUrl","main.html");
         </script>
     </body>

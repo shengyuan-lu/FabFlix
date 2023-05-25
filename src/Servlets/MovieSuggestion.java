@@ -75,8 +75,8 @@ public class MovieSuggestion extends HttpServlet {
             JsonArray jsonArray = new JsonArray();
 
             // get the query string from parameter
-            String movieTitle = "%" + request.getParameter("query") + "%"; // TODO: Full Text Search
-            // String movieTitle = request.getParameter("query");
+            // String movieTitle = "%" + request.getParameter("query") + "%";
+            String movieTitle = request.getParameter("query").replaceAll(" ", "%");
 
             // return the empty json array if query is null or empty
             if (movieTitle == null || movieTitle.trim().isEmpty()) {
@@ -84,8 +84,8 @@ public class MovieSuggestion extends HttpServlet {
                 return;
             }
 
-            String query = "SELECT id, title FROM movies WHERE title LIKE ? LIMIT 10;"; // TODO: Full Text Search
-            // String query = "SELECT id, title, year FROM movies WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) LIMIT 10;";
+            // String query = "SELECT id, title FROM movies WHERE title LIKE ? LIMIT 10;";
+            String query = "SELECT id, title, year FROM movies WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) LIMIT 10;";
 
             // search on moviedb and add the results to JSON Array
             List<HashMap<String, String>> movies = suggestionDBHandler.executeQuery(query, movieTitle);
