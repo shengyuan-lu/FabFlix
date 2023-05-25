@@ -75,8 +75,24 @@ public class MovieSuggestion extends HttpServlet {
             JsonArray jsonArray = new JsonArray();
 
             // get the query string from parameter
+
             // String movieTitle = "%" + request.getParameter("query") + "%";
+
             String movieTitle = request.getParameter("query");
+
+            StringBuilder filter = new StringBuilder();
+
+            if (movieTitle.length() > 0)
+            {
+                String [] words = movieTitle.split(" ");
+
+                for (String word : words)
+                {
+                    filter.append("+");
+                    filter.append(word);
+                    filter.append("* ");
+                }
+            }
 
             // return the empty json array if query is null or empty
             if (movieTitle == null || movieTitle.trim().isEmpty()) {
@@ -85,12 +101,14 @@ public class MovieSuggestion extends HttpServlet {
             }
 
             // String query = "SELECT id, title FROM movies WHERE title LIKE ? LIMIT 10;";
-            String query = "SELECT id, title, year FROM movies\n" +
+            String query = "SELECT id, title, year, rating FROM movies\n" +
+                    "JOIN ratings r ON movies.id = r.movieId\n" +
                     "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
+                    "ORDER BY rating DESC, title ASC\n" +
                     "LIMIT 10\n";
 
             // search on moviedb and add the results to JSON Array
-            List<HashMap<String, String>> movies = suggestionDBHandler.executeQuery(query, movieTitle);
+            List<HashMap<String, String>> movies = suggestionDBHandler.executeQuery(query, filter.toString());
 
             for (HashMap<String, String> movie : movies) {
                 jsonArray.add(generateMovieJsonObject(movie.get("id"), movie.get("title")));

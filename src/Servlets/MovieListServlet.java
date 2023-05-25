@@ -141,6 +141,20 @@ public class MovieListServlet extends HttpServlet {
 
                 title = request.getParameter("title");
 
+                StringBuilder filter = new StringBuilder();
+
+                if (title.length() > 0)
+                {
+                    String [] words = title.split(" ");
+
+                    for (String word : words)
+                    {
+                        filter.append("+");
+                        filter.append(word);
+                        filter.append("* ");
+                    }
+                }
+
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
@@ -149,7 +163,7 @@ public class MovieListServlet extends HttpServlet {
                         sortClause +
                         paginationClause;
 
-                movieList = movieListDBHandler.executeQuery(movieQuery, title);
+                movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString());
 
             } else if (genre_id != null && alphabet == null) {
 

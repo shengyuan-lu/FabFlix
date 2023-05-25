@@ -1,6 +1,6 @@
 /*
 
-The Autocomplete is required to perform full-text search on movie title field.
+[Finished] The Autocomplete is required to perform full-text search on movie title field.
 
 [Finished] The Autocomplete suggestion list should not have more than 10 entries.
 
@@ -8,9 +8,9 @@ The Autocomplete is required to perform full-text search on movie title field.
 
 [Finished] When a suggestion entry is selected, the entry should be highlighted, the text (query) in the search box should be changed to the entry's content (say, movie title).
 
-Clicking on any of the suggestion entries, or pressing "Enter" Key if an entry is selected during keyboard navigation, it should jump to the corresponding Single Movie Page directly.
+[Finished] Clicking on any of the suggestion entries, or pressing "Enter" Key if an entry is selected during keyboard navigation, it should jump to the corresponding Single Movie Page directly.
 
-If the customer just presses "Enter" Key or clicks the search button without selecting any suggestion entry, it should perform the same full-text search action as stated above in the "full-text Search" requirement.
+[Finished] If the customer just presses "Enter" Key or clicks the search button without selecting any suggestion entry, it should perform the same full-text search action as stated above in the "full-text Search" requirement.
 
 [Finished] Only perform the Autocomplete search when the customer types in at least 3 (>= 3) characters.
 
