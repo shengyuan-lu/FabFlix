@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
@@ -41,22 +42,24 @@ public class LoginServlet extends HttpServlet {
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
 
-        try {
+        if (!Objects.equals(request.getParameter("frontendType"), "android")) { // Android doesn't use recaptcha verification
+            try {
 
-            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
 
-        } catch (Exception e) {
+            } catch (Exception e) {
 
-            JsonObject loginStatusObject = new JsonObject();
+                JsonObject loginStatusObject = new JsonObject();
 
-            loginStatusObject.addProperty("status", "fail");
-            loginStatusObject.addProperty("message", "reCAPTCHA verification failed. Please try again.");
+                loginStatusObject.addProperty("status", "fail");
+                loginStatusObject.addProperty("message", "reCAPTCHA verification failed. Please try again.");
 
-            out.write(loginStatusObject.toString());
+                out.write(loginStatusObject.toString());
 
-            out.close();
+                out.close();
 
-            return;
+                return;
+            }
         }
 
         String username = request.getParameter("username");

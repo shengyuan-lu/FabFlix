@@ -14,10 +14,14 @@ import com.android.volley.toolbox.StringRequest;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.databinding.ActivityLoginBinding;
 import edu.uci.ics.fabflixmobile.ui.movielist.MovieListActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    private final String TAG = "Login";
 
     private EditText username;
     private EditText password;
@@ -61,17 +65,28 @@ public class LoginActivity extends AppCompatActivity {
                 response -> {
                     // TODO: should parse the json response to redirect to appropriate functions
                     //  upon different response value.
-                    Log.d("login.success", response);
-                    //Complete and destroy login activity once successful
-                    finish();
-                    // initialize the activity(page)/destination
-                    Intent MovieListPage = new Intent(LoginActivity.this, MovieListActivity.class);
-                    // activate the list page.
-                    startActivity(MovieListPage);
+                    Log.d("login.status", response);
+                    try {
+                        JSONObject responseJsonObj = new JSONObject(response); // Convert response string to a JSON object
+
+                        if (responseJsonObj.get("status").equals("success")) {
+                            finish(); // Complete and destroy login activity once successful
+
+                            // initialize the activity(page)/destination
+                            Intent MovieListPage = new Intent(LoginActivity.this, MovieListActivity.class);
+                            // activate the list page.
+                            startActivity(MovieListPage);
+                        } else {
+                            // If login fails, show an error message
+                            message.setText((String) responseJsonObj.get("message"));
+                        }
+                    } catch (JSONException e) {
+                        Log.d(TAG, "Json parse error");
+                    }
                 },
                 error -> {
                     // error
-                    Log.d("login.error", error.toString());
+                    Log.d(TAG, error.toString());
                 }) {
             @Override
             protected Map<String, String> getParams() {
@@ -79,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                 final Map<String, String> params = new HashMap<>();
                 params.put("username", username.getText().toString());
                 params.put("password", password.getText().toString());
+                params.put("frontendType", "android");
                 return params;
             }
         };
