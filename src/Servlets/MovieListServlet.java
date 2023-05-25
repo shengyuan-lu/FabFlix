@@ -139,6 +139,8 @@ public class MovieListServlet extends HttpServlet {
 
             if (request.getParameter("ft") != null && request.getParameter("ft").equals("true")) {
 
+                title = request.getParameter("title");
+
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
