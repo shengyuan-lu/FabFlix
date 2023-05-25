@@ -83,6 +83,9 @@ let movieId = getParameterByName("id");
 
 jQuery("#back-link").attr("href", sessionStorage.getItem("prevUrl"));
 
+if(sessionStorage.getItem("prevUrl") == "main.html"){
+    jQuery("#back-link-label").html("Back to Home Page");
+}
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
