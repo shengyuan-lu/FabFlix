@@ -141,6 +141,10 @@ public class MovieListServlet extends HttpServlet {
 
                 title = request.getParameter("title");
 
+                title = title.replaceAll("[^a-zA-Z0-9]", " ");
+
+                title = title.trim();
+
                 StringBuilder filter = new StringBuilder();
 
                 if (title.length() > 0)

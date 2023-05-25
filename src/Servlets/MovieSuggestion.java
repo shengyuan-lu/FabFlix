@@ -80,6 +80,10 @@ public class MovieSuggestion extends HttpServlet {
 
             String movieTitle = request.getParameter("query");
 
+            movieTitle = movieTitle.replaceAll("[^a-zA-Z0-9]", " ");
+
+            movieTitle = movieTitle.trim();
+
             StringBuilder filter = new StringBuilder();
 
             if (movieTitle.length() > 0)
