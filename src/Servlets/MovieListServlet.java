@@ -137,7 +137,7 @@ public class MovieListServlet extends HttpServlet {
 
             String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
 
-            if (request.getParameter("ft").equals("true")) {
+            if (request.getParameter("ft") != null && request.getParameter("ft").equals("true")) {
 
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
