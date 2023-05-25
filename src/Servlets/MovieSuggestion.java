@@ -76,7 +76,7 @@ public class MovieSuggestion extends HttpServlet {
 
             // get the query string from parameter
             // String movieTitle = "%" + request.getParameter("query") + "%";
-            String movieTitle = request.getParameter("query").replaceAll(" ", "%");
+            String movieTitle = request.getParameter("query");
 
             // return the empty json array if query is null or empty
             if (movieTitle == null || movieTitle.trim().isEmpty()) {
@@ -85,7 +85,9 @@ public class MovieSuggestion extends HttpServlet {
             }
 
             // String query = "SELECT id, title FROM movies WHERE title LIKE ? LIMIT 10;";
-            String query = "SELECT id, title, year FROM movies WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) LIMIT 10;";
+            String query = "SELECT id, title, year FROM movies\n" +
+                    "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
+                    "LIMIT 10\n";
 
             // search on moviedb and add the results to JSON Array
             List<HashMap<String, String>> movies = suggestionDBHandler.executeQuery(query, movieTitle);
