@@ -145,7 +145,7 @@ public class MovieListServlet extends HttpServlet {
                     title = "";
                 }
 
-                String trimedTitle = title.replaceAll("[^a-zA-Z0-9]", " ");
+                String trimedTitle = title.replaceAll("/[^\\p{L}\\p{N}_]+/u", " ");
 
                 trimedTitle = trimedTitle.trim();
 
@@ -166,7 +166,6 @@ public class MovieListServlet extends HttpServlet {
                 }
 
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
-                        "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
                         "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) OR title = ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
