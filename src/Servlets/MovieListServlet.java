@@ -141,15 +141,15 @@ public class MovieListServlet extends HttpServlet {
 
                 title = request.getParameter("title");
 
-                title = title.replaceAll("[^a-zA-Z0-9]", " ");
+                String trimedTitle = title.replaceAll("[^a-zA-Z0-9]", " ");
 
-                title = title.trim();
+                trimedTitle = trimedTitle.trim();
 
                 StringBuilder filter = new StringBuilder();
 
-                if (title.length() > 0)
+                if (trimedTitle.length() > 0)
                 {
-                    String [] words = title.split(" ");
+                    String [] words = trimedTitle.split(" ");
 
                     for (String word : words)
                     {
@@ -162,12 +162,12 @@ public class MovieListServlet extends HttpServlet {
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
-                        "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
+                        "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) OR title LIKE ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
                         sortClause +
                         paginationClause;
 
-                movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString());
+                movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), title);
 
             } else if (genre_id != null && alphabet == null) {
 
