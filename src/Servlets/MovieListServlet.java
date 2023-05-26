@@ -141,6 +141,10 @@ public class MovieListServlet extends HttpServlet {
 
                 title = request.getParameter("title");
 
+                if (title == null) {
+                    title = "";
+                }
+
                 String trimedTitle = title.replaceAll("[^a-zA-Z0-9]", " ");
 
                 trimedTitle = trimedTitle.trim();
@@ -153,16 +157,18 @@ public class MovieListServlet extends HttpServlet {
 
                     for (String word : words)
                     {
-                        filter.append("+");
-                        filter.append(word);
-                        filter.append("* ");
+                        if (word != null && !word.trim().isEmpty()) {
+                            filter.append("+");
+                            filter.append(word);
+                            filter.append("* ");
+                        }
                     }
                 }
 
                 movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                         "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
                         "JOIN ratings r ON movies.id = r.movieId\n" +
-                        "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) OR title LIKE ?\n" +
+                        "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) OR title = ?\n" +
                         "GROUP BY movies.id, title, year, director, price, rating\n" +
                         sortClause +
                         paginationClause;
