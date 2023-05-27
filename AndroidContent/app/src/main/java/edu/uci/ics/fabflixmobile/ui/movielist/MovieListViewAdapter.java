@@ -42,6 +42,7 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
         Movie movie = movies.get(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
+
         if (convertView == null) {
             // If there's no view to re-use, inflate a brand new view for row
             viewHolder = new ViewHolder();
@@ -55,10 +56,12 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
 
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
+
         } else {
             // View is being recycled, retrieve the viewHolder object from tag
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
         // Populate the data from the data object via the viewHolder object
         // into the template view.
         viewHolder.title.setText(movie.getTitle());
@@ -67,6 +70,7 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
 
         JSONArray movieGenres = movie.getGenres();
         List<String> genreStrings = new ArrayList<>();
+
         for (int i = 0; i < movieGenres.length(); ++i) {
             try {
                 JSONObject genre = (JSONObject) movieGenres.get(i);
@@ -75,11 +79,15 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
                 throw new RuntimeException(e);
             }
         }
+
         String genresString = String.join(", ", genreStrings);
+
         viewHolder.genres.setText("Genres: " + genresString);
 
         JSONArray movieStars = movie.getStars();
+
         List<String> starStrings = new ArrayList<>();
+
         for (int i = 0; i < movieStars.length(); ++i) {
             try {
                 JSONObject star = (JSONObject) movieStars.get(i);
@@ -88,6 +96,7 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
                 throw new RuntimeException(e);
             }
         }
+
         String starsString = String.join(", ", starStrings);
         Log.d("failure", starsString);
         viewHolder.stars.setText("Stars: " + starsString);
