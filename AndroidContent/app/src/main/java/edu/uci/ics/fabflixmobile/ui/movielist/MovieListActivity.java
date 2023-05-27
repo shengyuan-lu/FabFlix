@@ -20,6 +20,9 @@ import edu.uci.ics.fabflixmobile.R;
 import edu.uci.ics.fabflixmobile.data.NetworkManager;
 import edu.uci.ics.fabflixmobile.data.model.Movie;
 import edu.uci.ics.fabflixmobile.ui.login.LoginActivity;
+import edu.uci.ics.fabflixmobile.ui.main.MainActivity;
+import edu.uci.ics.fabflixmobile.ui.singlemovie.SingleMovieActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,7 +94,7 @@ public class MovieListActivity extends AppCompatActivity {
             movieTitle = "";
         }
 
-        getMovies(movies,movieTitle);
+        getMovies(movies, movieTitle);
     }
 
 
@@ -108,7 +111,7 @@ public class MovieListActivity extends AppCompatActivity {
         }
 
         // request type is POST
-        final StringRequest loginRequest = new StringRequest(
+        final StringRequest movieListRequest = new StringRequest(
                 Request.Method.GET,
                 baseURL + apiURL,
                 response -> {
@@ -125,21 +128,32 @@ public class MovieListActivity extends AppCompatActivity {
                         listView.setAdapter(adapter);
 
                         listView.setOnItemClickListener((parent, view, position, id) -> {
-                            // TODO: transition to single movie page
-//            Movie movie = movies.get(position);
-//            @SuppressLint("DefaultLocale") String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
-//            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                            Log.d(TAG, "Go to single movie");
+
+                            Movie movie = movies.get(position);
+
+                            // initialize the activity(page)/destination
+                            Intent SingleMoviePage = new Intent(MovieListActivity.this, SingleMovieActivity.class);
+
+                            SingleMoviePage.putExtra("movieId", movie.getId());
+
+                            // activate the list page.
+                            startActivity(SingleMoviePage);
                         });
 
                         for (int i = 0; i < responseJsonArr.length(); ++i) {
+
                             JSONObject movieObj = (JSONObject) responseJsonArr.get(i);// Get movie info object
+
                             String title = (String) movieObj.get("movie_title");
+                            String id = (String) movieObj.get("movie_id");
                             int year = (int) movieObj.get("movie_year");
                             String director = (String) movieObj.get("movie_director");
                             JSONArray genres = (JSONArray) movieObj.get("movie_genres");
                             JSONArray stars = (JSONArray) movieObj.get("movie_stars");
 
-                            movies.add(new Movie(title, year, director, genres, stars)); // Add this movie to movies list
+                            movies.add(new Movie(title, id, year, director, genres, stars)); // Add this movie to movies list
                         }
                     } catch (JSONException e) {
                         Log.d(TAG, "Json parse error");
@@ -151,6 +165,6 @@ public class MovieListActivity extends AppCompatActivity {
                 });
 
         // important: queue.add is where the login request is actually sent
-        queue.add(loginRequest);
+        queue.add(movieListRequest);
     }
 }

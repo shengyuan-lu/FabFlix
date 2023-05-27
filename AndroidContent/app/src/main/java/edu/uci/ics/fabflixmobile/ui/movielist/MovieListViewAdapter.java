@@ -98,7 +98,7 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
         }
 
         String starsString = String.join(", ", starStrings);
-        Log.d("failure", starsString);
+
         viewHolder.stars.setText("Stars: " + starsString);
 
         // Return the completed view to render on screen

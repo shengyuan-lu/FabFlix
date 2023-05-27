@@ -23,6 +23,7 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".ui.main.MainActivity" />
+        <activity android:name=".ui.singlemovie.SingleMovieActivity" />
     </application>
 
 </manifest>

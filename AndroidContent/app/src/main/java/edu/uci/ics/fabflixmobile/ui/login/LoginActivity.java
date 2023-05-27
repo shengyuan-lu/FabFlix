@@ -28,7 +28,6 @@ import edu.uci.ics.fabflixmobile.ui.main.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
     private final String TAG = "Login";
-
     private EditText username;
     private EditText password;
     private TextView message;
