@@ -85,9 +85,10 @@ public class LoginActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // POST request form data
                 final Map<String, String> params = new HashMap<>();
-                // TODO: replace dummy values with real ones
-                params.put("title", "movie");
-                params.put("director_name", "year");
+                // POST request form data
+                params.put("username", username.getText().toString());
+                params.put("password", password.getText().toString());
+                params.put("frontendType", "android");
                 return params;
             }
         };
