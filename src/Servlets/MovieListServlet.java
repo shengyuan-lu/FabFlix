@@ -30,6 +30,7 @@ public class MovieListServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.getServletContext().log("get in movies api.");
 
         DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);
 
