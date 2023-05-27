@@ -142,38 +142,48 @@ public class MovieListServlet extends HttpServlet {
 
                 title = request.getParameter("title");
 
-                if (title == null) {
-                    title = "";
-                }
+                if (title == null || title.trim().isEmpty()) {
 
-                String trimedTitle = title.replaceAll("/[^\\p{L}\\p{N}_]+/u", " ");
+                    movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                            "JOIN ratings r ON movies.id = r.movieId\n" +
+                            "GROUP BY movies.id, title, year, director, price, rating\n" +
+                            sortClause +
+                            paginationClause;
 
-                trimedTitle = trimedTitle.trim();
+                    movieList = movieListDBHandler.executeQuery(movieQuery);
 
-                StringBuilder filter = new StringBuilder();
+                } else {
+                    String trimedTitle = title.replaceAll("/[^\\p{L}\\p{N}_]+/u", " ");
 
-                if (trimedTitle.length() > 0)
-                {
-                    String [] words = trimedTitle.split(" ");
+                    trimedTitle = trimedTitle.trim();
 
-                    for (String word : words)
+                    StringBuilder filter = new StringBuilder();
+
+                    if (trimedTitle.length() > 0)
                     {
-                        if (word != null && !word.trim().isEmpty()) {
-                            filter.append("+");
-                            filter.append(word);
-                            filter.append("* ");
+                        String [] words = trimedTitle.split(" ");
+
+                        for (String word : words)
+                        {
+                            if (word != null && !word.trim().isEmpty()) {
+                                filter.append("+");
+                                filter.append(word);
+                                filter.append("* ");
+                            }
                         }
                     }
+
+                    movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                            "JOIN ratings r ON movies.id = r.movieId\n" +
+                            "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) OR title = ?\n" +
+                            "GROUP BY movies.id, title, year, director, price, rating\n" +
+                            sortClause +
+                            paginationClause;
+
+                    movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), title);
                 }
 
-                movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
-                        "JOIN ratings r ON movies.id = r.movieId\n" +
-                        "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE) OR title = ?\n" +
-                        "GROUP BY movies.id, title, year, director, price, rating\n" +
-                        sortClause +
-                        paginationClause;
 
-                movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), title);
 
             } else if (genre_id != null && alphabet == null) {
 
