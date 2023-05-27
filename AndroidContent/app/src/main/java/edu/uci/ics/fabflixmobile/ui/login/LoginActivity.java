@@ -20,21 +20,14 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static edu.uci.ics.fabflixmobile.data.Constants.baseURL;
+
 public class LoginActivity extends AppCompatActivity {
     private final String TAG = "Login";
 
     private EditText username;
     private EditText password;
     private TextView message;
-
-    /*
-      In Android, localhost is the address of the device or the emulator.
-      To connect to your machine, you need to use the below IP address
-     */
-    private final String host = "10.0.2.2";
-    private final String port = "8443";
-    private final String domain = "cs122b_fabflix_war";
-    private final String baseURL = "https://" + host + ":" + port + "/" + domain;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                 response -> {
                     // TODO: should parse the json response to redirect to appropriate functions
                     //  upon different response value.
-                    Log.d("login.status", response);
+                    Log.d(TAG, response);
                     try {
                         JSONObject responseJsonObj = new JSONObject(response); // Convert response string to a JSON object
 
@@ -92,9 +85,9 @@ public class LoginActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // POST request form data
                 final Map<String, String> params = new HashMap<>();
-                params.put("username", username.getText().toString());
-                params.put("password", password.getText().toString());
-                params.put("frontendType", "android");
+                // TODO: replace dummy values with real ones
+                params.put("title", "movie");
+                params.put("director_name", "year");
                 return params;
             }
         };
