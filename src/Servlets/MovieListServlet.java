@@ -91,13 +91,13 @@ public class MovieListServlet extends HttpServlet {
         //
 
         // paganization
-        int offset = 0;
+        int offset = -1;
 
         if (request.getParameter("offset") != null) {
             offset = Integer.parseInt(request.getParameter("offset"));
         }
 
-        int limit = 10;
+        int limit = -1;
 
         if (request.getParameter("limit") != null) {
             limit = Integer.parseInt(request.getParameter("limit"));
@@ -136,7 +136,11 @@ public class MovieListServlet extends HttpServlet {
                 sortClause = String.format("ORDER BY title %s, rating %s \n", title_order.toUpperCase(), rating_order.toUpperCase());
             }
 
-            String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
+            String paginationClause = "";
+            if (request.getParameter("limit") != null && request.getParameter("offset") != null) {
+                paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
+            }
+
 
             if (request.getParameter("ft") != null && request.getParameter("ft").equals("true")) {
 
