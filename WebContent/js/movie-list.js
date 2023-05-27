@@ -91,8 +91,6 @@ function assembleRequestURL(baseUrl = "api/movies", offsetVal = offset) {
 
     let ft = getParameterByName("ft");
 
-    let total_results = parseInt(getParameterByName("total_results"));
-
     // !!string tests if the string is null or empty
 
     // Add ? to signal the beginning of query string
