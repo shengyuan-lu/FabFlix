@@ -110,12 +110,13 @@ public class MovieSuggestion extends HttpServlet {
             String query = "SELECT id, title, year, rating FROM movies\n" +
                     "JOIN ratings r ON movies.id = r.movieId\n" +
                     "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
+                    "OR title like ? OR edth(?, title, 3) \n" +
                     "GROUP BY movies.id, title, year, director, price, rating\n" +
                     "ORDER BY rating DESC, title ASC\n" +
                     "LIMIT 10\n";
 
             // search on moviedb and add the results to JSON Array
-            List<HashMap<String, String>> movies = suggestionDBHandler.executeQuery(query, filter.toString());
+            List<HashMap<String, String>> movies = suggestionDBHandler.executeQuery(query, filter.toString(), "%" + movieTitle + "%", movieTitle);
 
             for (HashMap<String, String> movie : movies) {
                 jsonArray.add(generateMovieJsonObject(movie.get("id"), movie.get("title")));
