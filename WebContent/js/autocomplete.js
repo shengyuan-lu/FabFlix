@@ -98,7 +98,7 @@ function handleLookupAjaxSuccess(data, query, doneCallback) {
  * You can redirect to the page you want using the suggestion data.
  */
 function handleSelectSuggestion(suggestion) {
-    console.log("You selected movie" + suggestion["value"] + " with ID " + suggestion["data"]["movieID"])
+    console.log("You selected movie " + suggestion["value"] + " with ID " + suggestion["data"]["movieID"])
 
     window.location.href = "single-movie.html?id=" + suggestion["data"]["movieID"];
 }
@@ -128,6 +128,8 @@ $('#autocomplete').autocomplete({
 
     // set delay time
     deferRequestBy: 300,
+
+    autoSelectFirst: false,
 
     // there are some other parameters that you might want to use to satisfy all the requirements
     minChars: 3

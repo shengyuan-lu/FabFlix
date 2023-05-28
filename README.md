@@ -8,12 +8,13 @@
 
 **Tony Liu**
 - Task 2
-- Set up AWS and recorded demo video
+- Extra Credit
+- Helped prepare for recording demo video
 
 **Shengyuan Lu**
 - Task 1
 - Task 2
-- Helped prepare for recording demo video
+- Set up AWS and recorded demo video
 
 ### Design and Implementation of Fuzzy Search
 ...
