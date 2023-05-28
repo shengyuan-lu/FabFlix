@@ -47,7 +47,12 @@
                 <tbody id="shopping-cart-body"></tbody>
             </table>
             <div class="d-flex justify-content-between">
-                <a class="btn btn-primary btn-lg" href="payment.html" role="button">Proceed to Checkout</a>
+                <a
+                    class="btn btn-primary btn-lg"
+                    href="payment.html"
+                    role="button"
+                    >Proceed to Checkout</a
+                >
                 <h3>Total: $<span id="shopping-cart-total-price"></span></h3>
             </div>
         </div>
@@ -64,15 +69,35 @@
         <script type="module" src="js/shopping-cart.js"></script>
         <script>
             function addOneMovieToCart(movieId) {
-                let movieQuantityElement = document.querySelector(`#movie-quantity-${movieId}`);
-                movieQuantityElement.innerHTML = (parseInt(movieQuantityElement.innerHTML) + 1).toString();
+                let movieQuantityElement = document.querySelector(
+                    `#movie-quantity-${movieId}`
+                );
+                movieQuantityElement.innerHTML = (
+                    parseInt(movieQuantityElement.innerHTML) + 1
+                ).toString();
 
                 // update total price
-                let movieTotalElement = document.querySelector(`#movie-total-${movieId}`);
-                let moviePriceElement = document.querySelector(`#movie-price-${movieId}`);
-                let shoppingCartTotalPriceElement = document.querySelector("#shopping-cart-total-price");
-                movieTotalElement.innerHTML = (parseFloat(movieTotalElement.innerHTML) + parseFloat(moviePriceElement.innerHTML)).toFixed(2).toString();
-                shoppingCartTotalPriceElement.innerHTML = (parseFloat(shoppingCartTotalPriceElement.innerHTML) + parseFloat(moviePriceElement.innerHTML)).toFixed(2).toString();
+                let movieTotalElement = document.querySelector(
+                    `#movie-total-${movieId}`
+                );
+                let moviePriceElement = document.querySelector(
+                    `#movie-price-${movieId}`
+                );
+                let shoppingCartTotalPriceElement = document.querySelector(
+                    "#shopping-cart-total-price"
+                );
+                movieTotalElement.innerHTML = (
+                    parseFloat(movieTotalElement.innerHTML) +
+                    parseFloat(moviePriceElement.innerHTML)
+                )
+                    .toFixed(2)
+                    .toString();
+                shoppingCartTotalPriceElement.innerHTML = (
+                    parseFloat(shoppingCartTotalPriceElement.innerHTML) +
+                    parseFloat(moviePriceElement.innerHTML)
+                )
+                    .toFixed(2)
+                    .toString();
 
                 jQuery.ajax({
                     method: "GET", // Setting request method
@@ -80,19 +105,39 @@
                 });
             }
             function removeOneMovieFromCart(movieId) {
-                let movieQuantityElement = document.querySelector(`#movie-quantity-${movieId}`);
-                movieQuantityElement.innerHTML = (parseInt(movieQuantityElement.innerHTML) - 1).toString();
+                let movieQuantityElement = document.querySelector(
+                    `#movie-quantity-${movieId}`
+                );
+                movieQuantityElement.innerHTML = (
+                    parseInt(movieQuantityElement.innerHTML) - 1
+                ).toString();
 
                 // update total price
-                let movieTotalElement = document.querySelector(`#movie-total-${movieId}`);
-                let moviePriceElement = document.querySelector(`#movie-price-${movieId}`);
-                let shoppingCartTotalPriceElement = document.querySelector("#shopping-cart-total-price");
-                movieTotalElement.innerHTML = (parseFloat(movieTotalElement.innerHTML) - parseFloat(moviePriceElement.innerHTML)).toFixed(2).toString();
+                let movieTotalElement = document.querySelector(
+                    `#movie-total-${movieId}`
+                );
+                let moviePriceElement = document.querySelector(
+                    `#movie-price-${movieId}`
+                );
+                let shoppingCartTotalPriceElement = document.querySelector(
+                    "#shopping-cart-total-price"
+                );
+                movieTotalElement.innerHTML = (
+                    parseFloat(movieTotalElement.innerHTML) -
+                    parseFloat(moviePriceElement.innerHTML)
+                )
+                    .toFixed(2)
+                    .toString();
                 if (parseFloat(movieQuantityElement.innerHTML) === 0) {
                     document.querySelector(`#cart-row-${movieId}`).remove(); // If the quantity is reduced to 0, remove that row
                 }
 
-                shoppingCartTotalPriceElement.innerHTML = (parseFloat(shoppingCartTotalPriceElement.innerHTML) - parseFloat(moviePriceElement.innerHTML)).toFixed(2).toString();
+                shoppingCartTotalPriceElement.innerHTML = (
+                    parseFloat(shoppingCartTotalPriceElement.innerHTML) -
+                    parseFloat(moviePriceElement.innerHTML)
+                )
+                    .toFixed(2)
+                    .toString();
 
                 jQuery.ajax({
                     method: "GET", // Setting request method

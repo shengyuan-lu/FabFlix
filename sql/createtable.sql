@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS movies (
   year integer NOT NULL,
   director varchar(100) NOT NULL,
   price float NOT NULL, 
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  fulltext(title)
 );
 
 CREATE TABLE IF NOT EXISTS stars (
@@ -21,8 +22,8 @@ CREATE TABLE IF NOT EXISTS stars (
 CREATE TABLE IF NOT EXISTS stars_in_movies (
   starId varchar(10) NOT NULL,
   movieId varchar(10) NOT NULL,
-  FOREIGN KEY (starId) REFERENCES stars(id),
-  FOREIGN KEY (movieID) REFERENCES movies(id)
+  FOREIGN KEY (starId) REFERENCES stars(id) on delete cascade,
+  FOREIGN KEY (movieID) REFERENCES movies(id) on delete cascade
 );
 
 CREATE TABLE IF NOT EXISTS genres (
@@ -34,8 +35,8 @@ CREATE TABLE IF NOT EXISTS genres (
 CREATE TABLE IF NOT EXISTS genres_in_movies (
   genreId integer NOT NULL,
   movieId varchar(10) NOT NULL,
-  FOREIGN KEY (genreId) REFERENCES genres(id),
-  FOREIGN KEY (movieID) REFERENCES movies(id)
+  FOREIGN KEY (genreId) REFERENCES genres(id) on delete cascade,
+  FOREIGN KEY (movieID) REFERENCES movies(id) on delete cascade
 );
 
 CREATE TABLE IF NOT EXISTS creditcards (
@@ -55,7 +56,7 @@ CREATE TABLE IF NOT EXISTS customers (
   email varchar(50) NOT NULL,
   password varchar(20) NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (ccID) REFERENCES creditcards(id)
+  FOREIGN KEY (ccID) REFERENCES creditcards(id) on delete cascade
 );
 
 CREATE TABLE IF NOT EXISTS sales (
@@ -64,13 +65,13 @@ CREATE TABLE IF NOT EXISTS sales (
   movieId varchar(10) NOT NULL,
   saleDate date NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (customerID) REFERENCES customers(id),
-  FOREIGN KEY (movieID) REFERENCES movies(id)
+  FOREIGN KEY (customerID) REFERENCES customers(id) on delete cascade,
+  FOREIGN KEY (movieID) REFERENCES movies(id) on delete cascade
 );
 
 CREATE TABLE IF NOT EXISTS ratings (
   movieId varchar(10) NOT NULL,
   rating float NOT NULL,
   numVotes integer NOT NULL,
-  FOREIGN KEY (movieID) REFERENCES movies(id)
+  FOREIGN KEY (movieID) REFERENCES movies(id) on delete cascade
 );

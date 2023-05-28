@@ -1,21 +1,21 @@
 package Servlets;
 
+import Helpers.DatabaseHandler;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
-import Helpers.DatabaseHandler;
 
 @WebServlet(name = "MovieListServlet", urlPatterns = "/api/movies")
 public class MovieListServlet extends HttpServlet {
@@ -30,6 +30,7 @@ public class MovieListServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.getServletContext().log("get in movies api.");
 
         DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);
 
@@ -90,13 +91,13 @@ public class MovieListServlet extends HttpServlet {
         //
 
         // paganization
-        int offset = 0;
+        int offset = -1;
 
         if (request.getParameter("offset") != null) {
             offset = Integer.parseInt(request.getParameter("offset"));
         }
 
-        int limit = 10;
+        int limit = -1;
 
         if (request.getParameter("limit") != null) {
             limit = Integer.parseInt(request.getParameter("limit"));
@@ -116,6 +117,7 @@ public class MovieListServlet extends HttpServlet {
         }
 
         String title_order = "asc";
+
         if (!request.getParameter("title_order").equals("asc")) {
             title_order = "desc";
         }
@@ -134,9 +136,62 @@ public class MovieListServlet extends HttpServlet {
                 sortClause = String.format("ORDER BY title %s, rating %s \n", title_order.toUpperCase(), rating_order.toUpperCase());
             }
 
-            String paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
+            String paginationClause = "";
+            if (request.getParameter("limit") != null && request.getParameter("offset") != null) {
+                paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
+            }
 
-            if (genre_id != null && alphabet == null) {
+
+            if (request.getParameter("ft") != null && request.getParameter("ft").equals("true")) {
+
+                title = request.getParameter("title");
+
+                if (title == null || title.trim().isEmpty()) {
+
+                    movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                            "JOIN ratings r ON movies.id = r.movieId\n" +
+                            "GROUP BY movies.id, title, year, director, price, rating\n" +
+                            sortClause +
+                            paginationClause;
+
+                    movieList = movieListDBHandler.executeQuery(movieQuery);
+
+                } else {
+                    String trimedTitle = title.replaceAll("/[^\\p{L}\\p{N}_]+/u", " ");
+
+                    trimedTitle = trimedTitle.trim();
+
+                    StringBuilder filter = new StringBuilder();
+
+                    if (trimedTitle.length() > 0)
+                    {
+                        String [] words = trimedTitle.split(" ");
+
+                        for (String word : words)
+                        {
+                            if (word != null && !word.trim().isEmpty()) {
+                                filter.append("+");
+                                filter.append(word);
+                                filter.append("* ");
+                            }
+                        }
+                    }
+
+                    int ed = title.length() / 5;
+                    movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
+                            "JOIN ratings r ON movies.id = r.movieId\n" +
+                            "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
+                            "OR title LIKE ? OR edth(?, title, ?) \n" +
+                            "GROUP BY movies.id, title, year, director, price, rating\n" +
+                            sortClause +
+                            paginationClause;
+
+                    movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), "%" + title + "%", title, ed);
+                }
+
+
+
+            } else if (genre_id != null && alphabet == null) {
 
                 // Handle browse by genre
 
@@ -215,7 +270,6 @@ public class MovieListServlet extends HttpServlet {
 
             JsonArray jsonArray = new JsonArray();
 
-            // Iterate through each row of topTwentyMovies
             for (HashMap<String, String> movie : movieList) {
 
                 String movie_id = movie.get("id");

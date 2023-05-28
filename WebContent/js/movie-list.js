@@ -89,7 +89,7 @@ function assembleRequestURL(baseUrl = "api/movies", offsetVal = offset) {
     let alphabet = getParameterByName("alphabet");
     let genre_id = getParameterByName("genre_id");
 
-    let total_results = parseInt(getParameterByName("total_results"));
+    let ft = getParameterByName("ft");
 
     // !!string tests if the string is null or empty
 
@@ -108,6 +108,10 @@ function assembleRequestURL(baseUrl = "api/movies", offsetVal = offset) {
     }
 
     // Append the query parameters
+    if (!!ft) {
+        requestUrl += `ft=${ft}&`;
+    }
+
     if (!!alphabet) {
         requestUrl += `alphabet=${alphabet}&`;
     }
@@ -162,6 +166,8 @@ let ratingOrderLabel = jQuery("#rating-order-label");
 // current offset and limit
 let offset = parseInt(getParameterByName("offset")) || 0;
 let limit = parseInt(getParameterByName("limit")) || 10;
+
+// sorting
 let sort = getParameterByName("sort") || "rating";
 let titleOrder = getParameterByName("title_order") || "asc";
 let ratingOrder = getParameterByName("rating_order") || "desc";
