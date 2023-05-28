@@ -20,7 +20,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 @WebServlet(name = "MovieSuggestionServlet", urlPatterns = "/api/movie-suggestion")
-public class MovieSuggestion extends HttpServlet {
+public class MovieSuggestionServlet extends HttpServlet {
 
     private DataSource dataSource;
 
@@ -110,7 +110,7 @@ public class MovieSuggestion extends HttpServlet {
             String query = "SELECT id, title, year, rating FROM movies\n" +
                     "JOIN ratings r ON movies.id = r.movieId\n" +
                     "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
-                    "OR title like ? OR edth(?, title, 3) \n" +
+                    "OR title LIKE ? OR edth(?, title, 3) \n" +
                     "GROUP BY movies.id, title, year, director, price, rating\n" +
                     "ORDER BY rating DESC, title ASC\n" +
                     "LIMIT 10\n";
