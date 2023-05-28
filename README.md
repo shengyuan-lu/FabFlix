@@ -7,8 +7,9 @@
 ### Contributions
 
 **Tony Liu**
-- Task 2
-- Extra Credit
+- Android Login Page
+- Android Movie List Page
+- Fuzzy Search
 - Helped prepare for recording demo video
 
 **Shengyuan Lu**
@@ -17,7 +18,8 @@
 - Set up AWS and recorded demo video
 
 ### Design and Implementation of Fuzzy Search
-...
+If the search input entered by the users is a substring of the complete movie title, or if the number of characters mistyped is within the edit distance of the correct movie title, it would be considered a match.
+The edit distance is defined as the length of the search input divided by 5, rounded down to an integer.
 
 ### Demo Video
 [Click here for the demo video]()
