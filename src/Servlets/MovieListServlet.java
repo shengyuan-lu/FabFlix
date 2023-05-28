@@ -181,7 +181,7 @@ public class MovieListServlet extends HttpServlet {
                     movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                             "JOIN ratings r ON movies.id = r.movieId\n" +
                             "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
-                            "OR title LIKE ? OR edth(?, title, 3) \n" +
+                            "OR title LIKE ? OR edth(?, title, ?) \n" +
                             "GROUP BY movies.id, title, year, director, price, rating\n" +
                             sortClause +
                             paginationClause;
