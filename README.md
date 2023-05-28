@@ -13,8 +13,9 @@
 - Helped prepare for recording demo video
 
 **Shengyuan Lu**
-- Task 1
-- Task 2
+- Auto Complete
+- Android Main Page
+- Android Single Movie Page
 - Set up AWS and recorded demo video
 
 ### Design and Implementation of Fuzzy Search
