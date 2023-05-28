@@ -177,6 +177,7 @@ public class MovieListServlet extends HttpServlet {
                         }
                     }
 
+                    int ed = title.length() / 5;
                     movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                             "JOIN ratings r ON movies.id = r.movieId\n" +
                             "WHERE MATCH (title) AGAINST ( ? IN BOOLEAN MODE)\n" +
@@ -185,7 +186,7 @@ public class MovieListServlet extends HttpServlet {
                             sortClause +
                             paginationClause;
 
-                    movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), "%" + title + "%", title);
+                    movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), "%" + title + "%", title, ed);
                 }
 
 
