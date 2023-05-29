@@ -70,7 +70,7 @@ public class MovieListActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Log.d(TAG, "Go to single movie");
-            Movie movie = movies.get(position);
+            Movie movie = movies.get(offset + position);
             // initialize the activity(page)/destination
             Intent SingleMoviePage = new Intent(MovieListActivity.this, SingleMovieActivity.class);
             SingleMoviePage.putExtra("movieId", movie.getId());
