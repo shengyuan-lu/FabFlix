@@ -7,6 +7,6 @@ public class Constants {
      */
     public static final String host = "ec2-54-241-71-62.us-west-1.compute.amazonaws.com";
     public static final String port = "8443";
-    public static final String domain = "cs122b_fabflix_war";
+    public static final String domain = "cs122b-fabflix";
     public static final String baseURL = "https://" + host + ":" + port + "/" + domain;
 }
