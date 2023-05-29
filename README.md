@@ -23,4 +23,4 @@ If the search input entered by the users is a substring of the complete movie ti
 The edit distance is defined as the length of the search input divided by 5, rounded down to an integer.
 
 ### Demo Video
-[Click here for the demo video](https://www.youtube.com/watch?v=ZR4OmA2b4Ag)
+[Click here for the demo video](https://youtu.be/kKqhZnZ0z7E)
