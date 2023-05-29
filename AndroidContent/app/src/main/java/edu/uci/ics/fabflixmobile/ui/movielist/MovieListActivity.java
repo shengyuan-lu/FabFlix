@@ -47,45 +47,6 @@ public class MovieListActivity extends AppCompatActivity {
     // use the same network queue across our application
     final RequestQueue queue = NetworkManager.sharedManager(this).queue;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-
-        inflater.inflate(R.menu.options_menu, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-        MovieListActivity currentActivity = this;
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                String temp_query = searchView.getQuery().toString();
-
-                Log.d(TAG, temp_query);
-
-                currentActivity.getMovies(new ArrayList<>(), temp_query, null, null);
-
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-                adapter.getFilter().filter(newText);
-
-                return false;
-            }
-        });
-
-        return true;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +70,7 @@ public class MovieListActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Log.d(TAG, "Go to single movie");
-            Movie movie = movies.get(position);
+            Movie movie = movies.get(offset + position);
             // initialize the activity(page)/destination
             Intent SingleMoviePage = new Intent(MovieListActivity.this, SingleMovieActivity.class);
             SingleMoviePage.putExtra("movieId", movie.getId());
