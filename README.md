@@ -1,26 +1,48 @@
-## CS 122B Project 4: Full Text Search, Autocomplete, Android Application, Fuzzy Search
+## CS 122B Project 5: Scaling FabFlix and Performance Tuning
 
-***Team #: stanford_rejects***  
-***Team member 1: Tony Liu 34195333***  
-***Team member 2: Shengyuan Lu 93188958*** 
+- # General
+    - #### Team#: stanford_rejects
 
-### Contributions
+    - #### Names:
+    ***Team member 1: Tony Liu 34195333***  
+    ***Team member 2: Shengyuan Lu 93188958***
 
-**Tony Liu**
-- Android Login Page
-- Android Movie List Page
-- Fuzzy Search
-- Helped prepare for recording demo video
+    - #### Project 5 Video Demo Link: [Click here for the demo video]()
 
-**Shengyuan Lu**
-- Auto Complete
-- Android Main Page
-- Android Single Movie Page
-- Set up AWS and recorded demo video
+    - #### Instruction of deployment:
 
-### Design and Implementation of Fuzzy Search
-If the search input entered by the users is a substring of the complete movie title, or if the number of characters mistyped is within the edit distance of the correct movie title, it would be considered a match.
-The edit distance is defined as the length of the search input divided by 5, rounded down to an integer.
+    - #### Collaborations and Work Distribution:
 
-### Demo Video
-[Click here for the demo video](https://youtu.be/kKqhZnZ0z7E)
+
+- # Connection Pooling
+    - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
+
+    - #### Explain how Connection Pooling is utilized in the Fabflix code.
+
+    - #### Explain how Connection Pooling works with two backend SQL.
+
+
+- # Master/Slave
+    - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+
+    - #### How read/write requests were routed to Master/Slave SQL?
+
+
+- # JMeter TS/TJ Time Logs
+    - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+
+
+- # JMeter TS/TJ Time Measurement Report
+
+| **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
+| **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
