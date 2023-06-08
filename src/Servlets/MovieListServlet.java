@@ -9,9 +9,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -30,6 +33,11 @@ public class MovieListServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        long startTimeTS = System.nanoTime();
+
+        long elapsedTimeTJ = -1;
+
         request.getServletContext().log("get in movies api.");
 
         DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);
@@ -129,6 +137,8 @@ public class MovieListServlet extends HttpServlet {
             List<HashMap<String, String>> movieList;
 
             String sortClause;
+
+            long startTimeTJ = System.nanoTime();
 
             if (sort.equals("rating")) {
                 sortClause = String.format("ORDER BY rating %s, title %s \n", rating_order.toUpperCase(), title_order.toUpperCase());
@@ -329,6 +339,9 @@ public class MovieListServlet extends HttpServlet {
 
             }
 
+            long endTimeTJ = System.nanoTime();
+            elapsedTimeTJ = endTimeTJ - startTimeTJ;
+
             // Log to localhost log
             request.getServletContext().log("api/movies getting " + jsonArray.size() + " results");
 
@@ -350,6 +363,39 @@ public class MovieListServlet extends HttpServlet {
 
         } finally {
             out.close();
+        }
+
+        long endTimeTS = System.nanoTime();
+
+        long elapsedTimeTS = endTimeTS - startTimeTS;
+
+        this.writeLogToReport(elapsedTimeTS, elapsedTimeTJ);
+    }
+
+
+    private void writeLogToReport(long elapsedTimeTS, long elapsedTimeTJ) {
+
+        String fileLocation = getServletContext().getRealPath("/");
+
+        File logFile = new File( fileLocation + "movieListServletPerformanceLog.txt");
+
+        try {
+
+            FileWriter myWriter;
+
+            if (logFile.createNewFile()) {
+                myWriter = new FileWriter(fileLocation + logFile.getName()); // create a new log file
+            } else{
+                myWriter = new FileWriter(fileLocation + logFile.getName(), true); // append the existing one
+            }
+
+            myWriter.write("TS - " + elapsedTimeTS + "; TJ - " + elapsedTimeTJ + "\n");
+            myWriter.close();
+
+            System.out.println("FileWriter has created a log file at location: " + fileLocation);
+
+        } catch (IOException e) {
+            System.out.println("FileWriter has encountered an error.");
         }
     }
 }
