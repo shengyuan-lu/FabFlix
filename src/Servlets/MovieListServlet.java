@@ -26,7 +26,7 @@ public class MovieListServlet extends HttpServlet {
 
     public void init(ServletConfig config) {
         try {
-            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/movieDBSlave");
         } catch (NamingException e) {
             e.printStackTrace();
         }
@@ -336,7 +336,6 @@ public class MovieListServlet extends HttpServlet {
                 jsonObject.addProperty("movie_rating", Double.parseDouble(movie_rating));
 
                 jsonArray.add(jsonObject);
-
             }
 
             long endTimeTJ = System.nanoTime();
@@ -369,25 +368,20 @@ public class MovieListServlet extends HttpServlet {
 
         long elapsedTimeTS = endTimeTS - startTimeTS;
 
-        this.writeLogToReport(elapsedTimeTS, elapsedTimeTJ);
+        String dirPath = request.getServletContext().getRealPath("/"); // Get the file location to write to
+        this.writeLogToReport(dirPath, elapsedTimeTS, elapsedTimeTJ);
     }
 
 
-    private void writeLogToReport(long elapsedTimeTS, long elapsedTimeTJ) {
+    private void writeLogToReport(String dirPath, long elapsedTimeTS, long elapsedTimeTJ) {
 
-        String fileLocation = getServletContext().getRealPath("/");
-
-        File logFile = new File( fileLocation + "movieListServletPerformanceLog.txt");
+        String fileLocation= dirPath + "movieListServletPerformanceLog.txt";
 
         try {
 
             FileWriter myWriter;
 
-            if (logFile.createNewFile()) {
-                myWriter = new FileWriter(fileLocation + logFile.getName()); // create a new log file
-            } else{
-                myWriter = new FileWriter(fileLocation + logFile.getName(), true); // append the existing one
-            }
+            myWriter = new FileWriter(fileLocation, true); // append the existing one
 
             myWriter.write("TS - " + elapsedTimeTS + "; TJ - " + elapsedTimeTJ + "\n");
             myWriter.close();
