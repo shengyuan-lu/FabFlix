@@ -39,28 +39,28 @@ public class LoginServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+//        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+//        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
 
-        if (!Objects.equals(request.getParameter("frontendType"), "android")) { // Android doesn't use recaptcha verification
-            try {
-
-                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
-
-            } catch (Exception e) {
-
-                JsonObject loginStatusObject = new JsonObject();
-
-                loginStatusObject.addProperty("status", "fail");
-                loginStatusObject.addProperty("message", "reCAPTCHA verification failed. Please try again.");
-
-                out.write(loginStatusObject.toString());
-
-                out.close();
-
-                return;
-            }
-        }
+//        if (!Objects.equals(request.getParameter("frontendType"), "android")) { // Android doesn't use recaptcha verification
+//            try {
+//
+//                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+//
+//            } catch (Exception e) {
+//
+//                JsonObject loginStatusObject = new JsonObject();
+//
+//                loginStatusObject.addProperty("status", "fail");
+//                loginStatusObject.addProperty("message", "reCAPTCHA verification failed. Please try again.");
+//
+//                out.write(loginStatusObject.toString());
+//
+//                out.close();
+//
+//                return;
+//            }
+//        }
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
