@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class MovieListServlet extends HttpServlet {
 
         long startTimeTS = System.nanoTime();
 
-        long elapsedTimeTJ = -1;
+        long elapsedTimeTJ = 0; // Create a variable that contains
 
         request.getServletContext().log("get in movies api.");
 
@@ -138,8 +140,6 @@ public class MovieListServlet extends HttpServlet {
 
             String sortClause;
 
-            long startTimeTJ = System.nanoTime();
-
             if (sort.equals("rating")) {
                 sortClause = String.format("ORDER BY rating %s, title %s \n", rating_order.toUpperCase(), title_order.toUpperCase());
             } else {
@@ -151,9 +151,8 @@ public class MovieListServlet extends HttpServlet {
                 paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
             }
 
-
             if (request.getParameter("ft") != null && request.getParameter("ft").equals("true")) {
-
+                // Full-text search
                 title = request.getParameter("title");
 
                 if (title == null || title.trim().isEmpty()) {
@@ -242,7 +241,7 @@ public class MovieListServlet extends HttpServlet {
                 // Handle title, director_name, year, star_name
 
                 if (year != null) {
-
+                    // When the year field is provided
                     movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                             "JOIN ratings r ON movies.id = r.movieId\n" +
                             "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
@@ -259,7 +258,7 @@ public class MovieListServlet extends HttpServlet {
                     movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, year, star_name);
 
                 } else {
-
+                    // When the year field is not provided
                     movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                             "JOIN ratings r ON movies.id = r.movieId\n" +
                             "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
@@ -272,8 +271,10 @@ public class MovieListServlet extends HttpServlet {
                             sortClause +
                             paginationClause;
 
+                    long startTimeTJ = System.nanoTime();
                     movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
-
+                    long endTimeTJ = System.nanoTime();
+                    elapsedTimeTJ = endTimeTJ - startTimeTJ;
                 }
 
             }
@@ -293,9 +294,12 @@ public class MovieListServlet extends HttpServlet {
                         "WHERE gim.movieId = ?\n" +
                         "ORDER BY genres.name\n" +
                         "LIMIT 3\n";
-
+                
+                long startTimeTJ = System.nanoTime();
                 List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
-
+                long endTimeTJ = System.nanoTime();
+                elapsedTimeTJ += endTimeTJ - startTimeTJ;
+                
                 JsonArray movie_genres = new JsonArray();
 
                 for (HashMap<String, String> genre : genres) {
@@ -312,7 +316,10 @@ public class MovieListServlet extends HttpServlet {
                         "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n" +
                         "LIMIT 3\n";
 
+                startTimeTJ = System.nanoTime();
                 List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);
+                endTimeTJ = System.nanoTime();
+                elapsedTimeTJ += endTimeTJ - startTimeTJ;
 
                 JsonArray movie_stars = new JsonArray();
 
@@ -337,9 +344,6 @@ public class MovieListServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
-
-            long endTimeTJ = System.nanoTime();
-            elapsedTimeTJ = endTimeTJ - startTimeTJ;
 
             // Log to localhost log
             request.getServletContext().log("api/movies getting " + jsonArray.size() + " results");
