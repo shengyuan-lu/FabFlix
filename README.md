@@ -17,6 +17,7 @@
         - Task 3
       - Shengyuan Lu
         - Task 1
+        - Preserved recaptcha functionalities
 
 
 - # Connection Pooling
@@ -46,7 +47,7 @@
     From the database handler, a connection is leased, and prepared statements created:
     `try (Connection conn = dataSource.getConnection())
     PreparedStatement preparedStatement = conn.prepareStatement(query);`
-    The prepared statements is cached by set up `cachePrepStmts=true` in `context.xml`
+    The prepared statements are cached by set up `cachePrepStmts=true` in `context.xml`
     The "try with resources" approach will automatically close the connection, thus return it to the connection pool.
 
     - #### Explain how Connection Pooling works with two backend SQL.
