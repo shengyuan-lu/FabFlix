@@ -18,6 +18,7 @@
       - Shengyuan Lu
         - Task 1
         - Preserved recaptcha functionalities
+        - Task 4
 
 
 - # Connection Pooling
@@ -83,3 +84,5 @@
 | Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
 | Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
 | Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
+Note: The free Amazon instance's performance fluctuate frequently, making the measurements difficult. While there are some inconsistencies, in general we feel confident about our measurements.
