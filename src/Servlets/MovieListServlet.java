@@ -38,7 +38,7 @@ public class MovieListServlet extends HttpServlet {
 
         long startTimeTS = System.nanoTime();
 
-        long elapsedTimeTJ = 0; // Create a variable that contains
+        long elapsedTimeTJ = 0;
 
         request.getServletContext().log("get in movies api.");
 
@@ -274,7 +274,7 @@ public class MovieListServlet extends HttpServlet {
                     long startTimeTJ = System.nanoTime();
                     movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
                     long endTimeTJ = System.nanoTime();
-                    elapsedTimeTJ = endTimeTJ - startTimeTJ;
+                    elapsedTimeTJ += (endTimeTJ - startTimeTJ);
                 }
 
             }
@@ -298,7 +298,7 @@ public class MovieListServlet extends HttpServlet {
                 long startTimeTJ = System.nanoTime();
                 List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
                 long endTimeTJ = System.nanoTime();
-                elapsedTimeTJ += endTimeTJ - startTimeTJ;
+                elapsedTimeTJ += (endTimeTJ - startTimeTJ);
                 
                 JsonArray movie_genres = new JsonArray();
 
@@ -319,7 +319,7 @@ public class MovieListServlet extends HttpServlet {
                 startTimeTJ = System.nanoTime();
                 List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);
                 endTimeTJ = System.nanoTime();
-                elapsedTimeTJ += endTimeTJ - startTimeTJ;
+                elapsedTimeTJ += (endTimeTJ - startTimeTJ);
 
                 JsonArray movie_stars = new JsonArray();
 
