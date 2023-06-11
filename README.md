@@ -71,12 +71,12 @@
 
 - # JMeter TS/TJ Time Measurement Report
 
-| **Single-instance Version Test Plan**          | **Graph Results Screenshot**        | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
-|------------------------------------------------|-------------------------------------|----------------------------|-----------------------------|------------------------|--------------|
-| Case 1: HTTP/1 thread                          | ![](img/Single-HTTP-1-Thread.jpg)   | 215                        |  79.86581738414635                           | 79.28440775406504                       | ??           |
-| Case 2: HTTP/10 threads                        | ![](img/Single-HTTP-10-Thread.jpg)  | 895                        | 724.122489074248                            | 723.2768001917293                     | ??           |
-| Case 3: HTTPS/10 threads                       | ![](img/Single-HTTPS-10-Thread.jpg) | 875                        |  611.4649128770116                           | 610.8658734793104                     | ??           |
-| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)          | ??                         | ??                          | ??                     | ??           |
+| **Single-instance Version Test Plan**         | **Graph Results Screenshot**        | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|-----------------------------------------------|-------------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                         | ![](img/Single-HTTP-1-Thread.jpg)   | 215                        | 79.86581738414635                   | 79.28440775406504         | ??           |
+| Case 2: HTTP/10 threads                       | ![](img/Single-HTTP-10-Thread.jpg)  | 895                        | 724.122489074248                    | 723.2768001917293         | ??           |
+| Case 3: HTTPS/10 threads                      | ![](img/Single-HTTPS-10-Thread.jpg) | 875                        | 611.4649128770116                   | 610.8658734793104         | ??           |
+| Case 4: HTTP/10 threads/No connection pooling | ![](path to image in img/)          | ??                         | ??                                  | ??                        | ??           |
 
 | **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
 |------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
