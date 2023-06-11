@@ -385,7 +385,7 @@ public class MovieListServlet extends HttpServlet {
 
     private void writeLogToReport(String dirPath, long elapsedTimeTS, long elapsedTimeTJ) {
 
-        String fileLocation= dirPath + "single-cp-log.txt";
+        String fileLocation= dirPath + "log.txt";
 
         try {
 
