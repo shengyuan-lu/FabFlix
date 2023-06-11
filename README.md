@@ -65,7 +65,7 @@
     The "try with resources" approach will automatically close the connection, thus return it to the connection pool.
 
     - #### Explain how Connection Pooling works with two backend SQL.
-
+    When accessing using load balancer, we establish a database connection to either the Master or Slave's database. Then, the process is the same as described above in the `Explain how Connection Pooling is utilized in the FabFlix code` section, effectively saving resources by avoiding the need to create and close connections repeatedly.
 
 
 - # Master/Slave
