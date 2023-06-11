@@ -10,6 +10,19 @@
     - #### Project 5 Video Demo Link: [Click here for the demo video]()
 
     - #### Instruction of deployment:
+      - ##### Deploy Remotely
+        1. Clone repository: `git@github.com:UCI-Chenli-teaching/s23-122b-stanford_rejects.git`
+        2. Change directory to repo with `cd s23-122b-stanford_rejects`
+        3. Build war file: `mvn package`
+        4. Copy war file onto tomcat: `cp ./target/*.war /home/ubuntu/tomcat/webapps`
+        5. Go to the tomcat manager
+        6. Launch `/cs122b-fabflix` from the manager
+      - ##### Deploy Locally
+        1. Clone repository: `git@github.com:UCI-Chenli-teaching/s23-122b-stanford_rejects.git`
+        2. Open the repository with IntelliJ
+        3. Add a configuration `Tomcat Server`, select `Local`
+        4. In the configuration panel, set URL `http://localhost:8080/cs122b_fabflix_war/`, set HTTP port to `8080`, tap `fix` to add `cs122b-fabflix:war` artifact, and enable all logging features
+        5. Click `Run` to build and run the application locally in your browser
 
     - #### Collaborations and Work Distribution:
       - Tony Liu
