@@ -165,7 +165,7 @@ let ratingOrderLabel = jQuery("#rating-order-label");
 
 // current offset and limit
 let offset = parseInt(getParameterByName("offset")) || 0;
-let limit = parseInt(getParameterByName("limit")) || 50;
+let limit = parseInt(getParameterByName("limit")) || 10;
 
 // sorting
 let sort = getParameterByName("sort") || "rating";
