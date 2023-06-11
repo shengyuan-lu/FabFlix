@@ -15,5 +15,5 @@ if __name__ == "__main__":
     average_TS = sum(TSs) / len(TSs) / (10**6)
     average_TJ = sum(TJs) / len(TJs) / (10**6)
 
-    print("Average TS:", average_TS)
-    print("Average TJ:", average_TJ)
+    print("Average TS: ", average_TS, " ms")
+    print("Average TJ: ", average_TJ, " ms")
