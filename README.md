@@ -53,6 +53,7 @@
     - #### Explain how Connection Pooling works with two backend SQL.
 
 
+
 - # Master/Slave
     - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
 
@@ -61,6 +62,11 @@
 
 - # JMeter TS/TJ Time Logs
     - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+    1. use `cd` command to change the directory where `log_processing.py` located
+    2. make sure python is installed
+    3. have the location of the log file ready
+    4. run `python3 log_processing.py [location_of_log_file]`
+    5. average TS and TJ results will be printed out
 
 
 - # JMeter TS/TJ Time Measurement Report
