@@ -163,7 +163,10 @@ public class MovieListServlet extends HttpServlet {
                             sortClause +
                             paginationClause;
 
+                    long startTimeTJ = System.nanoTime();
                     movieList = movieListDBHandler.executeQuery(movieQuery);
+                    long endTimeTJ = System.nanoTime();
+                    elapsedTimeTJ += (endTimeTJ - startTimeTJ);
 
                 } else {
                     String trimedTitle = title.replaceAll("/[^\\p{L}\\p{N}_]+/u", " ");
@@ -195,7 +198,10 @@ public class MovieListServlet extends HttpServlet {
                             sortClause +
                             paginationClause;
 
+                    long startTimeTJ = System.nanoTime();
                     movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), "%" + title + "%", title, ed);
+                    long endTimeTJ = System.nanoTime();
+                    elapsedTimeTJ += (endTimeTJ - startTimeTJ);
                 }
 
 
