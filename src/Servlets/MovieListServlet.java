@@ -390,7 +390,7 @@ public class MovieListServlet extends HttpServlet {
             myWriter.write("TS - " + elapsedTimeTS + "; TJ - " + elapsedTimeTJ + "\n");
             myWriter.close();
 
-            System.out.println("FileWriter has created a log file at location: " + fileLocation);
+            System.out.println("The location of the performance log: " + fileLocation);
 
         } catch (IOException e) {
             System.out.println("FileWriter has encountered an error.");
