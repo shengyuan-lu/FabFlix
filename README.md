@@ -7,7 +7,7 @@
       - ***Team member 1: Tony Liu 34195333***  
       - ***Team member 2: Shengyuan Lu 93188958***
 
-    - #### Project 5 Video Demo Link: [Click here for the demo video]()
+    - #### Project 5 Video Demo Link: [Click here for the demo video](https://youtu.be/9LTEc3t0t_Q)
 
     - #### Instruction of deployment:
       - ##### Deploy Remotely
