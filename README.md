@@ -90,7 +90,7 @@
         - WebContent/META-INF/context.xml
     - #### How read/write requests were routed to Master/Slave SQL?
       - Servlets that perform only reading from database has the data source as either master or slave SQL database, and the corresponding database connections are established, allowing for the routing of queries to either master or slave SQL
-      - Servlets that perform updating database (DashboardAddMovieServlet and DashboardAddStarServlet) has the data source as the master SQL database, so that they can only write to DB on the master instance, and the changes are then propagated to the slave
+      - Servlets that perform updating database (`DashboardAddMovieServlet` and `DashboardAddStarServlet`) has the data source as the master SQL database, so that they can only write to DB on the master instance, and the changes are then propagated to the slave
 
 - # JMeter TS/TJ Time Logs
     - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
@@ -102,6 +102,9 @@
 
 
 - # JMeter TS/TJ Time Measurement Report
+
+Note that AWS frequently freezes when running certain test plans exceeding certain amount of time. Since there's no time requirement in the rubric, most of the entries are run for 1-3 minutes and captured when the number stablized.
+We think that 500 - 1000 data points satisfy the `sufficient number of readings` in the rubric. You can take a look at images in the `img/` folder and logs in the `log/` folder
 
 | **Single-instance Version Test Plan**         | **Graph Results Screenshot**             | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis**                                                                                                                                                                                                                                                                                                                                                                                        |
 |-----------------------------------------------|------------------------------------------|----------------------------|-------------------------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -116,4 +119,4 @@
 | Case 2: HTTP/10 threads                       | ![](img/Scaled-HTTP-10-Thread.jpg)       | 782                        | 631.1701772425774                   | 630.5999798307013         | We notice a performance increase of about 100 ms average query time decrease, and 100 ms TS / TJ decrease. This indicates that using a load balancer will make the website run more efficiently when the number of users increase. However, we also noticed that the load balancer will sometimes redirect ALL traffic to either master or slave. We investigated and temporary fixed it by run `sudo service apache2 restart` every time we need to use the load balancer. |
 | Case 3: HTTP/10 threads/No connection pooling | ![](img/Scaled-HTTP-10-Thread-No-CP.jpg) | 1126                       | 1076.7664729496473                  | 1063.4746535941592        | Again, we notice a performance increase of about 150 ms average query time decrease, and 150 ms TS / TJ decrease. However, compare to case 2, we noticed a 500 ms performance decrease. This again concludes that connection pooling and load balancing can significantly increase performance.                                                                                                                                                                             |
 
-Note: The free Amazon instance's performance fluctuate frequently, making the measurements difficult. While there are some inconsistencies, in general we feel confident about our measurements.
+Note: The free Amazon instance's performance fluctuate frequently, making accurate measurements difficult. While there are some inconsistencies, in general we feel confident about our measurements.
