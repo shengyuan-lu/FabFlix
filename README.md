@@ -28,6 +28,7 @@
       - Tony Liu
         - Task 2
         - Task 3
+        - Helped prepare Jmeter and Jmeter test plan
       - Shengyuan Lu
         - Task 1
         - Preserved recaptcha functionalities
@@ -70,9 +71,10 @@
 
 - # Master/Slave
     - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
-
+      - META-INF/context.xml
+      - In every servlet file, initialize data source to either master or slave SQL
     - #### How read/write requests were routed to Master/Slave SQL?
-
+      - Every servlet has the data source as either master or slave SQL database, and the corresponding database connections are established, allowing for the routing of queries to either master or slave SQL
 
 - # JMeter TS/TJ Time Logs
     - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
