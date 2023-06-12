@@ -9,11 +9,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,6 +35,11 @@ public class MovieListServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        long startTimeTS = System.nanoTime();
+
+        long elapsedTimeTJ = 0;
+
         request.getServletContext().log("get in movies api.");
 
         DatabaseHandler movieListDBHandler = new DatabaseHandler(dataSource);
@@ -141,9 +151,8 @@ public class MovieListServlet extends HttpServlet {
                 paginationClause = String.format("LIMIT %s OFFSET %s \n", limit, offset);
             }
 
-
             if (request.getParameter("ft") != null && request.getParameter("ft").equals("true")) {
-
+                // Full-text search
                 title = request.getParameter("title");
 
                 if (title == null || title.trim().isEmpty()) {
@@ -154,7 +163,10 @@ public class MovieListServlet extends HttpServlet {
                             sortClause +
                             paginationClause;
 
+                    long startTimeTJ = System.nanoTime();
                     movieList = movieListDBHandler.executeQuery(movieQuery);
+                    long endTimeTJ = System.nanoTime();
+                    elapsedTimeTJ += (endTimeTJ - startTimeTJ);
 
                 } else {
                     String trimedTitle = title.replaceAll("/[^\\p{L}\\p{N}_]+/u", " ");
@@ -186,7 +198,10 @@ public class MovieListServlet extends HttpServlet {
                             sortClause +
                             paginationClause;
 
+                    long startTimeTJ = System.nanoTime();
                     movieList = movieListDBHandler.executeQuery(movieQuery, filter.toString(), "%" + title + "%", title, ed);
+                    long endTimeTJ = System.nanoTime();
+                    elapsedTimeTJ += (endTimeTJ - startTimeTJ);
                 }
 
 
@@ -232,7 +247,7 @@ public class MovieListServlet extends HttpServlet {
                 // Handle title, director_name, year, star_name
 
                 if (year != null) {
-
+                    // When the year field is provided
                     movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                             "JOIN ratings r ON movies.id = r.movieId\n" +
                             "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
@@ -249,7 +264,7 @@ public class MovieListServlet extends HttpServlet {
                     movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, year, star_name);
 
                 } else {
-
+                    // When the year field is not provided
                     movieQuery = "SELECT movies.id, title, year, director, price, rating FROM movies\n" +
                             "JOIN ratings r ON movies.id = r.movieId\n" +
                             "JOIN genres_in_movies gim ON movies.id = gim.movieId\n" +
@@ -262,8 +277,10 @@ public class MovieListServlet extends HttpServlet {
                             sortClause +
                             paginationClause;
 
+                    long startTimeTJ = System.nanoTime();
                     movieList = movieListDBHandler.executeQuery(movieQuery, title, director_name, star_name);
-
+                    long endTimeTJ = System.nanoTime();
+                    elapsedTimeTJ += (endTimeTJ - startTimeTJ);
                 }
 
             }
@@ -283,9 +300,12 @@ public class MovieListServlet extends HttpServlet {
                         "WHERE gim.movieId = ?\n" +
                         "ORDER BY genres.name\n" +
                         "LIMIT 3\n";
-
+                
+                long startTimeTJ = System.nanoTime();
                 List<HashMap<String, String>> genres = movieListDBHandler.executeQuery(movieGenreQuery, movie_id);
-
+                long endTimeTJ = System.nanoTime();
+                elapsedTimeTJ += (endTimeTJ - startTimeTJ);
+                
                 JsonArray movie_genres = new JsonArray();
 
                 for (HashMap<String, String> genre : genres) {
@@ -302,7 +322,10 @@ public class MovieListServlet extends HttpServlet {
                         "ORDER BY (SELECT COUNT(*) FROM stars_in_movies AS sm2 WHERE sm2.starId = s.id) DESC, s.name \n" +
                         "LIMIT 3\n";
 
+                startTimeTJ = System.nanoTime();
                 List<HashMap<String, String>> stars = movieListDBHandler.executeQuery(movieStarQuery, movie_id);
+                endTimeTJ = System.nanoTime();
+                elapsedTimeTJ += (endTimeTJ - startTimeTJ);
 
                 JsonArray movie_stars = new JsonArray();
 
@@ -326,7 +349,6 @@ public class MovieListServlet extends HttpServlet {
                 jsonObject.addProperty("movie_rating", Double.parseDouble(movie_rating));
 
                 jsonArray.add(jsonObject);
-
             }
 
             // Log to localhost log
@@ -350,6 +372,34 @@ public class MovieListServlet extends HttpServlet {
 
         } finally {
             out.close();
+        }
+
+        long endTimeTS = System.nanoTime();
+
+        long elapsedTimeTS = endTimeTS - startTimeTS;
+
+        String dirPath = request.getServletContext().getRealPath("/"); // Get the file location to write to
+        this.writeLogToReport(dirPath, elapsedTimeTS, elapsedTimeTJ);
+    }
+
+
+    private void writeLogToReport(String dirPath, long elapsedTimeTS, long elapsedTimeTJ) {
+
+        String fileLocation= dirPath + "log.txt";
+
+        try {
+
+            FileWriter myWriter;
+
+            myWriter = new FileWriter(fileLocation, true); // append the existing one
+
+            myWriter.write("TS - " + elapsedTimeTS + "; TJ - " + elapsedTimeTJ + "\n");
+            myWriter.close();
+
+            System.out.println("The location of the performance log: " + fileLocation);
+
+        } catch (IOException e) {
+            System.out.println("FileWriter has encountered an error.");
         }
     }
 }
