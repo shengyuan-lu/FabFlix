@@ -71,10 +71,23 @@
 
 - # Master/Slave
     - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
-      - META-INF/context.xml
-      - In every servlet file, initialize data source to either master or slave SQL
+      - WebContent/META-INF/context.xml
+      - src/Servlets/ConfirmationServlet.java
+      - src/Servlets/DashboardAddMovieServlet.java
+      - src/Servlets/DashboardAddStarServlet.java
+      - src/Servlets/DashboardLoginServlet.java
+      - src/Servlets/DashboardMetadataServlet.java
+      - src/Servlets/GenreServlet.java
+      - src/Servlets/LoginServlet.java
+      - src/Servlets/MovieListServlet.java
+      - src/Servlets/MovieSuggestionServlet.java
+      - src/Servlets/PaymentServlet.java
+      - src/Servlets/ShoppingCartServlet.java
+      - src/Servlets/SingleMovieServlet.java
+      - src/Servlets/SingleStarServlet.java
     - #### How read/write requests were routed to Master/Slave SQL?
-      - Every servlet has the data source as either master or slave SQL database, and the corresponding database connections are established, allowing for the routing of queries to either master or slave SQL
+      - Servlets that perform only reading from database has the data source as either master or slave SQL database, and the corresponding database connections are established, allowing for the routing of queries to either master or slave SQL
+      - Servlets that perform updating database (DashboardAddMovieServlet and DashboardAddStarServlet) has the data source as the master SQL database, so that they can only write to DB on the master instance, and the changes are then propagated to the slave
 
 - # JMeter TS/TJ Time Logs
     - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
