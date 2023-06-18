@@ -1,5 +1,7 @@
 ## FabFlix
 
+An e-commerce website that enables the users to search, browse and purchase movies.
+
 ### Login
 ![Screenshot 2023-06-17 at 20 15 48](https://github.com/shengyuan-lu/FabFlix/assets/70995597/20a3c7be-7404-49ef-9110-c4ff9b081d68)
 
